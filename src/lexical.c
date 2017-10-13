@@ -37,14 +37,23 @@ void checkState(char c, FILE *f){
             if(isLetter(c)){
                 STATE = 1;
                 buffer[buffer_position] = c;
+                buffer_position++;
+            }else if(isdigit(c)){
+                STATE = 3;
+                buffer[buffer_position] = c;
+                buffer_position++;
+            }else if(c == ' ' || c == '\t' || c == '\n'){
+                STATE = 0;
             }
             break;
         case 1:
             if(isLetter(c) || isdigit(c) || c == '_'){
                 STATE = 1;
                 buffer[buffer_position] = c;
+                buffer_position++;
             }else{
                 buffer[buffer_position] = '\0';
+                buffer_position++;
                 int is_reserved_word = 0;
                 if((is_reserved_word = isReservedWord(buffer)) != -1){
                     printf("<PR, %d>\n", is_reserved_word);
@@ -54,6 +63,57 @@ void checkState(char c, FILE *f){
                     indetifier_position++;                    
                 }
                 
+                buffer_position = 0;
+                //clean buffer
+                memset(&buffer[0], 0, sizeof(buffer));
+                STATE = 0;
+                if(c != EOF){
+                    ungetc(c, f);
+                }
+            }
+            break;
+        case 3:
+            if(isdigit(c)){
+                STATE = 3;
+                buffer[buffer_position] = c;
+                buffer_position++;
+            }else if(c == '.'){
+                STATE = 5;
+                buffer[buffer_position] = c;
+                buffer_position++;
+            }else{
+                buffer[buffer_position] = '\0';
+                buffer_position++;
+                buffer_position = 0;
+                int number = (int) strtol(buffer, (char **)NULL, 10);
+                printf("<CT_I, %d>\n", number);
+                //clean buffer
+                memset(&buffer[0], 0, sizeof(buffer));
+                STATE = 0;
+                if(c != EOF){
+                    ungetc(c, f);
+                }
+            }
+            break;
+        case 5:
+            if(isdigit(c)){
+                STATE = 6;
+                ungetc(c, f);
+            }else{
+                //given an error
+            }
+            break;
+        case 6:
+            if(isdigit(c)){
+                STATE = 6;
+                buffer[buffer_position] = c;
+                buffer_position++;
+            }else{
+                buffer[buffer_position] = '\0';
+                buffer_position++;
+                buffer_position = 0;
+                float number = atof(buffer);
+                printf("<CT_R, %.2f>\n", number);
                 //clean buffer
                 memset(&buffer[0], 0, sizeof(buffer));
                 STATE = 0;
@@ -63,8 +123,6 @@ void checkState(char c, FILE *f){
             }
             break;
     }
-
-    buffer_position++;
 }
 
 int isLetter(char letter){
