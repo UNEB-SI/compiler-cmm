@@ -24,15 +24,19 @@ void readFile(char *file_name){
     FILE *file = fopen(file_name, "r");
     if(file != NULL){
         while((actual_char = fgetc(file)) != EOF){
+            if(checkState(actual_char, file) == -1){
+                return;
+            };
+        }
+        if(actual_char == EOF){
             checkState(actual_char, file);
         }
-        checkState(actual_char, file);
     }else{
         errorMessage(ERROR_NOT_FOUND_FILE);
     }
 }
 
-void checkState(char c, FILE *f){
+int checkState(char c, FILE *f){
     switch(STATE){
         case 0:
             if(isLetter(c)){
@@ -130,14 +134,22 @@ void checkState(char c, FILE *f){
                 addLetter(c);
             }else{
                 //mensagem de erro
+                printf("Error. Esperado '*' após '/' na linha %d.\n", line_number);
+                STATE = 0;
+                return -1;
             }
             break;
         case 9:
             if(isprint(c) && c != '*'){
                 STATE = 10;
                 addLetter(c);
+            }else if(c == '*'){
+                STATE = 11;
+                addLetter(c);  
             }else{
-                //mensagem de erro  
+                //mensagem de erro
+                printf("Error. Comentário não finalizado após '%s' na linha %d.\n", buffer,line_number);
+                return -1;
             }
             break;
         case 10:
@@ -149,6 +161,8 @@ void checkState(char c, FILE *f){
                 addLetter(c);
             }else{
                 //mensagem de erro
+                printf("Error. Comentário não finalizado após '%s' na linha %d.\n", buffer,line_number);
+                return -1;
             }
             break;
         case 11:
@@ -164,6 +178,8 @@ void checkState(char c, FILE *f){
                 STATE = 26;
             }else{
                 //mensagem de erro
+                printf("Error. Você esqueceu algo após ' na linha %d.\n",line_number);
+                return -1;
             }
             break;
         case 25:
@@ -172,6 +188,8 @@ void checkState(char c, FILE *f){
                 STATE = 28;
             }else{
                 //mensagem de erro
+                printf("Error. Você esqueceu algo após \"  na linha %d.\n",line_number);
+                return -1;
             }
             break;
         case 26:
@@ -181,6 +199,8 @@ void checkState(char c, FILE *f){
                 justCleanBuffer();
             }else{
                 //mensagem de erro
+                printf("Error. Você esqueceu um \' na linha %d.\n",line_number);
+                return -1;
             }
             break;
         case 28:
@@ -193,6 +213,7 @@ void checkState(char c, FILE *f){
                 STATE = 28;
             }else{
                 //mensagem de erro
+                printf("Error. Você esqueceu um \" na linha %d.\n",line_number);
             }
             break;
         case 35:
@@ -212,6 +233,7 @@ void checkState(char c, FILE *f){
                 justCleanBuffer();
             }else{
                 //mensagem de erro
+                printf("Error. Operador & não reconhecido na linha %d.\n", line_number);
             }
             break;
         case 39:
@@ -221,6 +243,7 @@ void checkState(char c, FILE *f){
                 justCleanBuffer();
             }else{
                 //mensagem de erro
+                printf("Error. Operador | não reconhecido na linha %d.\n", line_number);
             }
             break;
     }
@@ -264,7 +287,7 @@ void printToken(TokenType tp, char value){
              printf("<ID, %d>\n", indetifier_position);
         break;
         case PR:
-            printf("<PR, %d>\n", isReservedWord(buffer));
+            printf("<PR, %s>\n", reserved_word[isReservedWord(buffer)]);
         break;
         case CT_I:
             printf("<CT_I, %d>\n", getInteger());
