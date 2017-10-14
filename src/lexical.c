@@ -9,6 +9,7 @@ int STATE = 0;
 char buffer[50];
 int buffer_position = 0;
 int indetifier_position = 0;
+int line_number = 1;
 
 int main(int argc, char **argv){
     if(argc > 1){
@@ -36,63 +37,73 @@ void checkState(char c, FILE *f){
         case 0:
             if(isLetter(c)){
                 STATE = 1;
-                buffer[buffer_position] = c;
-                buffer_position++;
+                addLetter(c);
             }else if(isdigit(c)){
                 STATE = 3;
-                buffer[buffer_position] = c;
-                buffer_position++;
-            }else if(c == ' ' || c == '\t' || c == '\n'){
+                addLetter(c);
+            }else if(c == SPACE || c == TAB || c == ENTER){
                 STATE = 0;
+                if(c == ENTER){
+                    line_number++;
+                }
+            }else if(c == '/'){
+                STATE = 8;
+                addLetter(c);
+            }else if(c == EOF){
+                printToken(eOF, c);
+            }else if(c == '|'){
+                STATE = 39;
+                addLetter(c);
+            }else if(c == '&'){
+                STATE = 38;
+                addLetter(c);
+            }else if(c == 39){//apostrofo
+                STATE = 24;
+                addLetter(c);
+            }else if(c == 34){//aspas
+                STATE = 25;
+                addLetter(c);
+            }  else if(c == '<' || c == '>' || c == '!' || c == '='){
+                STATE = 35;
+                addLetter(c);
+            }else if(c == '+' || c == '-' || c == '*' || c == '/' 
+                    || c == '[' || c == ']' || c == '{' || c == '}'
+                    || c == '(' || c == ')' || c == ';' || c == ','){
+                STATE = 0;
+                addLetter(c);
+                printToken(SN, c);
+                justCleanBuffer();
             }
             break;
         case 1:
-            if(isLetter(c) || isdigit(c) || c == '_'){
+            if(isLetter(c) || isdigit(c) || c == UNDERLINE){
                 STATE = 1;
-                buffer[buffer_position] = c;
-                buffer_position++;
+                addLetter(c);
             }else{
-                buffer[buffer_position] = '\0';
-                buffer_position++;
+                addStringFinal();
                 int is_reserved_word = 0;
-                if((is_reserved_word = isReservedWord(buffer)) != -1){
-                    printf("<PR, %d>\n", is_reserved_word);
+                if(isReservedWord(buffer) != -1){
+                    printToken(PR, c);
                 }else{
                     strcpy(&identifiers[indetifier_position], buffer);
-                    printf("<ID, %d>\n", indetifier_position);
+                    printToken(ID, c);
                     indetifier_position++;                    
                 }
                 
-                buffer_position = 0;
-                //clean buffer
-                memset(&buffer[0], 0, sizeof(buffer));
-                STATE = 0;
-                if(c != EOF){
-                    ungetc(c, f);
-                }
+                cleanBuffer(f, c);
             }
             break;
         case 3:
             if(isdigit(c)){
                 STATE = 3;
-                buffer[buffer_position] = c;
-                buffer_position++;
+                addLetter(c);
             }else if(c == '.'){
                 STATE = 5;
-                buffer[buffer_position] = c;
-                buffer_position++;
+                addLetter(c);
             }else{
-                buffer[buffer_position] = '\0';
-                buffer_position++;
-                buffer_position = 0;
-                int number = (int) strtol(buffer, (char **)NULL, 10);
-                printf("<CT_I, %d>\n", number);
-                //clean buffer
-                memset(&buffer[0], 0, sizeof(buffer));
-                STATE = 0;
-                if(c != EOF){
-                    ungetc(c, f);
-                }
+                addStringFinal();
+                printToken(CT_I, c);
+                cleanBuffer(f, c);
             }
             break;
         case 5:
@@ -100,26 +111,116 @@ void checkState(char c, FILE *f){
                 STATE = 6;
                 ungetc(c, f);
             }else{
-                //given an error
+                errorMessage(ERROR_NUMBER_FLOAT_FORMAT);
             }
             break;
         case 6:
             if(isdigit(c)){
                 STATE = 6;
-                buffer[buffer_position] = c;
-                buffer_position++;
+                addLetter(c);
             }else{
-                buffer[buffer_position] = '\0';
-                buffer_position++;
-                buffer_position = 0;
-                float number = atof(buffer);
-                printf("<CT_R, %.2f>\n", number);
-                //clean buffer
-                memset(&buffer[0], 0, sizeof(buffer));
-                STATE = 0;
-                if(c != EOF){
-                    ungetc(c, f);
-                }
+                addStringFinal();
+                printToken(CT_R, c);
+                cleanBuffer(f, c);
+            }
+            break;
+        case 8:
+            if(c == '*'){
+                STATE = 9;
+                addLetter(c);
+            }else{
+                //mensagem de erro
+            }
+            break;
+        case 9:
+            if(isprint(c) && c != '*'){
+                STATE = 10;
+                addLetter(c);
+            }else{
+                //mensagem de erro  
+            }
+            break;
+        case 10:
+            if(c == '*'){
+                STATE = 11;
+                addLetter(c);
+            }else if(isprint(c)){
+                STATE = 10;
+                addLetter(c);
+            }else{
+                //mensagem de erro
+            }
+            break;
+        case 11:
+            if(c == '/'){//inverted bar
+                addLetter(c);
+                printToken(COMMENT, c);
+                cleanBuffer(f, c);
+            }
+            break;
+        case 24:
+            if(isprint(c)){
+                addLetter(c);
+                STATE = 26;
+            }else{
+                //mensagem de erro
+            }
+            break;
+        case 25:
+            if(isprint(c) || c == SPACE){
+                addLetter(c);
+                STATE = 28;
+            }else{
+                //mensagem de erro
+            }
+            break;
+        case 26:
+            if(c == 39){
+                addLetter(c);
+                printToken(CT_C, c);
+                justCleanBuffer();
+            }else{
+                //mensagem de erro
+            }
+            break;
+        case 28:
+            if(c == 34){
+                addLetter(c);
+                printToken(CT_C, c);
+                justCleanBuffer();
+            } else if(isprint(c) || c == SPACE){
+                addLetter(c);
+                STATE = 28;
+            }else{
+                //mensagem de erro
+            }
+            break;
+        case 35:
+            if(c == '='){
+                addLetter(c);
+                printToken(SN, c);
+                justCleanBuffer();
+            }else{
+                printToken(SN, c);
+                cleanBuffer(f, c);
+            }
+            break;
+        case 38:
+            if(c == '&'){
+                addLetter(c);
+                printToken(SN, c);
+                justCleanBuffer();
+            }else{
+                //mensagem de erro
+            }
+            break;
+        case 39:
+            if(c == '|'){
+                addLetter(c);
+                printToken(SN, c);
+                justCleanBuffer();
+            }else{
+                //mensagem de erro
             }
             break;
     }
@@ -143,6 +244,79 @@ int isReservedWord(char *word){
     return -1;
 }
 
+int isSignal(char *word){
+    for(int i = 0; i < (sizeof(signals)/sizeof(*signals)); i++){  
+        if(strcmp(word, signals[i]) == 0){
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 void errorMessage(const char *error){
     printf("Error: %s\n", error);
+}
+
+void printToken(TokenType tp, char value){
+    switch(tp){
+        case ID:
+             printf("<ID, %d>\n", indetifier_position);
+        break;
+        case PR:
+            printf("<PR, %d>\n", isReservedWord(buffer));
+        break;
+        case CT_I:
+            printf("<CT_I, %d>\n", getInteger());
+        break;
+        case CT_R:
+            printf("<CT_R, %.2f>\n", getFloat());
+        break;
+        case COMMENT:
+            printf("<COMMENT>\n");
+        break;
+        case SN:
+            printf("<SN, %s>\n", signalsName[isSignal(buffer)]);
+        break;
+        case eOF:
+            printf("<EOF, 0>\n");
+        break;
+        case CT_C:
+            printf("<CT_C, %s>\n", buffer);
+        break;
+    }
+}
+
+void addLetter(char c){
+    buffer[buffer_position] = c;
+    buffer_position++;
+}
+
+void addStringFinal(){
+    buffer[buffer_position] = '\0';
+}
+
+void cleanBuffer(FILE *f, char c){
+    buffer_position = 0;
+    memset(&buffer[0], 0, sizeof(buffer));
+    STATE = 0;
+    if(c != EOF){
+        ungetc(c, f);
+    }
+}
+
+void justCleanBuffer(){
+    buffer_position = 0;
+    memset(&buffer[0], 0, sizeof(buffer));
+    STATE = 0;
+}
+
+int getInteger(){
+    int number = (int) strtol(buffer, (char **)NULL, 10);
+    return number;
+}
+
+float getFloat(){
+    float number = atof(buffer);
+    return number;
 }
