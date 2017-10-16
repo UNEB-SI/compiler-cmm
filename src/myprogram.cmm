@@ -1,3 +1,0 @@
-inteiro soma(inteiro a, inteiro b){
-    retorne a + b;
-}

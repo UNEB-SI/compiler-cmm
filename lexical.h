@@ -1,4 +1,4 @@
- enum token_types {ID, PR, SN, CT_I, CT_R, LT, CT_C, eOF, COMMENT};
+ enum token_types {ID, PR, SN, CT_I, CT_R, CT_L, CT_C, eOF, COMMENT};
  typedef enum token_types TokenType;
 //defining a token
 typedef struct{
@@ -16,11 +16,13 @@ const char TAB = '\t';
 const char ENTER = '\n';
 const char SPACE = ' ';
 const char UNDERLINE = '_';
+const char BAR = '/';
 const char* ERROR_PASS_FILE = "Você deve indicar um arquivo para ser analisado. Ex: lexical namefile.cmm";
 const char* ERROR_NOT_FOUND_FILE = "Arquivo não encontrado!";
 const char* ERROR_NUMBER_FLOAT_FORMAT = "Esperado um número após ";
 //tables
 char identifiers[50];
+char literals[300];
 
 //keep the name of signals
 enum signals_name {MAIOR = 0, MENOR, MENOR_IGUAL, MAIOR_IGUAL, NEG, DIF, PT_VIRG, VIRGULA, E, OU, ADD, SUB, MULTI, DIV} SignalName;
@@ -28,7 +30,7 @@ enum signals_name {MAIOR = 0, MENOR, MENOR_IGUAL, MAIOR_IGUAL, NEG, DIF, PT_VIRG
 //functions definition
 void readFile(char *file);
 void errorMessage(const char *error);
-void checkState(char c, FILE *f);
+int checkState(char c, FILE *f);
 int isLetter(char letter);
 int isReservedWord(char *word);
 int isSignal(char *word);

@@ -2,13 +2,15 @@
 #include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
-#include "../include/lexical.h"
+#include "lexical.h"
 
 char actual_char;
+char last_char;
 int STATE = 0;
 char buffer[50];
 int buffer_position = 0;
 int indetifier_position = 0;
+int literal_position = 0;
 int line_number = 1;
 
 int main(int argc, char **argv){
@@ -50,9 +52,10 @@ int checkState(char c, FILE *f){
                 if(c == ENTER){
                     line_number++;
                 }
-            }else if(c == '/'){
+            }else if(c == BAR){
                 STATE = 8;
                 addLetter(c);
+                last_char = c;
             }else if(c == EOF){
                 printToken(eOF, c);
             }else if(c == '|'){
@@ -70,7 +73,7 @@ int checkState(char c, FILE *f){
             }  else if(c == '<' || c == '>' || c == '!' || c == '='){
                 STATE = 35;
                 addLetter(c);
-            }else if(c == '+' || c == '-' || c == '*' || c == '/' 
+            }else if(c == '+' || c == '-' || c == '*'
                     || c == '[' || c == ']' || c == '{' || c == '}'
                     || c == '(' || c == ')' || c == ';' || c == ','){
                 STATE = 0;
@@ -85,15 +88,14 @@ int checkState(char c, FILE *f){
                 addLetter(c);
             }else{
                 addStringFinal();
-                int is_reserved_word = 0;
                 if(isReservedWord(buffer) != -1){
                     printToken(PR, c);
                 }else{
                     strcpy(&identifiers[indetifier_position], buffer);
                     printToken(ID, c);
-                    indetifier_position++;                    
+                    indetifier_position++;
                 }
-                
+
                 cleanBuffer(f, c);
             }
             break;
@@ -133,10 +135,9 @@ int checkState(char c, FILE *f){
                 STATE = 9;
                 addLetter(c);
             }else{
-                //mensagem de erro
-                printf("Error. Esperado '*' após '/' na linha %d.\n", line_number);
+                printToken(SN, last_char);
                 STATE = 0;
-                return -1;
+                justCleanBuffer();
             }
             break;
         case 9:
@@ -145,7 +146,7 @@ int checkState(char c, FILE *f){
                 addLetter(c);
             }else if(c == '*'){
                 STATE = 11;
-                addLetter(c);  
+                addLetter(c);
             }else{
                 //mensagem de erro
                 printf("Error. Comentário não finalizado após '%s' na linha %d.\n", buffer,line_number);
@@ -159,17 +160,13 @@ int checkState(char c, FILE *f){
             }else if(isprint(c)){
                 STATE = 10;
                 addLetter(c);
-            }else{
-                //mensagem de erro
-                printf("Error. Comentário não finalizado após '%s' na linha %d.\n", buffer,line_number);
-                return -1;
             }
             break;
         case 11:
             if(c == '/'){//inverted bar
                 addLetter(c);
                 printToken(COMMENT, c);
-                cleanBuffer(f, c);
+                justCleanBuffer();
             }
             break;
         case 24:
@@ -184,7 +181,8 @@ int checkState(char c, FILE *f){
             break;
         case 25:
             if(isprint(c) || c == SPACE){
-                addLetter(c);
+                //addLetter(c);
+                //FAZER AQUi
                 STATE = 28;
             }else{
                 //mensagem de erro
@@ -205,13 +203,15 @@ int checkState(char c, FILE *f){
             break;
         case 28:
             if(c == 34){
-                addLetter(c);
-                printToken(CT_C, c);
+                //addLetter(c);
+                strcpy(&literals[literal_position], buffer);
+                printToken(CT_L, c);
+                literal_position++;
                 justCleanBuffer();
             } else if(isprint(c) || c == SPACE){
                 addLetter(c);
                 STATE = 28;
-            }else{
+            }else if(c == EOF && last_char != 34){
                 //mensagem de erro
                 printf("Error. Você esqueceu um \" na linha %d.\n",line_number);
             }
@@ -247,6 +247,8 @@ int checkState(char c, FILE *f){
             }
             break;
     }
+
+    return 0;
 }
 
 int isLetter(char letter){
@@ -258,7 +260,7 @@ int isLetter(char letter){
 
 
 int isReservedWord(char *word){
-    for(int i = 0; i < (sizeof(reserved_word)/sizeof(*reserved_word)); i++){  
+    for(int i = 0; i < (sizeof(reserved_word)/sizeof(*reserved_word)); i++){
         if(strcmp(word, reserved_word[i]) == 0){
             return i;
         }
@@ -268,7 +270,7 @@ int isReservedWord(char *word){
 }
 
 int isSignal(char *word){
-    for(int i = 0; i < (sizeof(signals)/sizeof(*signals)); i++){  
+    for(int i = 0; i < (sizeof(signals)/sizeof(*signals)); i++){
         if(strcmp(word, signals[i]) == 0){
             return i;
         }
@@ -295,6 +297,9 @@ void printToken(TokenType tp, char value){
         case CT_R:
             printf("<CT_R, %.2f>\n", getFloat());
         break;
+        case CT_L:
+            printf("<CT_L, %d>\n", literal_position);
+        break;
         case COMMENT:
             printf("<COMMENT>\n");
         break;
@@ -312,6 +317,7 @@ void printToken(TokenType tp, char value){
 
 void addLetter(char c){
     buffer[buffer_position] = c;
+    last_char = c;
     buffer_position++;
 }
 

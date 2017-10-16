@@ -42,298 +42,6 @@
 				<symbol>}</symbol>
 				<symbol>í</symbol>
 			</structure>
-			<structure type="final_states">
-				<state>
-					<name>q0</name>
-					<id>0</id>
-				</state>
-				<state>
-					<name>q2</name>
-					<id>2</id>
-				</state>
-				<state>
-					<name>q4</name>
-					<id>4</id>
-				</state>
-				<state>
-					<name>q7</name>
-					<id>7</id>
-				</state>
-				<state>
-					<name>q12</name>
-					<id>12</id>
-				</state>
-				<state>
-					<name>q13</name>
-					<id>13</id>
-				</state>
-				<state>
-					<name>q14</name>
-					<id>14</id>
-				</state>
-				<state>
-					<name>q15</name>
-					<id>15</id>
-				</state>
-				<state>
-					<name>q16</name>
-					<id>16</id>
-				</state>
-				<state>
-					<name>q18</name>
-					<id>18</id>
-				</state>
-				<state>
-					<name>q19</name>
-					<id>19</id>
-				</state>
-				<state>
-					<name>q21</name>
-					<id>21</id>
-				</state>
-				<state>
-					<name>q22</name>
-					<id>22</id>
-				</state>
-				<state>
-					<name>q27</name>
-					<id>27</id>
-				</state>
-				<state>
-					<name>q29</name>
-					<id>29</id>
-				</state>
-				<state>
-					<name>q30</name>
-					<id>30</id>
-				</state>
-				<state>
-					<name>q32</name>
-					<id>32</id>
-				</state>
-				<state>
-					<name>q34</name>
-					<id>34</id>
-				</state>
-				<state>
-					<name>q36</name>
-					<id>36</id>
-				</state>
-				<state>
-					<name>q38</name>
-					<id>38</id>
-				</state>
-				<state>
-					<name>q40</name>
-					<id>40</id>
-				</state>
-				<state>
-					<name>q41</name>
-					<id>41</id>
-				</state>
-				<state>
-					<name>q42</name>
-					<id>42</id>
-				</state>
-				<state>
-					<name>q43</name>
-					<id>43</id>
-				</state>
-			</structure>
-			<structure type="state_set">
-				<state>
-					<name>q0</name>
-					<id>0</id>
-				</state>
-				<state>
-					<name>q1</name>
-					<id>1</id>
-				</state>
-				<state>
-					<name>q2</name>
-					<id>2</id>
-				</state>
-				<state>
-					<name>q3</name>
-					<id>3</id>
-				</state>
-				<state>
-					<name>q4</name>
-					<id>4</id>
-				</state>
-				<state>
-					<name>q5</name>
-					<id>5</id>
-				</state>
-				<state>
-					<name>q6</name>
-					<id>6</id>
-				</state>
-				<state>
-					<name>q7</name>
-					<id>7</id>
-				</state>
-				<state>
-					<name>q8</name>
-					<id>8</id>
-				</state>
-				<state>
-					<name>q9</name>
-					<id>9</id>
-				</state>
-				<state>
-					<name>q10</name>
-					<id>10</id>
-				</state>
-				<state>
-					<name>q11</name>
-					<id>11</id>
-				</state>
-				<state>
-					<name>q12</name>
-					<id>12</id>
-				</state>
-				<state>
-					<name>q13</name>
-					<id>13</id>
-				</state>
-				<state>
-					<name>q14</name>
-					<id>14</id>
-				</state>
-				<state>
-					<name>q15</name>
-					<id>15</id>
-				</state>
-				<state>
-					<name>q16</name>
-					<id>16</id>
-				</state>
-				<state>
-					<name>q17</name>
-					<id>17</id>
-				</state>
-				<state>
-					<name>q18</name>
-					<id>18</id>
-				</state>
-				<state>
-					<name>q19</name>
-					<id>19</id>
-				</state>
-				<state>
-					<name>q20</name>
-					<id>20</id>
-				</state>
-				<state>
-					<name>q21</name>
-					<id>21</id>
-				</state>
-				<state>
-					<name>q22</name>
-					<id>22</id>
-				</state>
-				<state>
-					<name>q23</name>
-					<id>23</id>
-				</state>
-				<state>
-					<name>q24</name>
-					<id>24</id>
-				</state>
-				<state>
-					<name>q25</name>
-					<id>25</id>
-				</state>
-				<state>
-					<name>q26</name>
-					<id>26</id>
-				</state>
-				<state>
-					<name>q27</name>
-					<id>27</id>
-				</state>
-				<state>
-					<name>q28</name>
-					<id>28</id>
-				</state>
-				<state>
-					<name>q29</name>
-					<id>29</id>
-				</state>
-				<state>
-					<name>q30</name>
-					<id>30</id>
-				</state>
-				<state>
-					<name>q31</name>
-					<id>31</id>
-				</state>
-				<state>
-					<name>q32</name>
-					<id>32</id>
-				</state>
-				<state>
-					<name>q33</name>
-					<id>33</id>
-				</state>
-				<state>
-					<name>q34</name>
-					<id>34</id>
-				</state>
-				<state>
-					<name>q35</name>
-					<id>35</id>
-				</state>
-				<state>
-					<name>q36</name>
-					<id>36</id>
-				</state>
-				<state>
-					<name>q37</name>
-					<id>37</id>
-				</state>
-				<state>
-					<name>q38</name>
-					<id>38</id>
-				</state>
-				<state>
-					<name>q39</name>
-					<id>39</id>
-				</state>
-				<state>
-					<name>q40</name>
-					<id>40</id>
-				</state>
-				<state>
-					<name>q41</name>
-					<id>41</id>
-				</state>
-				<state>
-					<name>q42</name>
-					<id>42</id>
-				</state>
-				<state>
-					<name>q43</name>
-					<id>43</id>
-				</state>
-				<state>
-					<name>q44</name>
-					<id>44</id>
-				</state>
-				<state>
-					<name>q45</name>
-					<id>45</id>
-				</state>
-				<state>
-					<name>q46</name>
-					<id>46</id>
-				</state>
-				<state>
-					<name>q47</name>
-					<id>47</id>
-				</state>
-			</structure>
 			<structure type="transition_set">
 				<fsa_trans>
 					<input/>
@@ -432,17 +140,6 @@
 					<to>
 						<name>q18</name>
 						<id>18</id>
-					</to>
-				</fsa_trans>
-				<fsa_trans>
-					<input>/</input>
-					<from>
-						<name>q0</name>
-						<id>0</id>
-					</from>
-					<to>
-						<name>q19</name>
-						<id>19</id>
 					</to>
 				</fsa_trans>
 				<fsa_trans>
@@ -754,6 +451,17 @@
 					</to>
 				</fsa_trans>
 				<fsa_trans>
+					<input>*Outro</input>
+					<from>
+						<name>q8</name>
+						<id>8</id>
+					</from>
+					<to>
+						<name>q48</name>
+						<id>48</id>
+					</to>
+				</fsa_trans>
+				<fsa_trans>
 					<input>ch</input>
 					<from>
 						<name>q9</name>
@@ -985,6 +693,298 @@
 					</to>
 				</fsa_trans>
 			</structure>
+			<structure type="state_set">
+				<state>
+					<name>q0</name>
+					<id>0</id>
+				</state>
+				<state>
+					<name>q1</name>
+					<id>1</id>
+				</state>
+				<state>
+					<name>q2</name>
+					<id>2</id>
+				</state>
+				<state>
+					<name>q3</name>
+					<id>3</id>
+				</state>
+				<state>
+					<name>q4</name>
+					<id>4</id>
+				</state>
+				<state>
+					<name>q5</name>
+					<id>5</id>
+				</state>
+				<state>
+					<name>q6</name>
+					<id>6</id>
+				</state>
+				<state>
+					<name>q7</name>
+					<id>7</id>
+				</state>
+				<state>
+					<name>q8</name>
+					<id>8</id>
+				</state>
+				<state>
+					<name>q9</name>
+					<id>9</id>
+				</state>
+				<state>
+					<name>q10</name>
+					<id>10</id>
+				</state>
+				<state>
+					<name>q11</name>
+					<id>11</id>
+				</state>
+				<state>
+					<name>q12</name>
+					<id>12</id>
+				</state>
+				<state>
+					<name>q13</name>
+					<id>13</id>
+				</state>
+				<state>
+					<name>q14</name>
+					<id>14</id>
+				</state>
+				<state>
+					<name>q15</name>
+					<id>15</id>
+				</state>
+				<state>
+					<name>q16</name>
+					<id>16</id>
+				</state>
+				<state>
+					<name>q17</name>
+					<id>17</id>
+				</state>
+				<state>
+					<name>q18</name>
+					<id>18</id>
+				</state>
+				<state>
+					<name>q20</name>
+					<id>20</id>
+				</state>
+				<state>
+					<name>q21</name>
+					<id>21</id>
+				</state>
+				<state>
+					<name>q22</name>
+					<id>22</id>
+				</state>
+				<state>
+					<name>q23</name>
+					<id>23</id>
+				</state>
+				<state>
+					<name>q24</name>
+					<id>24</id>
+				</state>
+				<state>
+					<name>q25</name>
+					<id>25</id>
+				</state>
+				<state>
+					<name>q26</name>
+					<id>26</id>
+				</state>
+				<state>
+					<name>q27</name>
+					<id>27</id>
+				</state>
+				<state>
+					<name>q28</name>
+					<id>28</id>
+				</state>
+				<state>
+					<name>q29</name>
+					<id>29</id>
+				</state>
+				<state>
+					<name>q30</name>
+					<id>30</id>
+				</state>
+				<state>
+					<name>q31</name>
+					<id>31</id>
+				</state>
+				<state>
+					<name>q32</name>
+					<id>32</id>
+				</state>
+				<state>
+					<name>q33</name>
+					<id>33</id>
+				</state>
+				<state>
+					<name>q34</name>
+					<id>34</id>
+				</state>
+				<state>
+					<name>q35</name>
+					<id>35</id>
+				</state>
+				<state>
+					<name>q36</name>
+					<id>36</id>
+				</state>
+				<state>
+					<name>q37</name>
+					<id>37</id>
+				</state>
+				<state>
+					<name>q38</name>
+					<id>38</id>
+				</state>
+				<state>
+					<name>q39</name>
+					<id>39</id>
+				</state>
+				<state>
+					<name>q40</name>
+					<id>40</id>
+				</state>
+				<state>
+					<name>q41</name>
+					<id>41</id>
+				</state>
+				<state>
+					<name>q42</name>
+					<id>42</id>
+				</state>
+				<state>
+					<name>q43</name>
+					<id>43</id>
+				</state>
+				<state>
+					<name>q44</name>
+					<id>44</id>
+				</state>
+				<state>
+					<name>q45</name>
+					<id>45</id>
+				</state>
+				<state>
+					<name>q46</name>
+					<id>46</id>
+				</state>
+				<state>
+					<name>q47</name>
+					<id>47</id>
+				</state>
+				<state>
+					<name>q48</name>
+					<id>48</id>
+				</state>
+			</structure>
+			<structure type="final_states">
+				<state>
+					<name>q0</name>
+					<id>0</id>
+				</state>
+				<state>
+					<name>q2</name>
+					<id>2</id>
+				</state>
+				<state>
+					<name>q4</name>
+					<id>4</id>
+				</state>
+				<state>
+					<name>q7</name>
+					<id>7</id>
+				</state>
+				<state>
+					<name>q12</name>
+					<id>12</id>
+				</state>
+				<state>
+					<name>q13</name>
+					<id>13</id>
+				</state>
+				<state>
+					<name>q14</name>
+					<id>14</id>
+				</state>
+				<state>
+					<name>q15</name>
+					<id>15</id>
+				</state>
+				<state>
+					<name>q16</name>
+					<id>16</id>
+				</state>
+				<state>
+					<name>q18</name>
+					<id>18</id>
+				</state>
+				<state>
+					<name>q21</name>
+					<id>21</id>
+				</state>
+				<state>
+					<name>q22</name>
+					<id>22</id>
+				</state>
+				<state>
+					<name>q27</name>
+					<id>27</id>
+				</state>
+				<state>
+					<name>q29</name>
+					<id>29</id>
+				</state>
+				<state>
+					<name>q30</name>
+					<id>30</id>
+				</state>
+				<state>
+					<name>q32</name>
+					<id>32</id>
+				</state>
+				<state>
+					<name>q34</name>
+					<id>34</id>
+				</state>
+				<state>
+					<name>q36</name>
+					<id>36</id>
+				</state>
+				<state>
+					<name>q38</name>
+					<id>38</id>
+				</state>
+				<state>
+					<name>q40</name>
+					<id>40</id>
+				</state>
+				<state>
+					<name>q41</name>
+					<id>41</id>
+				</state>
+				<state>
+					<name>q42</name>
+					<id>42</id>
+				</state>
+				<state>
+					<name>q43</name>
+					<id>43</id>
+				</state>
+				<state>
+					<name>q48</name>
+					<id>48</id>
+				</state>
+			</structure>
 			<structure type="start_state">
 				<state>
 					<name>q0</name>
@@ -1087,8 +1087,8 @@
 			<state_point>
 				<state>13</state>
 				<point>
-					<x>634.0</x>
-					<y>2435.0</y>
+					<x>524.0</x>
+					<y>2476.0</y>
 				</point>
 			</state_point>
 			<state_point>
@@ -1101,8 +1101,8 @@
 			<state_point>
 				<state>15</state>
 				<point>
-					<x>558.0</x>
-					<y>2441.0</y>
+					<x>439.0</x>
+					<y>2474.0</y>
 				</point>
 			</state_point>
 			<state_point>
@@ -1122,15 +1122,8 @@
 			<state_point>
 				<state>18</state>
 				<point>
-					<x>468.0</x>
-					<y>2438.0</y>
-				</point>
-			</state_point>
-			<state_point>
-				<state>19</state>
-				<point>
-					<x>393.0</x>
-					<y>2433.0</y>
+					<x>357.0</x>
+					<y>2476.0</y>
 				</point>
 			</state_point>
 			<state_point>
@@ -1329,6 +1322,13 @@
 					<y>2398.0</y>
 				</point>
 			</state_point>
+			<state_point>
+				<state>48</state>
+				<point>
+					<x>668.0</x>
+					<y>2492.0</y>
+				</point>
+			</state_point>
 		</state_point_map>
 		<control_point_map>
 			<control_point>
@@ -1367,8 +1367,8 @@
 				<from>0</from>
 				<to>18</to>
 				<point>
-					<x>542.0</x>
-					<y>2331.0</y>
+					<x>486.5</x>
+					<y>2350.0</y>
 				</point>
 			</control_point>
 			<control_point>
@@ -1383,16 +1383,24 @@
 				<from>0</from>
 				<to>15</to>
 				<point>
-					<x>587.0</x>
-					<y>2332.5</y>
+					<x>527.5</x>
+					<y>2349.0</y>
 				</point>
 			</control_point>
 			<control_point>
 				<from>0</from>
 				<to>13</to>
 				<point>
-					<x>625.0</x>
-					<y>2329.5</y>
+					<x>570.0</x>
+					<y>2350.0</y>
+				</point>
+			</control_point>
+			<control_point>
+				<from>8</from>
+				<to>48</to>
+				<point>
+					<x>663.0</x>
+					<y>2416.5</y>
 				</point>
 			</control_point>
 			<control_point>
@@ -1465,14 +1473,6 @@
 				<point>
 					<x>476.5</x>
 					<y>2131.5</y>
-				</point>
-			</control_point>
-			<control_point>
-				<from>0</from>
-				<to>19</to>
-				<point>
-					<x>504.5</x>
-					<y>2328.5</y>
 				</point>
 			</control_point>
 			<control_point>
@@ -1759,24 +1759,17 @@
 	</structure>
 	<state_label_map>
 		<note>
-			<value>&lt;SN, MULT&gt;</value>
-			<point>
-				<x>468.0</x>
-				<y>2438.0</y>
-			</point>
-		</note>
-		<note>
-			<value>&lt;SN, DIV&gt;</value>
-			<point>
-				<x>393.0</x>
-				<y>2433.0</y>
-			</point>
-		</note>
-		<note>
 			<value>&lt;SN, COL_ABER&gt;</value>
 			<point>
 				<x>180.0</x>
 				<y>2315.0</y>
+			</point>
+		</note>
+		<note>
+			<value>&lt;SN, ADD&gt;</value>
+			<point>
+				<x>524.0</x>
+				<y>2476.0</y>
 			</point>
 		</note>
 		<note>
@@ -1808,6 +1801,13 @@
 			</point>
 		</note>
 		<note>
+			<value>&lt;SN, DIV&gt;</value>
+			<point>
+				<x>668.0</x>
+				<y>2492.0</y>
+			</point>
+		</note>
+		<note>
 			<value>&lt;SN, NEG&gt;</value>
 			<point>
 				<x>818.0</x>
@@ -1815,7 +1815,7 @@
 			</point>
 		</note>
 		<note>
-			<value>&lt;CT_C, valor&gt;</value>
+			<value>&lt;CT_L, valor&gt;</value>
 			<point>
 				<x>1249.0</x>
 				<y>1988.0</y>
@@ -1913,6 +1913,13 @@
 			</point>
 		</note>
 		<note>
+			<value>&lt;SN, MULT&gt;</value>
+			<point>
+				<x>357.0</x>
+				<y>2476.0</y>
+			</point>
+		</note>
+		<note>
 			<value>&lt;SN, MENOR&gt;</value>
 			<point>
 				<x>398.0</x>
@@ -1934,24 +1941,17 @@
 			</point>
 		</note>
 		<note>
+			<value>&lt;SN, SUB&gt;</value>
+			<point>
+				<x>439.0</x>
+				<y>2474.0</y>
+			</point>
+		</note>
+		<note>
 			<value>&lt;SN, PAREN_ABER&gt;</value>
 			<point>
 				<x>163.0</x>
 				<y>2033.0</y>
-			</point>
-		</note>
-		<note>
-			<value>&lt;SN, ADD&gt;</value>
-			<point>
-				<x>634.0</x>
-				<y>2435.0</y>
-			</point>
-		</note>
-		<note>
-			<value>&lt;SN, SUB&gt;</value>
-			<point>
-				<x>558.0</x>
-				<y>2441.0</y>
 			</point>
 		</note>
 		<note>
