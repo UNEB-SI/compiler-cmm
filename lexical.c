@@ -66,7 +66,7 @@ int checkState(char c, FILE *f){
                 addLetter(c);
             }else if(c == APOSTROPHE){//apostrofo
                 STATE = 24;
-                addLetter(c);
+                //addLetter(c);
             }else if(c == QUOTES){//aspas
                 STATE = 25;
                 //addLetter(c);
@@ -170,6 +170,8 @@ int checkState(char c, FILE *f){
             break;
         case 19:
             if(c == 'n' || c == '0'){
+                if(c == 'n') c = '\n';
+                else c = '\0';
                 addLetter(c);
                 STATE = 26;
             }else{
@@ -180,7 +182,7 @@ int checkState(char c, FILE *f){
             break;
         case 24:
             if(c == INVERTED_BAR){
-               addLetter(c);
+               //addLetter(c);
                STATE = 19;
             }else if(c != APOSTROPHE && isprint(c)){
                 addLetter(c);
@@ -204,7 +206,7 @@ int checkState(char c, FILE *f){
             break;
         case 26:
             if(c == APOSTROPHE){
-                addLetter(c);
+                //addLetter(c);
                 printToken(CARACCON, c);
                 justCleanBuffer();
             }else{
@@ -319,7 +321,7 @@ void printToken(TokenType tp, char value){
             printf("<EOF, 0>\n");
         break;
         case CARACCON:
-            printf("<CARACCON, %s>\n", buffer);
+            printf("<CARACCON, %c>\n", buffer[0]);
         break;
     }
 }
