@@ -1,13 +1,8 @@
- enum token_types {ID, PR, SN, CT_I, CT_R, CT_L, CT_C, eOF, COMMENT};
+ enum token_types {ID, PR, SN, INTCON, REALCON, CADEIACON, CARACCON, eOF, COMMENT};
  typedef enum token_types TokenType;
-//defining a token
-typedef struct{
-    TokenType tp;
-    char *valor;
-} Token;
 
 //reserved word
-char *reserved_word[] = {"inteiro", "real", "caracter", "booleano", "se", "senao", "sem retorno", "enquanto", "para", "retorne"};
+char *reserved_word[] = {"inteiro", "real", "caracter", "booleano", "se", "senao", "sem retorno", "enquanto", "para", "retorne", "semparam", "verdadeiro", "falso"};
 //accept signals
 char *signals[] = {">","<","<=", ">=", "!", "!=", ";",",", "&&","||","+","-","*","/", "[", "]", "(", ")", "{", "}", "=", "=="};
 char *signalsName[] = {"MAIOR","MENOR","MENOR_QUE", "MAIOR_QUE", "NEG", "DIF", "PT_VIRG","VIRGULA", "E","OU","ADD","SUB","MULT","DIV", "COL_ABER", "COL_FEC", "PAREN_ABER", "PAREN_FEC", "CHAVE_ABER", "CHAVE_FEC", "ATRIBUICAO", "IGUALDADE"};
@@ -17,12 +12,15 @@ const char ENTER = '\n';
 const char SPACE = ' ';
 const char UNDERLINE = '_';
 const char BAR = '/';
+const int INVERTED_BAR = 92;
+const int APOSTROPHE = 39;
+const int QUOTES = 34;
 const char* ERROR_PASS_FILE = "Você deve indicar um arquivo para ser analisado. Ex: lexical namefile.cmm";
 const char* ERROR_NOT_FOUND_FILE = "Arquivo não encontrado!";
 const char* ERROR_NUMBER_FLOAT_FORMAT = "Esperado um número após ";
 //tables
-char identifiers[50];
-char literals[300];
+char identifiers[300][300];
+char literals[300][300];
 
 //keep the name of signals
 enum signals_name {MAIOR = 0, MENOR, MENOR_IGUAL, MAIOR_IGUAL, NEG, DIF, PT_VIRG, VIRGULA, E, OU, ADD, SUB, MULTI, DIV} SignalName;

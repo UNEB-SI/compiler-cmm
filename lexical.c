@@ -64,12 +64,12 @@ int checkState(char c, FILE *f){
             }else if(c == '&'){
                 STATE = 38;
                 addLetter(c);
-            }else if(c == 39){//apostrofo
+            }else if(c == APOSTROPHE){//apostrofo
                 STATE = 24;
                 addLetter(c);
-            }else if(c == 34){//aspas
+            }else if(c == QUOTES){//aspas
                 STATE = 25;
-                addLetter(c);
+                //addLetter(c);
             }  else if(c == '<' || c == '>' || c == '!' || c == '='){
                 STATE = 35;
                 addLetter(c);
@@ -91,7 +91,7 @@ int checkState(char c, FILE *f){
                 if(isReservedWord(buffer) != -1){
                     printToken(PR, c);
                 }else{
-                    strcpy(&identifiers[indetifier_position], buffer);
+                    strcpy(identifiers[indetifier_position], buffer);
                     printToken(ID, c);
                     indetifier_position++;
                 }
@@ -108,7 +108,7 @@ int checkState(char c, FILE *f){
                 addLetter(c);
             }else{
                 addStringFinal();
-                printToken(CT_I, c);
+                printToken(INTCON, c);
                 cleanBuffer(f, c);
             }
             break;
@@ -126,7 +126,7 @@ int checkState(char c, FILE *f){
                 addLetter(c);
             }else{
                 addStringFinal();
-                printToken(CT_R, c);
+                printToken(REALCON, c);
                 cleanBuffer(f, c);
             }
             break;
@@ -165,23 +165,35 @@ int checkState(char c, FILE *f){
         case 11:
             if(c == '/'){//inverted bar
                 addLetter(c);
-                printToken(COMMENT, c);
                 justCleanBuffer();
             }
             break;
-        case 24:
-            if(isprint(c)){
+        case 19:
+            if(c == 'n' || c == '0'){
                 addLetter(c);
                 STATE = 26;
             }else{
                 //mensagem de erro
-                printf("Error. Você esqueceu algo após ' na linha %d.\n",line_number);
+                printf("Error. Caracter não esperado após %c na linha %d.\n",INVERTED_BAR, line_number);
+                return -1;
+            }
+            break;
+        case 24:
+            if(c == INVERTED_BAR){
+               addLetter(c);
+               STATE = 19;
+            }else if(c != APOSTROPHE && isprint(c)){
+                addLetter(c);
+                STATE = 26;
+            }else{
+                //mensagem de erro
+                printf("Error. Você esqueceu algo após ' na linha %d.\n", line_number);
                 return -1;
             }
             break;
         case 25:
             if(isprint(c) || c == SPACE){
-                //addLetter(c);
+                addLetter(c);
                 //FAZER AQUi
                 STATE = 28;
             }else{
@@ -191,9 +203,9 @@ int checkState(char c, FILE *f){
             }
             break;
         case 26:
-            if(c == 39){
+            if(c == APOSTROPHE){
                 addLetter(c);
-                printToken(CT_C, c);
+                printToken(CARACCON, c);
                 justCleanBuffer();
             }else{
                 //mensagem de erro
@@ -202,16 +214,16 @@ int checkState(char c, FILE *f){
             }
             break;
         case 28:
-            if(c == 34){
+            if(c == QUOTES){
                 //addLetter(c);
-                strcpy(&literals[literal_position], buffer);
-                printToken(CT_L, c);
+                strcpy(literals[literal_position], buffer);
+                printToken(CADEIACON, c);
                 literal_position++;
                 justCleanBuffer();
             } else if(isprint(c) || c == SPACE){
                 addLetter(c);
                 STATE = 28;
-            }else if(c == EOF && last_char != 34){
+            }else if(c == EOF && last_char != QUOTES){
                 //mensagem de erro
                 printf("Error. Você esqueceu um \" na linha %d.\n",line_number);
             }
@@ -286,22 +298,19 @@ void errorMessage(const char *error){
 void printToken(TokenType tp, char value){
     switch(tp){
         case ID:
-             printf("<ID, %d>\n", indetifier_position);
+             printf("<ID, %s>\n", identifiers[indetifier_position]);
         break;
         case PR:
             printf("<PR, %s>\n", reserved_word[isReservedWord(buffer)]);
         break;
-        case CT_I:
-            printf("<CT_I, %d>\n", getInteger());
+        case INTCON:
+            printf("<INTCON, %d>\n", getInteger());
         break;
-        case CT_R:
-            printf("<CT_R, %.2f>\n", getFloat());
+        case REALCON:
+            printf("<REALCON, %.2f>\n", getFloat());
         break;
-        case CT_L:
-            printf("<CT_L, %d>\n", literal_position);
-        break;
-        case COMMENT:
-            printf("<COMMENT>\n");
+        case CADEIACON:
+            printf("<CADEIACON, %d>\n", literal_position);
         break;
         case SN:
             printf("<SN, %s>\n", signalsName[isSignal(buffer)]);
@@ -309,8 +318,8 @@ void printToken(TokenType tp, char value){
         case eOF:
             printf("<EOF, 0>\n");
         break;
-        case CT_C:
-            printf("<CT_C, %s>\n", buffer);
+        case CARACCON:
+            printf("<CARACCON, %s>\n", buffer);
         break;
     }
 }
@@ -349,3 +358,4 @@ float getFloat(){
     float number = atof(buffer);
     return number;
 }
+

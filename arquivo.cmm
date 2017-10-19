@@ -1,8 +1,4 @@
-inteiro principal(){
-    inteiro a, b;
-    soma(a, b);
-}
-
-inteiro soma(a, b){
-    returne a  = "afasdf";
+inteiro variavel(semparam) {
+    real query = var1 - var2;
+    retorne query;
 }
