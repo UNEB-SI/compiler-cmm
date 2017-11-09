@@ -101,7 +101,7 @@ int checkState(char c, FILE *f){
                 addLetter(c);
             }else if(c == APOSTROPHE){//apostrofo
                 STATE = 24;
-                addLetter(c);
+                //addLetter(c);
             }else if(c == QUOTES){//aspas
                 STATE = 25;
                 //addLetter(c);
@@ -109,7 +109,7 @@ int checkState(char c, FILE *f){
                 STATE = 35;
                 addLetter(c);
             }else if(c == '+' || c == '-' || c == '*'
-                    || c == '[' || c == ']' || c == '{' || c == '}'
+                    || c == '{' || c == '}'
                     || c == '(' || c == ')' || c == ';' || c == ','){
                 STATE = 0;
                 addLetter(c);
@@ -122,6 +122,7 @@ int checkState(char c, FILE *f){
               printf("Symbol '%c' not recognized at line: %d\n",c,line_number);
               exit(0);
               return -1;
+
             }
             break;
         case 1:
@@ -166,6 +167,7 @@ int checkState(char c, FILE *f){
                 ungetc(c, f);
             }else{
                 errorMessage(ERROR_NUMBER_FLOAT_FORMAT);
+                return -1;
             }
             break;
         case 6:
@@ -194,35 +196,62 @@ int checkState(char c, FILE *f){
             }
             break;
         case 9:
-            if(isprint(c) && c != '*'){
+            if(c != '*'){
                 STATE = 10;
                 addLetter(c);
+                if(c == '\n'){
+                    line_number++;
+                }
             }else if(c == '*'){
                 STATE = 11;
                 addLetter(c);
             }else{
                 //mensagem de erro
-                printf("Error. Comentário não finalizado após '%s' na linha %d.\n", buffer,line_number);
+                printf("Error. Comentário não finalizado após '%s' na linha %d.\n", buffer, line_number);
                 return -1;
             }
             break;
         case 10:
+            //treating \n
+            if(c == '\n'){
+                line_number++;
+            }
+
             if(c == '*'){
                 STATE = 11;
                 addLetter(c);
-            }else if(isprint(c)){
+            }else if(isprint(c) || c == SPACE || c == '\t' || c == '\n'){
                 STATE = 10;
                 addLetter(c);
+            }else{
+                //mensagem de erro
+                printf("Error. Comentário não finalizado na linha %d.\n",line_number);
+                //printf("BUffer: %s", buffer);
+                //printf("PArei em %d\n", last_char);
+                return -1;
             }
+
             break;
         case 11:
             if(c == '/'){//inverted bar
                 addLetter(c);
                 justCleanBuffer();
+            }else if(c == '*'){
+                addLetter(c);
+                STATE = 11;
+            }else if(isprint(c)){
+                addLetter(c);
+                STATE = 10;
+            }else{
+                //mensagem de erro
+                printf("Error. Comentário não finalizado após * na linha %d.\n",line_number);
+                return -1;
             }
             break;
         case 19:
             if(c == 'n' || c == '0'){
+                if(c == 'n') c = '\n';
+                else c = '\0';
                 addLetter(c);
                 STATE = 26;
             }else{
@@ -233,7 +262,7 @@ int checkState(char c, FILE *f){
             break;
         case 24:
             if(c == INVERTED_BAR){
-               addLetter(c);
+               //addLetter(c);
                STATE = 19;
             }else if(c != APOSTROPHE && isprint(c)){
                 addLetter(c);
@@ -309,6 +338,7 @@ int checkState(char c, FILE *f){
             }else{
                 //mensagem de erro
                 printf("Error. Operador & não reconhecido na linha %d.\n", line_number);
+                return -1;
             }
             break;
         case 39:
@@ -321,6 +351,7 @@ int checkState(char c, FILE *f){
             }else{
                 //mensagem de erro
                 printf("Error. Operador | não reconhecido na linha %d.\n", line_number);
+                return -1;
             }
             break;
     }
@@ -384,7 +415,7 @@ void errorMessage(const char *error){
             printf("<EOF, 0>\n");
         break;
         case CARACCON:
-            printf("<CARACCON, %s>\n", buffer);
+            printf("<CARACCON, %c>\n", buffer[0]);
         break;
     }
 }*/

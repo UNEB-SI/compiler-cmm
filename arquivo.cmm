@@ -1,4 +1,20 @@
-inteiro variavel(semparam) {
-    real query = var1 - var2;
-    retorne query;
+/*************************/
+/* Comentario inicial
+*/
+
+/* Funcao soma*/
+inteiro soma(inteiro a, inteiro b) {
+    inteiro z;
+
+    z= a+b;
+    retorne z;
 }
+/* Programa principal   <= Comentario nao fechado
+semretorno principal(semparam) {
+    inteiro x, y, z;
+
+    x=3; y | 5;       <=  Operador ilegal
+    z=soma(x, y);
+    print("O valor da soma eh: z);  <= Cadeia de caracter mal formatada
+    retorne;
+}*/
