@@ -3,6 +3,7 @@
 #include<string.h>
 #include<ctype.h>
 #include "lexical.h"
+#include "parser.h"
 
 char actual_char;
 char last_char;
@@ -12,6 +13,29 @@ int buffer_position = 0;
 int indetifier_position = 0;
 int literal_position = 0;
 int line_number = 1;
+
+//reserved word
+char *reserved_word[] = {"inteiro", "real", "caracter", "booleano", "se", "senao", "sem retorno", "enquanto", "para", "retorne", "semparam", "verdadeiro", "falso"};
+//accept signals
+char *signals[] = {">","<","<=", ">=", "!", "!=", ";",",", "&&","||","+","-","*","/", "[", "]", "(", ")", "{", "}", "=", "=="};
+char *signalsName[] = {"MAIOR","MENOR","MENOR_QUE", "MAIOR_QUE", "NEG", "DIF", "PT_VIRG","VIRGULA", "E","OU","ADD","SUB","MULT","DIV", "COL_ABER", "COL_FEC", "PAREN_ABER", "PAREN_FEC", "CHAVE_ABER", "CHAVE_FEC", "ATRIBUICAO", "IGUALDADE"};
+//accept constants
+const char TAB = '\t';
+const char ENTER = '\n';
+const char SPACE = ' ';
+const char UNDERLINE = '_';
+const char BAR = '/';
+const int INVERTED_BAR = 92;
+const int APOSTROPHE = 39;
+const int QUOTES = 34;
+const int HAS_TOKEN = 2;
+const char* ERROR_PASS_FILE = "Você deve indicar um arquivo para ser analisado. Ex: lexical namefile.cmm";
+const char* ERROR_NOT_FOUND_FILE = "Arquivo não encontrado!";
+const char* ERROR_NUMBER_FLOAT_FORMAT = "Esperado um número após ";
+
+int END_OF_FILE = -1;
+
+FILE *file;
 
 int main(int argc, char **argv){
     if(argc > 1){
@@ -23,19 +47,29 @@ int main(int argc, char **argv){
 
 
 void readFile(char *file_name){
-    FILE *file = fopen(file_name, "r");
+    file = fopen(file_name, "r");
     if(file != NULL){
-        while((actual_char = fgetc(file)) != EOF){
-            if(checkState(actual_char, file) == -1){
-                return;
-            };
-        }
-        if(actual_char == EOF){
-            checkState(actual_char, file);
-        }
+        getToken();
+        prog();
     }else{
         errorMessage(ERROR_NOT_FOUND_FILE);
     }
+}
+
+Token getToken() {
+  int status;
+  while ((actual_char = fgetc(file)) != EOF && (status = checkState(actual_char, file)) != HAS_TOKEN);
+
+  if(actual_char == EOF) {
+    token.type = eOF;
+    printf("END OF FILE");
+  } else if(status == HAS_TOKEN){
+    return token;
+  } else {
+    printf("ERROR na linha %d\n", line_number);
+  }
+
+  return token;
 }
 
 int checkState(char c, FILE *f){
@@ -57,7 +91,8 @@ int checkState(char c, FILE *f){
                 addLetter(c);
                 last_char = c;
             }else if(c == EOF){
-                printToken(eOF, c);
+                STATE = 0;
+                return END_OF_FILE;
             }else if(c == '|'){
                 STATE = 39;
                 addLetter(c);
@@ -78,12 +113,16 @@ int checkState(char c, FILE *f){
                     || c == '(' || c == ')' || c == ';' || c == ','){
                 STATE = 0;
                 addLetter(c);
-                printToken(SN, c);
+                addStringFinal();
+                token.type = SN;
+                strcpy(token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
-            }else{
-                //mensagem de erro
-                printf("Error. Simbolo inválido na linha %d\n", line_number);
-                return -1;
+                return HAS_TOKEN;
+            }else {
+              printf("Symbol '%c' not recognized at line: %d\n",c,line_number);
+              exit(0);
+              return -1;
+
             }
             break;
         case 1:
@@ -93,14 +132,18 @@ int checkState(char c, FILE *f){
             }else{
                 addStringFinal();
                 if(isReservedWord(buffer) != -1){
-                    printToken(PR, c);
+                    token.type = PR;
+                    strcpy(token.pr, reserved_word[isReservedWord(buffer)]);
                 }else{
                     strcpy(identifiers[indetifier_position], buffer);
-                    printToken(ID, c);
+                    token.type = ID;
+                    token.lexem.table_position = indetifier_position;
+                    strcpy(token.lexem.value, buffer);
                     indetifier_position++;
                 }
 
                 cleanBuffer(f, c);
+                return HAS_TOKEN;
             }
             break;
         case 3:
@@ -112,8 +155,10 @@ int checkState(char c, FILE *f){
                 addLetter(c);
             }else{
                 addStringFinal();
-                printToken(INTCON, c);
+                token.type = INTCON;
+                token.iValue = getInteger();
                 cleanBuffer(f, c);
+                return HAS_TOKEN;
             }
             break;
         case 5:
@@ -131,8 +176,11 @@ int checkState(char c, FILE *f){
                 addLetter(c);
             }else{
                 addStringFinal();
-                printToken(REALCON, c);
+                //printToken(REALCON, c);
+                token.type = REALCON;
+                token.dValue = getFloat();
                 cleanBuffer(f, c);
+                return HAS_TOKEN;
             }
             break;
         case 8:
@@ -140,9 +188,11 @@ int checkState(char c, FILE *f){
                 STATE = 9;
                 addLetter(c);
             }else{
-                printToken(SN, last_char);
+                token.type = SN;
+                strcpy(token.signal, signals[isSignal(buffer)]);
                 STATE = 0;
                 justCleanBuffer();
+                return HAS_TOKEN;
             }
             break;
         case 9:
@@ -236,9 +286,11 @@ int checkState(char c, FILE *f){
             break;
         case 26:
             if(c == APOSTROPHE){
-                //addLetter(c);
-                printToken(CARACCON, c);
+                addLetter(c);
+                token.type = CARACCON;
+                strcpy(token.word, buffer);
                 justCleanBuffer();
+                return HAS_TOKEN;
             }else{
                 //mensagem de erro
                 printf("Error. Você esqueceu um \' na linha %d.\n",line_number);
@@ -247,11 +299,13 @@ int checkState(char c, FILE *f){
             break;
         case 28:
             if(c == QUOTES){
-                //addLetter(c);
                 strcpy(literals[literal_position], buffer);
-                printToken(CADEIACON, c);
+                token.type = CADEIACON;
+                token.lexem.table_position = literal_position;
+                strcpy(token.lexem.value, buffer);
                 literal_position++;
                 justCleanBuffer();
+                return HAS_TOKEN;
             } else if(isprint(c) || c == SPACE){
                 addLetter(c);
                 STATE = 28;
@@ -263,18 +317,24 @@ int checkState(char c, FILE *f){
         case 35:
             if(c == '='){
                 addLetter(c);
-                printToken(SN, c);
+                token.type = SN;
+                strcpy(token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
+                return HAS_TOKEN;
             }else{
-                printToken(SN, c);
+                token.type = SN;
+                strcpy(token.signal, signals[isSignal(buffer)]);
                 cleanBuffer(f, c);
+                return HAS_TOKEN;
             }
             break;
         case 38:
             if(c == '&'){
                 addLetter(c);
-                printToken(SN, c);
+                token.type = SN;
+                strcpy(token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
+                return HAS_TOKEN;
             }else{
                 //mensagem de erro
                 printf("Error. Operador & não reconhecido na linha %d.\n", line_number);
@@ -284,8 +344,10 @@ int checkState(char c, FILE *f){
         case 39:
             if(c == '|'){
                 addLetter(c);
-                printToken(SN, c);
+                token.type = SN;
+                strcpy(token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
+                return HAS_TOKEN;
             }else{
                 //mensagem de erro
                 printf("Error. Operador | não reconhecido na linha %d.\n", line_number);
@@ -329,7 +391,7 @@ void errorMessage(const char *error){
     printf("Error: %s\n", error);
 }
 
-void printToken(TokenType tp, char value){
+/*void printToken(TokenType tp, char value){
     switch(tp){
         case ID:
              printf("<ID, %s>\n", identifiers[indetifier_position]);
@@ -356,7 +418,7 @@ void printToken(TokenType tp, char value){
             printf("<CARACCON, %c>\n", buffer[0]);
         break;
     }
-}
+}*/
 
 void addLetter(char c){
     buffer[buffer_position] = c;
@@ -392,4 +454,3 @@ float getFloat(){
     float number = atof(buffer);
     return number;
 }
-
