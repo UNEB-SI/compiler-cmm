@@ -22,7 +22,7 @@ typedef struct {
   };
 } Token;
 
-Token token, next_token;
+Token token, last_token;
 
 //tables
 char identifiers[300][300];

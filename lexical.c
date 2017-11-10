@@ -15,7 +15,7 @@ int literal_position = 0;
 int line_number = 1;
 
 //reserved word
-char *reserved_word[] = {"inteiro", "real", "caracter", "booleano", "se", "senao", "sem retorno", "enquanto", "para", "retorne", "semparam", "verdadeiro", "falso"};
+char *reserved_word[] = {"inteiro", "real", "caracter", "booleano", "se", "senao", "sem retorno", "enquanto", "para", "retorne", "semparam", "verdadeiro", "falso", "prototipo"};
 //accept signals
 char *signals[] = {">","<","<=", ">=", "!", "!=", ";",",", "&&","||","+","-","*","/", "[", "]", "(", ")", "{", "}", "=", "=="};
 char *signalsName[] = {"MAIOR","MENOR","MENOR_QUE", "MAIOR_QUE", "NEG", "DIF", "PT_VIRG","VIRGULA", "E","OU","ADD","SUB","MULT","DIV", "COL_ABER", "COL_FEC", "PAREN_ABER", "PAREN_FEC", "CHAVE_ABER", "CHAVE_FEC", "ATRIBUICAO", "IGUALDADE"};
@@ -62,7 +62,8 @@ Token getToken() {
 
   if(actual_char == EOF) {
     token.type = eOF;
-    printf("END OF FILE");
+    printf("END OF FILE\n");
+    exit(0);
   } else if(status == HAS_TOKEN){
     return token;
   } else {
@@ -359,35 +360,6 @@ int isSignal(char *word){
 void errorMessage(const char *error){
     printf("Error: %s\n", error);
 }
-
-/*void printToken(TokenType tp, char value){
-    switch(tp){
-        case ID:
-             printf("<ID, %s>\n", identifiers[indetifier_position]);
-        break;
-        case PR:
-            printf("<PR, %s>\n", reserved_word[isReservedWord(buffer)]);
-        break;
-        case INTCON:
-            printf("<INTCON, %d>\n", getInteger());
-        break;
-        case REALCON:
-            printf("<REALCON, %.2f>\n", getFloat());
-        break;
-        case CADEIACON:
-            printf("<CADEIACON, %d>\n", literal_position);
-        break;
-        case SN:
-            printf("<SN, %s>\n", signalsName[isSignal(buffer)]);
-        break;
-        case eOF:
-            printf("<EOF, 0>\n");
-        break;
-        case CARACCON:
-            printf("<CARACCON, %s>\n", buffer);
-        break;
-    }
-}*/
 
 void addLetter(char c){
     buffer[buffer_position] = c;
