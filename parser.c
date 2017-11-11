@@ -338,11 +338,11 @@ int cmd() {
                         }
                         return 1;
                  }else{
-                    printf("Erro");
+                    printf("Erro no cmd, expressao incorreta para a condicional falta o ')' para fechar, na linha %d",line_number);
                     exit(1);
                  }
             }else{
-              printf("Erro");
+              printf("Erro no cmd, nao foi encontrado o '(' apos o 'se' da condicional na linha %d",line_number);
               exit(1);
             }
         }else if(token.type == PR && strcmp(token.pr,"enquanto") == 0){ // continua daqui
@@ -355,11 +355,11 @@ int cmd() {
                    cmd();
                    return 1;
                }else{
-                   printf("erro");
+                   printf("erro no cmd, nao foi encontrado o ')' para fechar o comando 'enquanto' na linha %d",line_number);
                    exit(1);
                }
            }else{
-               printf("Erro");
+               printf("erro no cmd, nao foi encontrado o '(' para iniciar o comando 'enquanto' na linha %d",line_number);
                exit(1);
            }
        }else if(token.type == PR && strcmp(token.pr,"para") == 0){
@@ -375,7 +375,7 @@ int cmd() {
                if(token.type == SN && strcmp(token.signal,";") == 0){
                    getToken();
                }else{
-                   printf("Deu erro");
+                   printf("Erro no cmd, esperado ';' para fechar procedimento na linha %d",line_number);
                    exit(1);
                }
 
@@ -387,7 +387,7 @@ int cmd() {
                if(token.type == SN && strcmp(token.signal,";") == 0){
                    getToken();
                }else{
-                   printf("Deu erro");
+                   printf("Erro no cmd, esperado ';' para fechar procedimento de empressao na linha %d",line_number);
                    exit(1);
                }
 
@@ -400,7 +400,7 @@ int cmd() {
                    cmd();
                    return 1;
                }else{
-                   printf("Erro");
+                   printf("Erro no cmd, esperado ')' para fechar na linha %d",line_number);
                    exit(1);
                }
            }
@@ -413,7 +413,7 @@ int cmd() {
            if(token.type == SN && strcmp(token.signal,";") == 0){
                getToken();
            }else{
-               printf("Erro");
+               printf("Erro no cmd, esperado ';' para retornar procedimento na linha %d",line_number);
                exit(1);
            }
        }else if(token.type == SN && strcmp(token.signal,"{") == 0){
@@ -444,11 +444,11 @@ int cmd() {
                         getToken();
                         return 0;
                     }else{
-                        printf("Erro");
+                        printf("Erro no cmd, esperado ';' para finalizar fim criacao de escopos de referencia na linha %d",line_number);
                         exit(1);
                     }
                 }else{
-                    printf("Erro");
+                    printf("Erro no cmd, esperado ';' funcao mal estruturada na linha %d",line_number);
                     exit(1);
                 }
            }else{
@@ -514,7 +514,7 @@ void expr_simp(){
 
 void op_rel(){ // Não acrescenta token novo
     if(token.type != SN && (strcmp(token.signal,"==") != 0 || strcmp(token.signal,"!=") != 0 || strcmp(token.signal,"<=") != 0 || strcmp(token.signal,"<") != 0 || strcmp(token.signal,">") != 0 || strcmp(token.signal,">=") != 0)){
-        printf("Erro");
+        printf("Erro no op_rel, esperado operador logico na linha %d",line_number);
         exit(1);
     }else{
         getToken();
@@ -552,7 +552,7 @@ int fator(){
                         getToken();
                         return 1;
                     }else{
-                        printf("Erro");
+                        printf("Erro na fator, esperado ')' para fechar expressao na linha %d",line_number);
                         exit(1);
                     }
                 }
@@ -584,11 +584,11 @@ void atrib(){
         if(token.type == SN){
             expr();
         }else{
-            printf("Erro");
+            printf("Erro no atrib, esperado um sinal na linha %d",line_number);
             exit(1);
         }
     }else{
-        printf("Erro");
+        printf("Erro no atrib, esperado identificador na linha %d",line_number);
         exit(1);
     }
 }
