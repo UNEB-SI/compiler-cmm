@@ -321,7 +321,18 @@ void types_param(){
 
 // TODO: Implement that shit
 int cmd() {
-  //getToken();
+  if(token.type == PR && strcmp(token.pr, "se") == 0){
+    getToken();
+    if(token.type == SN && strcmp(token.signal,"(") == 0){
+      getToken();
+      expr();
+      if(token.type == SN && strcmp(token.signal,")") == 0){
+         getToken();
+         cmd();
+         return 1;
+      }
+    }
+  }
   return 0;
 }
 
@@ -351,4 +362,84 @@ void opc_p_types() {
     printf("Simbolo não identificado na linha %d\n", line_number);
     exit(-1);
   }
+}
+
+void expr() {
+
+}
+
+void expr_simp(){
+    if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
+        getToken();
+    }
+
+    termo();
+
+    getToken();
+
+    if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0 || strcmp(token.signal,"||") == 0)){
+        while(token.type != SN && (strcmp(token.signal,"+") != 0 || strcmp(token.signal,"-") == 0 || strcmp(token.signal,"||") != 0)){
+            termo();
+            getToken();
+        }
+    }
+}
+
+void op_rel(){ // Não acrescenta token novo
+    if(token.type != SN && (strcmp(token.signal,"==") != 0 || strcmp(token.signal,"!=") != 0 || strcmp(token.signal,"<=") != 0 || strcmp(token.signal,"<") != 0 || strcmp(token.signal,">") != 0 || strcmp(token.signal,">=") != 0)){
+        printf("Erro");
+        exit(1);
+    }else{
+        getToken();
+    }
+}
+
+void termo(){
+    fator();
+    if(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
+        while(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
+            fator();
+            getToken();
+        }
+    }
+}
+
+void fator(){
+    if(token.type == INTCON ||token.type == CADEIACON || token.type == REALCON || token.type == CARACCON || token.type == ID){
+
+        if(token.type == ID){ // nao precisa de erro
+            getToken();
+            if(token.type == SN && strcmp(token.signal,"(") == 0){ //nao precisa de erro
+                getToken();
+                if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
+                    getToken();
+                    if(token.type == SN && strcmp(token.signal,",")){
+                        while(token.type == SN && strcmp(token.signal,",")){
+                            getToken();
+                            expr();
+                        }
+                    }
+
+                    if(token.type == SN && strcmp(token.signal,")")){
+                        getToken();
+                        return;
+                    }
+                }
+            }
+        }
+
+    }else if(token.type == SN && strcmp(token.signal,"(") == 0){
+        getToken();
+        expr();
+
+        if(token.type == SN && strcmp(token.signal,")") == 0){
+            getToken();
+            return;
+        }
+
+    }else if(token.type == SN && strcmp(token.signal,"!") == 0){
+        getToken();
+        fator();
+        return;
+    }
 }

@@ -22,11 +22,13 @@ typedef struct {
   };
 } Token;
 
-Token token, last_token;
+Token token, next_token;
 
 //tables
 char identifiers[300][300];
 char literals[300][300];
+
+int first_time;
 
 //keep the name of signals
 enum signals_name {MAIOR = 0, MENOR, MENOR_IGUAL, MAIOR_IGUAL, NEG, DIF, PT_VIRG, VIRGULA, E, OU, ADD, SUB, MULTI, DIV} SignalName;
@@ -46,5 +48,6 @@ void cleanBuffer(FILE *f, char c);
 int getInteger();
 float getFloat();
 Token getToken();
+int isFirstTime();
 
 #endif // LEXICAL

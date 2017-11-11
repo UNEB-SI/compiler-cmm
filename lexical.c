@@ -14,6 +14,7 @@ int indetifier_position = 0;
 int literal_position = 0;
 int line_number = 1;
 
+int first_time = 0;
 //reserved word
 char *reserved_word[] = {"inteiro", "real", "caracter", "booleano", "se", "senao", "semretorno", "enquanto", "para", "retorne", "semparam", "verdadeiro", "falso", "prototipo"};
 //accept signals
@@ -58,10 +59,24 @@ void readFile(char *file_name){
 
 Token getToken() {
   int status;
+
+  if(first_time > 1) {
+    token = next_token;
+  }
+
+  //if the program is running for a long firstTime
   while ((actual_char = fgetc(file)) != EOF && (status = checkState(actual_char, file)) != HAS_TOKEN);
 
+  if(isFirstTime()) {
+    token = next_token;
+    first_time++;
+    getToken();
+  } else {
+      first_time++;
+  }
+
   if(actual_char == EOF) {
-    token.type = eOF;
+    next_token.type = eOF;
   }
 
   return token;
@@ -109,8 +124,8 @@ int checkState(char c, FILE *f){
                 STATE = 0;
                 addLetter(c);
                 addStringFinal();
-                token.type = SN;
-                strcpy(token.signal, signals[isSignal(buffer)]);
+                next_token.type = SN;
+                strcpy(next_token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
                 return HAS_TOKEN;
             }else {
@@ -126,13 +141,13 @@ int checkState(char c, FILE *f){
             }else{
                 addStringFinal();
                 if(isReservedWord(buffer) != -1){
-                    token.type = PR;
-                    strcpy(token.pr, reserved_word[isReservedWord(buffer)]);
+                    next_token.type = PR;
+                    strcpy(next_token.pr, reserved_word[isReservedWord(buffer)]);
                 }else{
                     strcpy(identifiers[indetifier_position], buffer);
-                    token.type = ID;
-                    token.lexem.table_position = indetifier_position;
-                    strcpy(token.lexem.value, buffer);
+                    next_token.type = ID;
+                    next_token.lexem.table_position = indetifier_position;
+                    strcpy(next_token.lexem.value, buffer);
                     indetifier_position++;
                 }
 
@@ -149,8 +164,8 @@ int checkState(char c, FILE *f){
                 addLetter(c);
             }else{
                 addStringFinal();
-                token.type = INTCON;
-                token.iValue = getInteger();
+                next_token.type = INTCON;
+                next_token.iValue = getInteger();
                 cleanBuffer(f, c);
                 return HAS_TOKEN;
             }
@@ -170,8 +185,8 @@ int checkState(char c, FILE *f){
             }else{
                 addStringFinal();
                 //printToken(REALCON, c);
-                token.type = REALCON;
-                token.dValue = getFloat();
+                next_token.type = REALCON;
+                next_token.dValue = getFloat();
                 cleanBuffer(f, c);
                 return HAS_TOKEN;
             }
@@ -181,8 +196,8 @@ int checkState(char c, FILE *f){
                 STATE = 9;
                 addLetter(c);
             }else{
-                token.type = SN;
-                strcpy(token.signal, signals[isSignal(buffer)]);
+                next_token.type = SN;
+                strcpy(next_token.signal, signals[isSignal(buffer)]);
                 STATE = 0;
                 justCleanBuffer();
                 return HAS_TOKEN;
@@ -253,8 +268,8 @@ int checkState(char c, FILE *f){
         case 26:
             if(c == APOSTROPHE){
                 addLetter(c);
-                token.type = CARACCON;
-                strcpy(token.word, buffer);
+                next_token.type = CARACCON;
+                strcpy(next_token.word, buffer);
                 justCleanBuffer();
                 return HAS_TOKEN;
             }else{
@@ -266,9 +281,9 @@ int checkState(char c, FILE *f){
         case 28:
             if(c == QUOTES){
                 strcpy(literals[literal_position], buffer);
-                token.type = CADEIACON;
-                token.lexem.table_position = literal_position;
-                strcpy(token.lexem.value, buffer);
+                next_token.type = CADEIACON;
+                next_token.lexem.table_position = literal_position;
+                strcpy(next_token.lexem.value, buffer);
                 literal_position++;
                 justCleanBuffer();
                 return HAS_TOKEN;
@@ -283,13 +298,13 @@ int checkState(char c, FILE *f){
         case 35:
             if(c == '='){
                 addLetter(c);
-                token.type = SN;
-                strcpy(token.signal, signals[isSignal(buffer)]);
+                next_token.type = SN;
+                strcpy(next_token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
                 return HAS_TOKEN;
             }else{
-                token.type = SN;
-                strcpy(token.signal, signals[isSignal(buffer)]);
+                next_token.type = SN;
+                strcpy(next_token.signal, signals[isSignal(buffer)]);
                 cleanBuffer(f, c);
                 return HAS_TOKEN;
             }
@@ -297,8 +312,8 @@ int checkState(char c, FILE *f){
         case 38:
             if(c == '&'){
                 addLetter(c);
-                token.type = SN;
-                strcpy(token.signal, signals[isSignal(buffer)]);
+                next_token.type = SN;
+                strcpy(next_token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
                 return HAS_TOKEN;
             }else{
@@ -309,8 +324,8 @@ int checkState(char c, FILE *f){
         case 39:
             if(c == '|'){
                 addLetter(c);
-                token.type = SN;
-                strcpy(token.signal, signals[isSignal(buffer)]);
+                next_token.type = SN;
+                strcpy(next_token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
                 return HAS_TOKEN;
             }else{
@@ -388,4 +403,12 @@ int getInteger(){
 float getFloat(){
     float number = atof(buffer);
     return number;
+}
+
+int isFirstTime() {
+  if (first_time == 0) {
+    return 1;
+  }
+
+  return 0;
 }
