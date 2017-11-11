@@ -62,12 +62,6 @@ Token getToken() {
 
   if(actual_char == EOF) {
     token.type = eOF;
-    printf("END OF FILE\n");
-    exit(0);
-  } else if(status == HAS_TOKEN){
-    return token;
-  } else {
-    printf("ERROR na linha %d\n", line_number);
   }
 
   return token;

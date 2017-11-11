@@ -1,4 +1,2 @@
-inteiro variavel(semparam) {
-    real query = var1 - var2;
-    retorne query;
+inteiro va1r (caracter qq1, inteiro a) {
 }

@@ -9,40 +9,89 @@ void prog() {
     getToken();
     if(token.type == ID){
       getToken();
-      //verify if it is declaration
+      //DEFAULT DECLARATION
       while(token.type == SN && strcmp(token.signal, ",") == 0) {
+        getToken();
+        if(token.type == ID) {
           getToken();
-          if(token.type == ID) {
-            getToken();
-          } else {
-            printf("Identificador esperado na linha %d\n", line_number);
-            exit(-1);
-          }
-          //if it is ; declaration finished
-          if(token.type == SN && strcmp(token.signal, ";") == 0) {
-              printf("Finish Declaration\n");
-              getToken();
-              prog();
-          }
+        } else {
+          printf("Identificador esperado na linha %d\n", line_number);
+          exit(-1);
+        }
+        //if it is ; declaration finish
+        if(token.type == SN && strcmp(token.signal, ";") == 0) {
+          getToken();
+          prog();
+        }
       }
 
       if(token.type == SN && strcmp(token.signal, ";") == 0) {//final of declaration
-            printf("Finish Declaration\n");
-            getToken();
-            prog();
-      } else if(token.type == SN && strcmp(token.signal, "(") == 0) {//if it is a function
-          printf("IM A FUNCTION\n");
+        getToken();
+        prog();
+      }
+      //DEFAULT FUNCTION
+      else if(token.type == SN && strcmp(token.signal, "(") == 0) {//if it is a function
+        getToken();
+        types_param();
+        if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
-          exit(0);//just for now change later
+          if(token.type == SN && strcmp(token.signal, "{") == 0) {
+            getToken();
+            while(isType()){
+              getToken();
+              if(token.type == ID){
+                getToken();
+                //verify if it is declaration
+                while(token.type == SN && strcmp(token.signal, ",") == 0) {
+                  getToken();
+                  if(token.type == ID) {
+                    getToken();
+                  } else {
+                    printf("Identificador esperado na linha %d\n", line_number);
+                    exit(-1);
+                  }
+                }
+                //if it is ; declaration finish
+                if(token.type == SN && strcmp(token.signal, ";") == 0) {
+                  getToken();
+                } else {
+                  printf("';' Esperado na linha %d\n", line_number);
+                  exit(-1);
+                }
+              }
+            }
+            //verify if has commands
+            while(cmd() != 0);
+
+            if(token.type == SN && strcmp(token.signal, "}") == 0) {
+              printf("It Works!\n");
+            } else {
+              printf("'}' Esperado na linha %d\n", line_number);
+              exit(-1);
+            }
+          } else {
+            printf("'{'Esperado na linha %d\n", line_number);
+            exit(-1);
+          }
+        } else {
+          printf("')'Esperado na linha %d\n", line_number);
+          exit(-1);
+        }
+
       } else{
-        printf("JOY SOY: %d\n %s\n", token.type, token.pr);
         printf("Entrada inválida na linha %d\n", line_number);
+        exit(-1);
       }
     } else {
       printf("Esperado identificador na linha %d\n", line_number);
+      exit(-1);
     }
-  } else {
+  } else if(token.type == eOF){
+    printf("fim do arquivo\n");
+    exit(0);
+  } else{
     printf("Entrada inválida na linha %d\n", line_number);
+    exit(-1);
   }
 }
 
@@ -51,8 +100,47 @@ void prog() {
 **/
 int isType() {
   if(token.type == PR && isReservedWord(token.pr) >= 0
-                      && isReservedWord(token.pr) < 4){
+  && isReservedWord(token.pr) < 4){
     return 1;
   }
+  return 0;
+}
+
+void types_param(){
+  if(token.type == PR && strcmp(token.signal, "semparam") == 0) {
+    getToken();
+  } else if(isType()) {
+    getToken();
+    if(token.type == ID){
+      getToken();
+      //verify if it is declaration
+      while(token.type == SN && strcmp(token.signal, ",") == 0) {
+        getToken();
+        if(isType()){
+          getToken();
+          if(token.type == ID) {
+            getToken();
+          }else {
+            printf("Identificador esperado na linha %d\n", line_number);
+            exit(-1);
+          }
+        } else {
+          printf("Erro esperado tipo na linha %d\n", line_number);
+          exit(-1);
+        }
+      }
+    } else {
+      printf("Identificador esperado na linha %d\n", line_number);
+      exit(-1);
+    }
+  } else {
+    printf("Simbolo não identificado na linha %d\n", line_number);
+    exit(-1);
+  }
+}
+
+// TODO: Implement that shit
+int cmd() {
+  //getToken();
   return 0;
 }

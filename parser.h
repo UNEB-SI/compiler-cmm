@@ -6,5 +6,7 @@ extern int line_number;
 
 void prog();
 int isType();
+void types_param();
+int cmd();
 
 #endif // PARSER
