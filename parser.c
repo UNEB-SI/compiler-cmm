@@ -5,6 +5,7 @@
 #include "parser.h"
 
 void prog() {
+  // RECOGNIZE GLOBAL DECLARATION OR DEFAULT FUNCTION BODY
   if(isType()){
     getToken();
     if(token.type == ID){
@@ -86,7 +87,67 @@ void prog() {
       printf("Esperado identificador na linha %d\n", line_number);
       exit(-1);
     }
-  } else if(token.type == eOF){
+  }
+  // RECOGNIZE PROTOTYPE
+  else if(token.type == PR && strcmp(token.pr, "prototipo") == 0) {
+    getToken();
+    if(isType()) {
+      getToken();
+      if(token.type == ID) {
+        getToken();
+        if(token.type == SN && strcmp(token.signal, "(") == 0) {
+          getToken();
+          opc_p_types();
+          if(token.type == SN && strcmp(token.signal, ")") == 0) {
+            getToken();
+            while(token.type == SN && strcmp(token.signal, ",") == 0) {
+              getToken();
+              if(token.type == ID) {
+                getToken();
+                if(token.type == SN && strcmp(token.signal, "(") == 0) {
+                    getToken();
+                    opc_p_types();
+                    if(token.type == SN  && strcmp(token.signal, ")") == 0) {
+                      getToken();
+                    } else {
+                      printf("Esperado ')' na linha %d\n", line_number);
+                      exit(-1);
+                    }
+                } else {
+                  printf("Esperado '(' na linha %d\n", line_number);
+                  exit(-1);
+                }
+              } else {
+                printf("Esperado identificador na linha %d\n", line_number);
+                exit(-1);
+              }
+            }
+            //END OF PROTOTYPE WITH TYPE
+            if (token.type == SN && strcmp(token.signal, ";") == 0) {
+              getToken();
+            } else {
+              printf("';' Esperando na linha %d\n", line_number);
+              exit(-1);
+            }
+          } else {
+            printf("Esperado ')' na linha %d\n", line_number);
+            exit(-1);
+          }
+        } else {
+          printf("Esperado '(' na linha %d\n", line_number);
+          exit(-1);
+        }
+      } else {
+        printf("Esperado identificador na linha %d\n", line_number);
+        exit(-1);
+      }
+    }else {
+      printf("Esperado definição de tipo na linha %d\n", line_number);
+      exit(-1);
+    }
+  }
+
+  else if(token.type == eOF){
     printf("fim do arquivo\n");
     exit(0);
   } else{
@@ -143,4 +204,32 @@ void types_param(){
 int cmd() {
   //getToken();
   return 0;
+}
+
+void opc_p_types() {
+  if(token.type == PR && strcmp(token.signal, "semparam") == 0) {
+    getToken();
+  } else if(isType()) {
+    getToken();
+    if(token.type == ID){
+      getToken();
+    }
+    //verify if it is declaration
+    while(token.type == SN && strcmp(token.signal, ",") == 0) {
+      getToken();
+      //printf("Sai daqui %d\n %s\n", token.type, token.lexem.value);
+      if(isType()){
+        getToken();
+        if(token.type == ID) {
+          getToken();
+        }
+      } else {
+        printf("Erro esperado tipo na linha %d\n", line_number);
+        exit(-1);
+      }
+    }
+  } else {
+    printf("Simbolo não identificado na linha %d\n", line_number);
+    exit(-1);
+  }
 }

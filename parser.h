@@ -8,5 +8,6 @@ void prog();
 int isType();
 void types_param();
 int cmd();
+void opc_p_types();
 
 #endif // PARSER
