@@ -347,7 +347,8 @@ int isLetter(char letter){
 
 
 int isReservedWord(char *word){
-    for(int i = 0; i < (sizeof(reserved_word)/sizeof(*reserved_word)); i++){
+    int i;
+    for(i = 0; i < (sizeof(reserved_word)/sizeof(*reserved_word)); i++){
         if(strcmp(word, reserved_word[i]) == 0){
             return i;
         }
@@ -357,7 +358,8 @@ int isReservedWord(char *word){
 }
 
 int isSignal(char *word){
-    for(int i = 0; i < (sizeof(signals)/sizeof(*signals)); i++){
+    int i;
+    for(i = 0; i < (sizeof(signals)/sizeof(*signals)); i++){
         if(strcmp(word, signals[i]) == 0){
             return i;
         }

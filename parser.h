@@ -15,6 +15,7 @@ void opc_p_types();
 void expr();
 void expr_simp();
 void termo();
-void fator();
+int fator();
 void op_rel();
+void atrib();
 #endif // PARSER

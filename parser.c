@@ -336,7 +336,7 @@ int cmd() {
                                 cmd();
                                 return 1;
                         }
-                        return;
+                        return 1;
                  }else{
                     printf("Erro");
                     exit(1);
@@ -379,7 +379,7 @@ int cmd() {
                    exit(1);
                }
 
-               if(token.type == ID || (token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0) || token.type == INTCON ||token.type == CADEIACON || token.type == REALCON || token.type == CARACCON)){
+               if((token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)) || (token.type == INTCON ||token.type == CADEIACON || token.type == REALCON || token.type == CARACCON) ){
                    expr();
                    getToken();
                }
@@ -459,11 +459,6 @@ int cmd() {
           return 0;
 }
 
-
-
-
-
-
 void opc_p_types() {
   if(token.type == PR && strcmp(token.signal, "semparam") == 0) {
     getToken();
@@ -493,7 +488,11 @@ void opc_p_types() {
 }
 
 void expr() {
-
+    expr_simp();
+    if(token.type == PR){
+        op_rel();
+        expr_simp();
+    }
 }
 
 void expr_simp(){
@@ -532,14 +531,15 @@ void termo(){
     }
 }
 
-void fator(){
-    if(token.type == INTCON ||token.type == CADEIACON || token.type == REALCON || token.type == CARACCON || token.type == ID){
+int fator(){
 
-        if(token.type == ID){ // nao precisa de erro
+    if(token.type == ID && next_token.type == SN && strcmp(next_token.signal,"(") == 0){
+
             getToken();
             if(token.type == SN && strcmp(token.signal,"(") == 0){ //nao precisa de erro
                 getToken();
-                if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
+                if((token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)) || (token.type == INTCON ||token.type == CADEIACON || token.type == REALCON || token.type == CARACCON || token.type == ID)){
+                    expr();
                     getToken();
                     if(token.type == SN && strcmp(token.signal,",")){
                         while(token.type == SN && strcmp(token.signal,",")){
@@ -547,27 +547,48 @@ void fator(){
                             expr();
                         }
                     }
-
+/////////
                     if(token.type == SN && strcmp(token.signal,")")){
                         getToken();
-                        return;
+                        return 1;
+                    }else{
+                        printf("Erro");
+                        exit(1);
                     }
                 }
             }
-        }
 
+    }if(token.type == INTCON ||token.type == CADEIACON || token.type == REALCON || token.type == CARACCON || token.type == ID){
+
+        return 1;
     }else if(token.type == SN && strcmp(token.signal,"(") == 0){
         getToken();
         expr();
 
         if(token.type == SN && strcmp(token.signal,")") == 0){
             getToken();
-            return;
+            return 1;
         }
 
     }else if(token.type == SN && strcmp(token.signal,"!") == 0){
         getToken();
         fator();
-        return;
+        return 1;
+    }
+
+    return 0;
+}
+
+void atrib(){
+    if(token.type == ID){
+        if(token.type == SN){
+            expr();
+        }else{
+            printf("Erro");
+            exit(1);
+        }
+    }else{
+        printf("Erro");
+        exit(1);
     }
 }
