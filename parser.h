@@ -12,10 +12,10 @@ int isType();
 void types_param();
 int cmd();
 void opc_p_types();
-void expr();
+int expr();
 void expr_simp();
 void termo();
-int fator();
-void op_rel();
-void atrib();
+void fator();
+int op_rel();
+int atrib();
 #endif // PARSER

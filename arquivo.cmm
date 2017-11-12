@@ -1,10 +1,13 @@
 inteiro a;
 
-real queijo(inteiro b) {
-}
+/*real queijo(inteiro b) {
+}*/
 
 semretorno bundao (inteiro a) {
+   inteiro b;
+   para(a = b;b < 1; b = b+1) {
 
+   }
 }
 
 prototipo inteiro benjamin (inteiro b, caracter a), aa (inteiro b);

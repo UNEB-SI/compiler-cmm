@@ -62,7 +62,7 @@ void prog() {
               }
             }
             //verify if has commands
-            while(cmd() != 0);
+            cmd();
 
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
               getToken();
@@ -203,7 +203,7 @@ void prog() {
       exit(-1);
     }
   }
-
+  // RECOGNIZE FUNCTION WITHOUT RETURN
   else if(token.type == PR && strcmp(token.pr, "semretorno") == 0) {
     getToken();
     if(token.type == ID) {
@@ -217,7 +217,7 @@ void prog() {
             getToken();
             while(isType()){
               getToken();
-              if(token.type == ID){
+              if(token.type == ID && (next_token.type == SN && (strcmp(next_token.signal, ",") == 0 || strcmp(next_token.signal, ";") == 0))){
                 getToken();
                 //verify if it is declaration
                 while(token.type == SN && strcmp(token.signal, ",") == 0) {
@@ -238,14 +238,12 @@ void prog() {
                 }
               }
             }
-            //verify if has commands
-            while(cmd() != 0);
-
+            cmd();
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
               getToken();
               prog();
             } else {
-              printf("'}' Esperado na linha %d\n", line_number);
+              printf("'}' Esperado na linhaw %d\n", line_number);
               exit(-1);
             }
           } else {
@@ -267,9 +265,10 @@ void prog() {
     }
   }
   else if(token.type == eOF){
-    printf("fim do arquivo\n");
+    printf("Compiled with sucess\n");
     exit(0);
-  } else{
+  }
+  else{
     printf("Entrada inválida na linha %d\n", line_number);
     exit(-1);
   }
@@ -319,196 +318,157 @@ void types_param(){
   }
 }
 
-// TODO: Implement that shit
 int cmd() {
-
-if(token.type == PR && strcmp(token.pr, "se") == 0){
+  //SE EXPRESSION
+  if(token.type == PR && strcmp(token.pr, "se") == 0){
+    getToken();
+    if(token.type == SN && strcmp(token.signal,"(") == 0){
+      getToken();
+      expr();
+      if(token.type == SN && strcmp(token.signal,")") == 0){
+        getToken();
+        if(!cmd()) {
+          printf("Comando esperado na linha %d\n", line_number);
+          exit(-1);
+        }
+        if(token.type == PR && strcmp(token.pr,"senao") == 0){
+          getToken();
+          if(!cmd()) {
+            printf("Comando esperado na linha %d\n", line_number);
+            exit(-1);
+          }
+        }
+        return 1;
+      }else{
+        printf("Erro no cmd, expressao incorreta para a condicional falta o ')' para fechar, na linha %d",line_number);
+        exit(-1);
+      }
+    }else{
+      printf("Erro no cmd, nao foi encontrado o '(' apos o 'se' da condicional na linha %d",line_number);
+      exit(-1);
+    }
+  }
+  //ENQUANTO EXPRESSION
+  else if(token.type == PR && strcmp(token.pr,"enquanto") == 0){
+    getToken();
+    if(token.type == SN && strcmp(token.signal,"(") == 0){
+      getToken();
+      expr();//add return
+      if(token.type == SN && strcmp(token.signal,")") == 0){
+        getToken();
+        if(!cmd()) {
+          printf("Comando esperado na linha %d\n", line_number);
+          exit(-1);
+        }
+        return 1;
+      }else{
+        printf("erro no cmd, nao foi encontrado o ')' para fechar o comando 'enquanto' na linha %d",line_number);
+        exit(1);
+      }
+    }else{
+      printf("erro no cmd, nao foi encontrado o '(' para iniciar o comando 'enquanto' na linha %d",line_number);
+      exit(1);
+    }
+  }
+  // PARA EXPRESSION
+  else if(token.type == PR && strcmp(token.pr,"para") == 0){
+    getToken();
+    if(token.type == SN && strcmp(token.signal,"(") == 0){
+      getToken();
+      atrib();
+      if(token.type == SN && strcmp(token.signal,";") == 0){
+        getToken();
+        expr();
+        if(token.type == SN && strcmp(token.signal,";") == 0){
+          getToken();
+          atrib();
+          if(token.type == SN && strcmp(token.signal,")") == 0){
             getToken();
-            if(token.type == SN && strcmp(token.signal,"(") == 0){
-                  getToken();
-                  expr();
-                  if(token.type == SN && strcmp(token.signal,")") == 0){
-                     getToken();
-                     cmd();
-                     getToken();
-                        if(token.type == PR && strcmp(token.pr,"senao") == 0){
-                                getToken();
-                                cmd();
-                        }
-                        return 1;
-                 }else{
-                    printf("Erro no cmd, expressao incorreta para a condicional falta o ')' para fechar, na linha %d",line_number);
-                    exit(1);
-                 }
-            }else{
-              printf("Erro no cmd, nao foi encontrado o '(' apos o 'se' da condicional na linha %d",line_number);
-              exit(1);
+            if(!cmd()){
+              printf("Comando esperado na linha %d\n ", line_number);
+              exit(-1);
             }
-      }else if(token.type == SN && strcmp(token.signal,"{") == 0){
-           getToken();
-           while(token.type != SN && strcmp(token.signal,"}") != 0){
-            //   printf("token novo: %s",token.);
-               cmd();
-               getToken();
-
-           }
-
-           return 1;
-
-      }else if(token.type == ID){
-                    atrib();
-                    if(token.type == SN && strcmp(token.signal,";") == 0){
-                        getToken();
-                    }else{
-                        printf("Erro no cmd, esperado ';', psra finalizar atribuicao");
-                        exit(1);
-                    }
-                    return 1;
-                 }
-   /* if(token.type == PR && strcmp(token.pr, "se") == 0){
-            getToken();
-            if(token.type == SN && strcmp(token.signal,"(") == 0){
-                  getToken();
-                  expr();
-                  if(token.type == SN && strcmp(token.signal,")") == 0){
-                     getToken();
-                     cmd();
-                     getToken();
-                        if(token.type == PR && strcmp(token.pr,"senao") == 0){
-                                getToken();
-                                cmd();
-                        }
-                        return 1;
-                 }else{
-                    printf("Erro no cmd, expressao incorreta para a condicional falta o ')' para fechar, na linha %d",line_number);
-                    exit(1);
-                 }
-            }else{
-              printf("Erro no cmd, nao foi encontrado o '(' apos o 'se' da condicional na linha %d",line_number);
-              exit(1);
-            }
-        }else if(token.type == PR && strcmp(token.pr,"enquanto") == 0){ // continua daqui
-           getToken();
-           if(token.type == SN && strcmp(token.signal,"(") == 0){
-                   getToken();
-                   expr();
-               if(token.type == SN && strcmp(token.signal,")") == 0){
-                   getToken();
-                   cmd();
-                   return 1;
-               }else{
-                   printf("erro no cmd, nao foi encontrado o ')' para fechar o comando 'enquanto' na linha %d",line_number);
-                   exit(1);
-               }
-           }else{
-               printf("erro no cmd, nao foi encontrado o '(' para iniciar o comando 'enquanto' na linha %d",line_number);
-               exit(1);
-           }
-       }else if(token.type == PR && strcmp(token.pr,"para") == 0){
-           getToken();
-           if(token.type == SN && strcmp(token.signal,"(") == 0){
-               getToken();
-
-               if(token.type == ID){
-                   atrib();
-                   getToken();
-               }
-
-               if(token.type == SN && strcmp(token.signal,";") == 0){
-                   getToken();
-               }else{
-                   printf("Erro no cmd, esperado ';' para fechar procedimento na linha %d",line_number);
-                   exit(1);
-               }
-
-               if((token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)) || (token.type == INTCON ||token.type == CADEIACON || token.type == REALCON || token.type == CARACCON) ){
-                   expr();
-                   getToken();
-               }
-
-               if(token.type == SN && strcmp(token.signal,";") == 0){
-                   getToken();
-               }else{
-                   printf("Erro no cmd, esperado ';' para fechar procedimento de empressao na linha %d",line_number);
-                   exit(1);
-               }
-
-               if(token.type == ID){
-                   atrib();
-                   getToken();
-               }
-
-               if(token.type == SN && strcmp(token.signal,")") == 0){
-                   cmd();
-                   return 1;
-               }else{
-                   printf("Erro no cmd, esperado ')' para fechar na linha %d",line_number);
-                   exit(1);
-               }
-           }
-       }else if(token.type == PR && strcmp(token.pr,"retorne") == 0){
-           getToken();
-           if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
-               expr();
-           }
-
-           if(token.type == SN && strcmp(token.signal,";") == 0){
-               getToken();
-           }else{
-               printf("Erro no cmd, esperado ';' para retornar procedimento na linha %d",line_number);
-               exit(1);
-           }
-       }else if(token.type == SN && strcmp(token.signal,"{") == 0){
-           getToken();
-           while(token.type != SN && strcmp(token.signal,"}") != 0){
-            //   printf("token novo: %s",token.);
-               cmd();
-               getToken();
-
-           }
-           return 1;
-       }else if(token.type == SN && strcmp(token.signal,";") == 0){
-           getToken();
-       }else if(token.type == ID && strcmp(next_token.signal,"(")){
-           getToken();
-           if(token.type == SN && strcmp(next_token.signal,"(")){
-                getToken();
-                if((token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)) || (token.type == INTCON ||token.type == CADEIACON || token.type == REALCON || token.type == CARACCON || token.type == ID)){
-                    expr();
-                    getToken();
-                    while(token.type != SN && strcmp(token.signal,",") == 0){
-                        expr();
-                        getToken();
-                    }
-                }
-                printf("ggyygy token %s",token.signal);
-                if(token.type == SN && strcmp(token.signal,")") == 0){
-                    getToken();
-                    if(token.type == SN && strcmp(token.signal,";") == 0){
-                        getToken();
-                        return 0;
-                    }else{
-                        printf("Erro no cmd, esperado ';' para finalizar fim criacao de escopos de referencia na linha %d",line_number);
-                        exit(1);
-                    }
-                }else{
-                    printf("gygygy Erro no cmd, esperado ')' funcao mal estruturada na linha %d",line_number);
-                    exit(1);
-                }
-           }else{
-            printf("Erro");
-            exit(1);
-           }
-       }else{
-            atrib();
-            if(token.type == SN && strcmp(token.signal,";") == 0){
-                return 1;
-            }else{
-                printf("Erro no cmd, esperado ';', psra finalizar atribuicao");
-                exit(1);
-            }
-       }
-          return 0;*/
+            return 1;
+          }else{
+            printf("Erro no cmd, esperado ')' para fechar na linha %d\n",line_number);
+            exit(-1);
+          }
+        }else{
+          printf("Erro no cmd, esperado ';' na linha %d\n",line_number);
+          exit(-1);
+        }
+      }else{
+        printf("Erro no cmd, esperado ';'  na linha %d\n",line_number);
+        exit(-1);
+      }
+    } else {
+      printf("Erro no cmd, esperado '('  na linha %d\n",line_number);
+      exit(-1);
+    }
+  }
+  // RETORNE EXPRESSION
+  else if(token.type == PR && strcmp(token.pr,"retorne") == 0){
+    getToken();
+    expr();
+    if(token.type == SN && strcmp(token.signal,";") == 0){
+      getToken();
+    }else{
+      printf("Erro no cmd, esperado ';' para retornar procedimento na linha %d", line_number);
+      exit(-1);
+    }
+  }
+  // KEY EXPRESSION
+  else if(token.type == SN && strcmp(token.signal,"{") == 0){
+    getToken();
+    while(cmd());
+    if(token.type == SN && strcmp(token.signal,"}") == 0) {
+      getToken();
+      return 1;
+    } else {
+      printf("'}' esperada na linha %d\n", line_number);
+      exit(-1);
+    }
+  }
+  // ; EXPRESSION
+  else if(token.type == SN && strcmp(token.signal,";") == 0){
+    getToken();
+  }
+  // FUNCTION CALL
+  else if(token.type == ID && strcmp(next_token.signal,"(") == 0){
+    getToken();
+    getToken();
+    expr();
+    while(token.type == SN && strcmp(token.signal, ",") == 0) {
+      getToken();
+      expr();
+    }
+    if(token.type == SN && strcmp(token.signal, ")") == 0){
+        getToken();
+        if(token.type == SN && strcmp(token.signal, ";") == 0){
+          getToken();
+          return 1;
+        } else {
+          printf("';' esperado na linha %d\n", line_number);
+          exit(-1);
+        }
+    } else {
+      printf("')' esperado na linha %d\n", line_number);
+      exit(-1);
+    }
+  }
+  // ATRIB EXPRESSION
+  else if(atrib()){
+    if(token.type == SN && strcmp(token.signal, ";") == 0) {
+      getToken();
+      return 1;
+    } else {
+      printf("';' esperado na linha %d\n", line_number);
+      exit(-1);
+    }
+  }
+  else{
+    return 0;
+  }
 }
 
 void opc_p_types() {
@@ -539,111 +499,93 @@ void opc_p_types() {
   }
 }
 
-void expr() {
-    expr_simp();
-    if(token.type == SN && (strcmp(token.signal,"==") == 0 || strcmp(token.signal,"!=") == 0 || strcmp(token.signal,"<=") == 0 || strcmp(token.signal,"<") == 0 || strcmp(token.signal,">") == 0 || strcmp(token.signal,">=") == 0)){
-        op_rel();
-        expr_simp();
-    }
+int expr() {
+  expr_simp();
+  if(op_rel()){
+      expr_simp();
+  }
 }
 
 void expr_simp(){
-    if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
-        getToken();
-}
-
-    termo();
-
+  if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
     getToken();
+  }
 
-    if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0 || strcmp(token.signal,"||") == 0)){
-        while(token.type != SN && (strcmp(token.signal,"+") != 0 || strcmp(token.signal,"-") == 0 || strcmp(token.signal,"||") != 0)){
-            termo();
-            getToken();
-        }
-    }
+  termo();
+
+  while(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0 || strcmp(token.signal,"||") == 0)){
+      getToken();
+      termo();
+  }
 }
 
-void op_rel(){ // Não acrescenta token novo
-    if(token.type != SN && (strcmp(token.signal,"==") != 0 || strcmp(token.signal,"!=") != 0 || strcmp(token.signal,"<=") != 0 || strcmp(token.signal,"<") != 0 || strcmp(token.signal,">") != 0 || strcmp(token.signal,">=") != 0)){
-        printf("Erro no op_rel, esperado operador logico na linha %d",line_number);
-        exit(1);
-    }else{
-        getToken();
-    }
+int op_rel(){ // Não acrescenta token novo
+  if(token.type == SN && (strcmp(token.signal,"==") == 0 || strcmp(token.signal,"!=") == 0 || strcmp(token.signal,"<=") == 0 || strcmp(token.signal,"<") == 0 || strcmp(token.signal,">") == 0 || strcmp(token.signal,">=") == 0)){
+    getToken();
+    return 1;
+  }
+  return 0;
 }
 
 void termo(){
-    fator();
-    if(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
-        while(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
-            fator();
-            getToken();
-        }
-    }
+  fator();
+  while(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
+      getToken();
+      fator();
+  }
 }
 
-int fator(){
-
-    if(token.type == ID && next_token.type == SN && strcmp(next_token.signal,"(") == 0){
-
-            getToken();
-            if(token.type == SN && strcmp(token.signal,"(") == 0){ //nao precisa de erro
-                getToken();
-                if((token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)) || (token.type == INTCON ||token.type == CADEIACON || token.type == REALCON || token.type == CARACCON || token.type == ID)){
-                    expr();
-                    getToken();
-                    if(token.type == SN && strcmp(token.signal,",")){
-                        while(token.type == SN && strcmp(token.signal,",")){
-                            getToken();
-                            expr();
-                        }
-                    }
-/////////
-                    if(token.type == SN && strcmp(token.signal,")")){
-                        getToken();
-                        return 1;
-                    }else{
-                        printf("Erro na fator, esperado ')' para fechar expressao na linha %d",line_number);
-                        exit(1);
-                    }
-                }
-            }
-
-    }if(token.type == INTCON ||token.type == CADEIACON || token.type == REALCON || token.type == CARACCON || token.type == ID){
-
-        return 1;
-    }else if(token.type == SN && strcmp(token.signal,"(") == 0){
+void fator(){
+  // FUNCTION CALL
+  if(token.type == ID && next_token.type == SN && strcmp(next_token.signal,"(") == 0) {
+    getToken();
+    expr();
+    while(token.type == SN && strcmp(token.signal,",") == 0){
         getToken();
         expr();
-
-        if(token.type == SN && strcmp(token.signal,")") == 0){
-            getToken();
-            return 1;
-        }
-
-    }else if(token.type == SN && strcmp(token.signal,"!") == 0){
-        getToken();
-        fator();
-        return 1;
     }
-
-    return 0;
+    //close function
+    if(token.type == SN && strcmp(token.signal,")") == 0){
+      getToken();
+    }else{
+      printf("Erro na fator, esperado ')' para fechar expressao na linha %d",line_number);
+      exit(-1);
+    }
+  }
+  // CONSTANTS TYPE
+  else if(token.type == INTCON || token.type == REALCON || token.type == CARACCON || token.type == ID){
+    getToken();
+  }
+  // EXPRESSION BETWEEN PARENTHESES
+  else if(token.type == SN && strcmp(token.signal, "(") == 0) {
+    getToken();
+    expr();
+    if(token.type == SN && strcmp(token.signal, ")") == 0) {
+      getToken();
+    } else {
+      printf("')' Esperado na linha %d\n", line_number);
+      exit(-1);
+    }
+  }
+  //NEGATION OF A FATOR
+  else if(token.type == SN && strcmp(token.signal,"!") == 0){
+    getToken();
+    fator();
+  }
 }
 
-void atrib(){
-//    printf("token: %s",token.);
-    if(token.type == ID){
-            getToken();
-        if(token.type == SN && strcmp(token.signal,"=") == 0){
-            getToken();
-            expr();
-        }else{
-            printf("Erro no atrib, esperado um sinal na linha %d",line_number);
-            exit(1);
-        }
+int atrib(){
+  if(token.type == ID){
+    getToken();
+    if(token.type == SN && strcmp(token.signal,"=") == 0){
+      getToken();
+      expr();
+      return 1;
     }else{
-        printf("Erro no atrib, esperado identificador na linha %d",line_number);
-        exit(1);
+      printf("Erro no atrib, esperado um sinal na linha %d",line_number);
+      exit(-1);
     }
+  }else {
+    return 0;
+  }
 }
