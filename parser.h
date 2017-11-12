@@ -6,7 +6,7 @@ extern int line_number;
 
 int firstTime;
 
-int isFirstTime();
+//int isFirstTime();
 void prog();
 int isType();
 void types_param();
