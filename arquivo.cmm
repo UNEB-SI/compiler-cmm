@@ -6,7 +6,12 @@ inteiro a;
 semretorno bundao (inteiro a) {
    inteiro b;
    para(a = b;b < 1; b = b+1) {
-
+            se (a > b) {
+                benjamin();
+                se (a > b) {
+                    benjamin();
+                
+            }
    }
 
    se (a > b) {
