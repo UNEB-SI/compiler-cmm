@@ -8,6 +8,10 @@ semretorno bundao (inteiro a) {
    para(a = b;b < 1; b = b+1) {
 
    }
+
+   se (a > b) {
+    benjamin();
+   }
 }
 
 prototipo inteiro benjamin (inteiro b, caracter a), aa (inteiro b);

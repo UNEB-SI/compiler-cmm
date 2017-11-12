@@ -62,7 +62,7 @@ void prog() {
               }
             }
             //verify if has commands
-            cmd();
+            while(cmd());
 
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
               getToken();
@@ -238,7 +238,7 @@ void prog() {
                 }
               }
             }
-            cmd();
+            while(cmd());
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
               getToken();
               prog();

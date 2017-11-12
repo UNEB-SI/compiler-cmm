@@ -23,3 +23,10 @@
 
 1510509384 /home/jose/Documents/projects/school/compiler/parser.h
 
+1510522290 source:/home/jose/Documents/projects/school/compiler/parser.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+
