@@ -10,7 +10,7 @@ semretorno bundao (inteiro a) {
                 benjamin();
                 se (a > b) {
                     benjamin();
-                
+                }
             }
    }
 

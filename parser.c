@@ -243,7 +243,7 @@ void prog() {
               getToken();
               prog();
             } else {
-              printf("'}' Esperado na linhaw %d\n", line_number);
+              printf("'}' Esperado na linha %d\n", line_number);
               exit(-1);
             }
           } else {
