@@ -4,16 +4,30 @@
 #include "lexical.h"
 #include "parser.h"
 
+int cont_st = 0;
+
+
 void prog() {
   // RECOGNIZE GLOBAL DECLARATION OR DEFAULT FUNCTION BODY
+
   if(isType()){
+
+    strcpy(sb_token.type,token.pr);
     getToken();
     if(token.type == ID){
-      getToken();
+
+        strcpy(sb_token.name,token.lexem.value);
+        getToken();
       //DEFAULT DECLARATION
       while(token.type == SN && strcmp(token.signal, ",") == 0) {
+        sb_token.scope = GLOBAL;
+        sb_token.cat = VAR;
+        sb_token.zumbi = 0;
+       // insert_symbol();
         getToken();
         if(token.type == ID) {
+          strcpy(sb_token.name,token.lexem.value);
+          insert_symbol();
           getToken();
         } else {
           printf("Identificador esperado na linha %d\n", line_number);
@@ -278,8 +292,7 @@ void prog() {
 * Verify the interval between reserved word to know if it is a type definition
 **/
 int isType() {
-  if(token.type == PR && isReservedWord(token.pr) >= 0
-  && isReservedWord(token.pr) < 4){
+  if(token.type == PR && isReservedWord(token.pr) >= 0 && isReservedWord(token.pr) < 4){
     return 1;
   }
   return 0;
@@ -466,9 +479,9 @@ int cmd() {
       exit(-1);
     }
   }
-  else{
+
     return 0;
-  }
+
 }
 
 void opc_p_types() {
@@ -499,11 +512,12 @@ void opc_p_types() {
   }
 }
 
-int expr() {
+void expr() {
   expr_simp();
   if(op_rel()){
       expr_simp();
   }
+
 }
 
 void expr_simp(){
@@ -588,4 +602,14 @@ int atrib(){
   }else {
     return 0;
   }
+}
+//-----------------------------------------------------
+
+void insert_symbol(){
+    symbol_table[cont_st] = sb_token;
+    cont_st++;
+    printf_symbol();
+}
+void printf_symbol(){
+    printf("name: %s zumbi: %d categoria: %d tipo: %s escopo: %d\n",sb_token.name,sb_token.zumbi,sb_token.cat,sb_token.type,sb_token.scope);
 }
