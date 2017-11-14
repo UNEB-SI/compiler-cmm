@@ -37,6 +37,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="lexical.h" />
+		<Unit filename="parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="parser.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
