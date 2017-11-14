@@ -33,6 +33,8 @@ void printf_symbol();
 void verifyRedeclaration(symbol sb);
 //-------------------
 
+//int firstTime;
+void sintatic_erro(int flag);
 void prog();
 int isType();
 void types_param();
