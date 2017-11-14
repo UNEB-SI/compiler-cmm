@@ -1,23 +1,23 @@
 inteiro a;
 
-/*real queijo(inteiro b) {
+/*real funcao(inteiro b) {
 }*/
 
-semretorno bundao (inteiro a) {
+prototipo inteiro va_a_praia2 (inteiro b, caracter a), aa (inteiro b);
+prototipo semretorno  soneca(inteiro b, caracter a), q(semparam);
+
+semretorno calcule (inteiro a) {
    inteiro b;
    para(a = b;b < 1; b = b+1) {
             se (a > b) {
-                benjamin();;;;
+                va_a_praia();
                 se (a > b) {
-                    benjamin();
+                    dormir();
                 }
             }
    }
 
    se (a > b) {
-    benjamin();
+    va_a_praia();
    }
 }
-
-prototipo inteiro benjamin (inteiro b, caracter a), aa (inteiro b);
-prototipo semretorno benjamin (inteiro b, caracter a), q(semparam);
