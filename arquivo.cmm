@@ -1,23 +1,23 @@
-inteiro a;
+/* Sequencia de Fibonacci em Cmm - Recursivo */
 
-/*real queijo(inteiro b) {
-}*/
+prototipo inteiro fibonacci(inteiro);
 
-semretorno bundao (inteiro a) {
-   inteiro b;
-   para(a = b;b < 1; b = b+1) {
-            se (a > b) {
-                benjamin();
-                se (a > b) {
-                    benjamin();
-                }
-            }
-   }
+semretorno principal(semparam) {
 
-   se (a > b) {
-    benjamin();
-   }
+     inteiro i, n;
+
+     imprima("Digite a qtd de termos da sequencia: ");
+     leia(n);
+     imprima("A sequencia de Fibonacci solicitada eh: ");
+     imprima(enter);
+     para (i=0; i<n; i=i+1)
+            imprima(fibonacci(i+1));
+     retorne;
 }
 
-prototipo inteiro benjamin (inteiro b, caracter a), aa (inteiro b);
-prototipo semretorno benjamin (inteiro b, caracter a), q(semparam);
+inteiro fibbonaci(inteiro num) {
+
+      se ((num==1) || (num==2)) retorne 1;
+      senao
+             retorne (fibonacci(num-1)+fibonacci(num-2));
+}

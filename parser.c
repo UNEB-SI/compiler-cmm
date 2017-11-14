@@ -452,6 +452,7 @@ int cmd() {
           exit(-1);
         }
     } else {
+      printf("Sou %d %s\n", token.type, token.signal);
       printf("')' esperado na linha %d\n", line_number);
       exit(-1);
     }
@@ -539,6 +540,7 @@ void fator(){
   // FUNCTION CALL
   if(token.type == ID && next_token.type == SN && strcmp(next_token.signal,"(") == 0) {
     getToken();
+    getToken();
     expr();
     while(token.type == SN && strcmp(token.signal,",") == 0){
         getToken();
@@ -553,7 +555,7 @@ void fator(){
     }
   }
   // CONSTANTS TYPE
-  else if(token.type == INTCON || token.type == REALCON || token.type == CARACCON || token.type == ID){
+  else if(token.type == INTCON || token.type == REALCON || token.type == CARACCON || token.type  == CADEIACON || token.type == ID){
     getToken();
   }
   // EXPRESSION BETWEEN PARENTHESES
