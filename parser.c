@@ -86,6 +86,9 @@ void prog() {
 
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
               getToken();
+              // keep all parameters and delete local variables
+              insert_zombie();
+              exclude_local_symbol();
               prog();
             } else {
               printf("'}' Esperado na linha %d\n", line_number);
@@ -275,6 +278,9 @@ void prog() {
             while(cmd());
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
               getToken();
+              // keep all parameters and delete local variables
+              insert_zombie();
+              exclude_local_symbol();
               prog();
             } else {
               printf("'}' Esperado na linha %d\n", line_number);
@@ -644,13 +650,42 @@ int atrib(){
 
 void insert_symbol(){
     symbol_table[cont_st] = sb_token;
-    printf("This: %s %d\n", symbol_table[cont_st].name, symbol_table[cont_st].cat);
     cont_st++;
 }
 
 void printf_symbol(){
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    printf("ID: %s Zombie: %d\n", symbol_table[i].name,  symbol_table[i].zumbi);
+    i++;
+  }
+}
+
+void insert_zombie(){
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if(symbol_table[i].cat == PARAN) {
+      symbol_table[i].zumbi = 1;
+    }
+    i++;
+  }
+}
+
+void exclude_local_symbol(){
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if(symbol_table[i].scope == LOCAL && !symbol_table[i].zumbi) {
+      refix_array(i);
+    } else {
+      i++;
+    }
+  }
+  printf_symbol();
+}
+
+void refix_array(int index) {
   int i;
-  for(i = 0; i < (sizeof(symbol_table)/sizeof(*symbol_table)); i++){
-      printf("ID: %s Type: %d\n", symbol_table[i].name,  symbol_table[i].cat);
+  for(i = index; i < (sizeof(symbol_table)/sizeof(*symbol_table)) - 1; i++){
+    symbol_table[i] = symbol_table[i+1];
   }
 }

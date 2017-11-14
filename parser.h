@@ -26,8 +26,11 @@ int cont_st;
 
 //-------------------
 void insert_symbol();
-void delete_symbol();
+void exclude_local_symbol();
+void refix_array(int index);
+void insert_zombie();
 void printf_symbol();
+int isRedeclaration();
 //-------------------
 
 void prog();
