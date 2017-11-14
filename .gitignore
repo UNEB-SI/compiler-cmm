@@ -4,4 +4,6 @@
 *.ko
 *.obj
 *.elf
+obj
+lexicalAnalizer.depend
 teste*
