@@ -9,21 +9,21 @@ int cont_st = 0;
 
 void prog() {
   // RECOGNIZE GLOBAL DECLARATION OR DEFAULT FUNCTION BODY
-
   if(isType()){
-
-    strcpy(sb_token.type,token.pr);
     getToken();
+    strcpy(sb_token.type, token.pr);
+    sb_token.scope = GLOBAL;
+    strcpy(sb_token.name,token.lexem.value);
+    sb_token.zumbi = 0;// we gonna set the cat later
     if(token.type == ID){
-
-        strcpy(sb_token.name,token.lexem.value);
-        getToken();
+      getToken();
+      //just for symbol table
+      if ((token.type == SN && strcmp(token.signal, ";") == 0) || (token.type == SN && strcmp(token.signal, ",") == 0)) {
+        sb_token.cat = VAR;
+        insert_symbol();
+      }
       //DEFAULT DECLARATION
       while(token.type == SN && strcmp(token.signal, ",") == 0) {
-        sb_token.scope = GLOBAL;
-        sb_token.cat = VAR;
-        sb_token.zumbi = 0;
-       // insert_symbol();
         getToken();
         if(token.type == ID) {
           strcpy(sb_token.name,token.lexem.value);
@@ -33,13 +33,7 @@ void prog() {
           printf("Identificador esperado na linha %d\n", line_number);
           exit(-1);
         }
-        //if it is ; declaration finish
-        if(token.type == SN && strcmp(token.signal, ";") == 0) {
-          getToken();
-          prog();
-        }
       }
-
       if(token.type == SN && strcmp(token.signal, ";") == 0) {//final of declaration
         getToken();
         prog();
@@ -47,19 +41,31 @@ void prog() {
       //DEFAULT FUNCTION
       else if(token.type == SN && strcmp(token.signal, "(") == 0) {//if it is a function
         getToken();
+        sb_token.cat = FUNC;
+        insert_symbol();
         types_param();
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
           if(token.type == SN && strcmp(token.signal, "{") == 0) {
             getToken();
             while(isType()){
+              strcpy(sb_token.type, token.pr);
               getToken();
+              //symbol table
+              sb_token.scope = LOCAL;
+              strcpy(sb_token.name, token.lexem.value);
+              sb_token.zumbi = 0;// we gonna set the cat later
+              sb_token.cat = VAR;
+
               if(token.type == ID){
                 getToken();
+                insert_symbol();
                 //verify if it is declaration
                 while(token.type == SN && strcmp(token.signal, ",") == 0) {
                   getToken();
                   if(token.type == ID) {
+                    strcpy(sb_token.name,token.lexem.value);
+                    insert_symbol();
                     getToken();
                   } else {
                     printf("Identificador esperado na linha %d\n", line_number);
@@ -219,8 +225,14 @@ void prog() {
   }
   // RECOGNIZE FUNCTION WITHOUT RETURN
   else if(token.type == PR && strcmp(token.pr, "semretorno") == 0) {
+    strcpy(sb_token.type, token.pr);
     getToken();
+    sb_token.scope = GLOBAL;
+    strcpy(sb_token.name,token.lexem.value);
+    sb_token.zumbi = 0;// we gonna set the cat later
     if(token.type == ID) {
+      sb_token.cat = FUNC;
+      insert_symbol();
       getToken();
       if(token.type == SN && strcmp(token.signal, "(") == 0) {//if it is a function
         getToken();
@@ -230,13 +242,21 @@ void prog() {
           if(token.type == SN && strcmp(token.signal, "{") == 0) {
             getToken();
             while(isType()){
+              strcpy(sb_token.type, token.pr);
               getToken();
               if(token.type == ID && (next_token.type == SN && (strcmp(next_token.signal, ",") == 0 || strcmp(next_token.signal, ";") == 0))){
+                sb_token.scope = LOCAL;
+                strcpy(sb_token.name, token.lexem.value);
+                sb_token.zumbi = 0;// we gonna set the cat later
+                sb_token.cat = VAR;
+                insert_symbol();
                 getToken();
                 //verify if it is declaration
                 while(token.type == SN && strcmp(token.signal, ",") == 0) {
                   getToken();
                   if(token.type == ID) {
+                    strcpy(sb_token.name, token.lexem.value);
+                    insert_symbol();
                     getToken();
                   } else {
                     printf("Identificador esperado na linha %d\n", line_number);
@@ -302,16 +322,30 @@ void types_param(){
   if(token.type == PR && strcmp(token.signal, "semparam") == 0) {
     getToken();
   } else if(isType()) {
+    strcpy(sb_token.type, token.pr);
     getToken();
+    sb_token.scope = LOCAL;
+    sb_token.cat = PARAN;
+    strcpy(sb_token.name,token.lexem.value);
+    sb_token.zumbi = 0;// we gonna set the cat later
     if(token.type == ID){
       getToken();
+      sb_token.cat = PARAN;
+      insert_symbol();
       //verify if it is declaration
       while(token.type == SN && strcmp(token.signal, ",") == 0) {
         getToken();
         if(isType()){
           getToken();
+          strcpy(sb_token.type, token.pr);
+          sb_token.scope = LOCAL;
+          sb_token.cat = PARAN;
+          strcpy(sb_token.name,token.lexem.value);
+          sb_token.zumbi = 0;// we gonna set the cat later
           if(token.type == ID) {
             getToken();
+            sb_token.cat = PARAN;
+            insert_symbol();
           }else {
             printf("Identificador esperado na linha %d\n", line_number);
             exit(-1);
@@ -489,6 +523,7 @@ void opc_p_types() {
   if(token.type == PR && strcmp(token.signal, "semparam") == 0) {
     getToken();
   } else if(isType()) {
+    strcpy(sb_token.type, token.pr);
     getToken();
     if(token.type == ID){
       getToken();
@@ -609,9 +644,13 @@ int atrib(){
 
 void insert_symbol(){
     symbol_table[cont_st] = sb_token;
+    printf("This: %s %d\n", symbol_table[cont_st].name, symbol_table[cont_st].cat);
     cont_st++;
-    printf_symbol();
 }
+
 void printf_symbol(){
-    printf("name: %s zumbi: %d categoria: %d tipo: %s escopo: %d\n",sb_token.name,sb_token.zumbi,sb_token.cat,sb_token.type,sb_token.scope);
+  int i;
+  for(i = 0; i < (sizeof(symbol_table)/sizeof(*symbol_table)); i++){
+      printf("ID: %s Type: %d\n", symbol_table[i].name,  symbol_table[i].cat);
+  }
 }

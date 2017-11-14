@@ -1,23 +1,7 @@
-inteiro a;
+real bunda, a, b , decolar;
 
-/*real funcao(inteiro b) {
-}*/
-
-prototipo inteiro va_a_praia2 (inteiro b, caracter a), aa (inteiro b);
-prototipo semretorno  soneca(inteiro b, caracter a), q(semparam);
-
-semretorno calcule (inteiro a) {
-   inteiro b;
-   para(a = b;b < 1; b = b+1) {
-            se (a > b) {
-                va_a_praia();
-                se (a > b) {
-                    dormir();
-                }
-            }
-   }
-
-   se (a > b) {
-    va_a_praia();
-   }
+semretorno gol(real b, inteiro q) {
+  inteiro b, q, t, u , v, x;
+  caracter queijo;
+  real mortadela;
 }

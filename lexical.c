@@ -52,6 +52,7 @@ void readFile(char *file_name){
     if(file != NULL){
         getToken();
         prog();
+        printf_symbol();//REMOVE
     }else{
         errorMessage(ERROR_NOT_FOUND_FILE);
     }
