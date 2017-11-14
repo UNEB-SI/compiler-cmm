@@ -30,3 +30,22 @@
 	"lexical.h"
 	"parser.h"
 
+1510534835 source:/home/jose/Documents/projects/school/university-compiler/lexical.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	"lexical.h"
+	"parser.h"
+
+1510534793 /home/jose/Documents/projects/school/university-compiler/lexical.h
+
+1510583557 /home/jose/Documents/projects/school/university-compiler/parser.h
+
+1510534793 source:/home/jose/Documents/projects/school/university-compiler/parser.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+

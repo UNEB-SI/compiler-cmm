@@ -8,18 +8,20 @@ extern Token token;
 extern int line_number;
 
 enum token_cat{VAR,PARAN,FUNC};
- typedef enum token_cat token_cat;
+typedef enum token_cat token_cat;
 
 
 typedef struct{
     char name[500];
     int zumbi;
     token_cat cat;
-    char type[500];
+    char type[10];
     int scope;
 }symbol;
+
 symbol sb_token;
 symbol symbol_table[1000];
+// Counter for index on symbol table
 int cont_st;
 
 //-------------------
