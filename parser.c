@@ -16,7 +16,7 @@ void prog() {
         if(token.type == ID) {
           getToken();
         } else {
-          printf("Identificador esperado na linha %d\n", line_number);
+            sintatic_erro(2);
           exit(-1);
         }
         //if it is ; declaration finish
@@ -48,7 +48,7 @@ void prog() {
                   if(token.type == ID) {
                     getToken();
                   } else {
-                    printf("Identificador esperado na linha %d\n", line_number);
+                    sintatic_erro(2);
                     exit(-1);
                   }
                 }
@@ -56,7 +56,7 @@ void prog() {
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
                   getToken();
                 } else {
-                  printf("';' Esperado na linha %d\n", line_number);
+                  sintatic_erro(1);
                   exit(-1);
                 }
               }
@@ -68,24 +68,24 @@ void prog() {
               getToken();
               prog();
             } else {
-              printf("'}' Esperado na linha %d\n", line_number);
+              sintatic_erro(6);
               exit(-1);
             }
           } else {
-            printf("'{'Esperado na linha %d\n", line_number);
+            sintatic_erro(5);
             exit(-1);
           }
         } else {
-          printf("')'Esperado na linha %d\n", line_number);
+          sintatic_erro(3);
           exit(-1);
         }
 
       } else{
-        printf("Entrada inválida na linha %d\n", line_number);
+        sintatic_erro(13);
         exit(-1);
       }
     } else {
-      printf("Esperado identificador na linha %d\n", line_number);
+      sintatic_erro(2);
       exit(-1);
     }
   }
@@ -111,15 +111,15 @@ void prog() {
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
                   } else {
-                    printf("Esperado ')' na linha %d\n", line_number);
+                    sintatic_erro(3);
                     exit(-1);
                   }
                 } else {
-                  printf("Esperado '(' na linha %d\n", line_number);
+                  sintatic_erro(4);
                   exit(-1);
                 }
               } else {
-                printf("Esperado identificador na linha %d\n", line_number);
+                sintatic_erro(2);
                 exit(-1);
               }
             }
@@ -128,19 +128,19 @@ void prog() {
               getToken();
               prog();
             } else {
-              printf("';' Esperando na linha %d\n", line_number);
+              sintatic_erro(1);
               exit(-1);
             }
           } else {
-            printf("Esperado ')' na linha %d\n", line_number);
+            sintatic_erro(3);
             exit(-1);
           }
         } else {
-          printf("Esperado '(' na linha %d\n", line_number);
+          sintatic_erro(4);
           exit(-1);
         }
       } else {
-        printf("Esperado identificador na linha %d\n", line_number);
+        sintatic_erro(2);
         exit(-1);
       }
     }
@@ -148,7 +148,7 @@ void prog() {
     //PROTOTYPE WITHOUT TYPE
     else if(token.type == PR && strcmp(token.pr, "semretorno") == 0) {
       getToken();
-      if(token.type == ID) {
+      if(token.type == ID){
         getToken();
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
           getToken();
@@ -165,15 +165,15 @@ void prog() {
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
                   } else {
-                    printf("Esperado ')' na linha %d\n", line_number);
+                    sintatic_erro(3);
                     exit(-1);
                   }
                 } else {
-                  printf("Esperado '(' na linha %d\n", line_number);
+                  sintatic_erro(4);
                   exit(-1);
                 }
               } else {
-                printf("Esperado identificador na linha %d\n", line_number);
+                sintatic_erro(2);
                 exit(-1);
               }
             }
@@ -182,24 +182,23 @@ void prog() {
               getToken();
               prog();
             } else {
-              printf("';' Esperando na linha %d\n", line_number);
+              sintatic_erro(1);
               exit(-1);
             }
           } else {
-            printf("Esperado ')' na linha %d\n", line_number);
+            sintatic_erro(3);
           }
         } else {
-          printf("Esperado '(' na linha %d\n", line_number);
+          sintatic_erro(4);
           exit(-1);
         }
       } else {
-        printf("Esperado identificador na linha %d\n", line_number);
+        sintatic_erro(2);
         exit(-1);
       }
-    }
-    else {
-      printf("Tô pegando %d\n %s\n", token.type, token.lexem.value);
-      printf("Esperado definição de tipo na linha %d\n", line_number);
+    }else {
+    //  printf("Tô pegando %d\n %s\n", token.type, token.lexem.value);
+      sintatic_erro(11);
       exit(-1);
     }
   }
@@ -225,7 +224,7 @@ void prog() {
                   if(token.type == ID) {
                     getToken();
                   } else {
-                    printf("Identificador esperado na linha %d\n", line_number);
+                    sintatic_erro(2);
                     exit(-1);
                   }
                 }
@@ -233,7 +232,7 @@ void prog() {
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
                   getToken();
                 } else {
-                  printf("';' Esperado na linha %d\n", line_number);
+                  sintatic_erro(1);
                   exit(-1);
                 }
               }
@@ -243,24 +242,24 @@ void prog() {
               getToken();
               prog();
             } else {
-              printf("'}' Esperado na linha %d\n", line_number);
+                sintatic_erro(6);
               exit(-1);
             }
           } else {
-            printf("'{'Esperado na linha %d\n", line_number);
+            sintatic_erro(4);
             exit(-1);
           }
         } else {
-          printf("')'Esperado na linha %d\n", line_number);
+          sintatic_erro(3);
           exit(-1);
         }
 
       } else{
-        printf("Entrada inválida  na linha %d\n", line_number);
+        sintatic_erro(4);
         exit(-1);
       }
     } else {
-      printf("Esperado identificador na linha %d\n", line_number);
+      sintatic_erro(7);
       exit(-1);
     }
   }
@@ -269,7 +268,7 @@ void prog() {
     exit(0);
   }
   else{
-    printf("Entrada inválida na linha %d\n", line_number);
+    sintatic_erro(14);
     exit(-1);
   }
 }
@@ -300,25 +299,25 @@ void types_param(){
           if(token.type == ID) {
             getToken();
           }else {
-            printf("Identificador esperado na linha %d\n", line_number);
+            sintatic_erro(2);
             exit(-1);
           }
         } else {
-          printf("Erro esperado tipo na linha %d\n", line_number);
+            sintatic_erro(12);
           exit(-1);
         }
       }
     } else {
-      printf("Identificador esperado na linha %d\n", line_number);
+      sintatic_erro(2);
       exit(-1);
     }
   } else {
-    printf("Simbolo não identificado na linha %d\n", line_number);
+    sintatic_erro(10);
     exit(-1);
   }
 }
 
-int cmd() {
+int cmd(){
   //SE EXPRESSION
   if(token.type == PR && strcmp(token.pr, "se") == 0){
     getToken();
@@ -328,23 +327,23 @@ int cmd() {
       if(token.type == SN && strcmp(token.signal,")") == 0){
         getToken();
         if(!cmd()) {
-          printf("Comando esperado na linha %d\n", line_number);
+          sintatic_erro(8);
           exit(-1);
         }
         if(token.type == PR && strcmp(token.pr,"senao") == 0){
           getToken();
           if(!cmd()) {
-            printf("Comando esperado na linha %d\n", line_number);
+            sintatic_erro(8);
             exit(-1);
           }
         }
         return 1;
       }else{
-        printf("Erro no cmd, expressao incorreta para a condicional falta o ')' para fechar, na linha %d",line_number);
+        sintatic_erro(3);
         exit(-1);
       }
     }else{
-      printf("Erro no cmd, nao foi encontrado o '(' apos o 'se' da condicional na linha %d",line_number);
+      sintatic_erro(4);
       exit(-1);
     }
   }
@@ -357,16 +356,16 @@ int cmd() {
       if(token.type == SN && strcmp(token.signal,")") == 0){
         getToken();
         if(!cmd()) {
-          printf("Comando esperado na linha %d\n", line_number);
+          sintatic_erro(8);
           exit(-1);
         }
         return 1;
       }else{
-        printf("erro no cmd, nao foi encontrado o ')' para fechar o comando 'enquanto' na linha %d",line_number);
+        sintatic_erro(3);
         exit(1);
       }
     }else{
-      printf("erro no cmd, nao foi encontrado o '(' para iniciar o comando 'enquanto' na linha %d",line_number);
+      sintatic_erro(4);
       exit(1);
     }
   }
@@ -385,24 +384,24 @@ int cmd() {
           if(token.type == SN && strcmp(token.signal,")") == 0){
             getToken();
             if(!cmd()){
-              printf("Comando esperado na linha %d\n ", line_number);
+
               exit(-1);
             }
             return 1;
           }else{
-            printf("Erro no cmd, esperado ')' para fechar na linha %d\n",line_number);
+            sintatic_erro(3);
             exit(-1);
           }
         }else{
-          printf("Erro no cmd, esperado ';' na linha %d\n",line_number);
+          sintatic_erro(1);
           exit(-1);
         }
       }else{
-        printf("Erro no cmd, esperado ';'  na linha %d\n",line_number);
+        sintatic_erro(1);
         exit(-1);
       }
     } else {
-      printf("Erro no cmd, esperado '('  na linha %d\n",line_number);
+      sintatic_erro(4);
       exit(-1);
     }
   }
@@ -413,7 +412,7 @@ int cmd() {
     if(token.type == SN && strcmp(token.signal,";") == 0){
       getToken();
     }else{
-      printf("Erro no cmd, esperado ';' para retornar procedimento na linha %d", line_number);
+      sintatic_erro(1);
       exit(-1);
     }
   }
@@ -425,7 +424,7 @@ int cmd() {
       getToken();
       return 1;
     } else {
-      printf("'}' esperada na linha %d\n", line_number);
+      sintatic_erro(6);
       exit(-1);
     }
   }
@@ -448,12 +447,12 @@ int cmd() {
           getToken();
           return 1;
         } else {
-          printf("';' esperado na linha %d\n", line_number);
+          sintatic_erro(1);
           exit(-1);
         }
     } else {
-      printf("Sou %d %s\n", token.type, token.signal);
-      printf("')' esperado na linha %d\n", line_number);
+      // printf("Sou %d %s\n", token.type, token.signal);
+      sintatic_erro(4);
       exit(-1);
     }
   }
@@ -463,7 +462,7 @@ int cmd() {
       getToken();
       return 1;
     } else {
-      printf("';' esperado na linha %d\n", line_number);
+      sintatic_erro(1);
       exit(-1);
     }
   }
@@ -490,12 +489,12 @@ void opc_p_types() {
           getToken();
         }
       } else {
-        printf("Erro esperado tipo na linha %d\n", line_number);
+        sintatic_erro(11);
         exit(-1);
       }
     }
   } else {
-    printf("Simbolo não identificado na linha %d\n", line_number);
+    sintatic_erro(10);
     exit(-1);
   }
 }
@@ -550,7 +549,7 @@ void fator(){
     if(token.type == SN && strcmp(token.signal,")") == 0){
       getToken();
     }else{
-      printf("Erro na fator, esperado ')' para fechar expressao na linha %d",line_number);
+      sintatic_erro(3);
       exit(-1);
     }
   }
@@ -565,7 +564,7 @@ void fator(){
     if(token.type == SN && strcmp(token.signal, ")") == 0) {
       getToken();
     } else {
-      printf("')' Esperado na linha %d\n", line_number);
+      sintatic_erro(3);
       exit(-1);
     }
   }
@@ -584,10 +583,57 @@ int atrib(){
       expr();
       return 1;
     }else{
-      printf("Erro no atrib, esperado um sinal na linha %d",line_number);
+      sintatic_erro(9);
       exit(-1);
     }
   }else {
     return 0;
   }
+}
+
+void sintatic_erro(int flag){
+    switch (flag){
+        case 1:
+            printf("';' Esperado na linha %d\n", line_number);
+        break;
+        case 2:
+            printf("Esperado identificador na linha %d\n", line_number);
+        break;
+        case 3:
+            printf("Esperado ')' na linha %d\n", line_number);
+        break;
+        case 4:
+            printf("Esperado '(' na linha %d\n", line_number);
+        break;
+        case 5:
+            printf("'{' Esperado na linha %d\n", line_number);
+        break;
+        case 6:
+            printf("'}' Esperado na linha %d\n", line_number);
+        break;
+        case 7:
+            printf("Esperado identificador na linha %d\n", line_number);
+        break;
+        case 8:
+            printf("Comando esperado na linha %d\n ", line_number);
+        break;
+        case 9:
+            printf("Esperado sinal '=' na linha %d",line_number);
+        break;
+        case 10:
+            printf("Simbolo não identificado na linha %d\n", line_number);
+        break;
+        case 11:
+            printf("Erro esperado tipo na linha %d\n", line_number);
+        break;
+        case 12:
+            printf("Erro esperado ',' na linha %d\n", line_number);
+        break;
+        case 13:
+            printf("Entrada inválida na linha %d\n", line_number);
+        break;
+        case 14:
+            printf("Esperado fim de arquivo na linha %d\n",line_number);
+        break;
+    }
 }

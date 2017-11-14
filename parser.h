@@ -4,8 +4,8 @@
 extern Token token, last_token;
 extern int line_number;
 
-int firstTime;
-
+//int firstTime;
+void sintatic_erro(int flag);
 void prog();
 int isType();
 void types_param();
