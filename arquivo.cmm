@@ -1,23 +1,23 @@
-/* Sequencia de Fibonacci em Cmm - Recursivo */
+inteiro a;
 
-prototipo inteiro fibonacci(inteiro);
+/*real funcao(inteiro b) {
+}*/
 
-semretorno principal(semparam) {
+prototipo inteiro va_a_praia2 (inteiro b, caracter a), aa (inteiro b);
+prototipo semretorno  soneca(inteiro b, caracter a), q(semparam);
 
-     inteiro i, n;
+semretorno calcule (inteiro a) {
+   inteiro b;
+   para(a = b;b < 1; b = b+1) {
+            se (a > b) {
+                va_a_praia();
+                se (a > b) {
+                    dormir();
+                }
+            }
+   }
 
-     imprima("Digite a qtd de termos da sequencia: ");
-     leia(n);
-     imprima("A sequencia de Fibonacci solicitada eh: ");
-     imprima(enter);
-     para (i=0; i<n; i=i+1)
-            imprima(fibonacci(i+1));
-     retorne;
-}
-
-inteiro fibbonaci(inteiro num) {
-
-      se ((num==1) || (num==2)) retorne 1;
-      senao
-             retorne (fibonacci(num-1)+fibonacci(num-2));
+   se (a > b) {
+    va_a_praia();
+   }
 }
