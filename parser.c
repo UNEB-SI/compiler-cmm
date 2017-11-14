@@ -6,7 +6,6 @@
 
 int cont_st = 0;
 
-
 void prog() {
   // RECOGNIZE GLOBAL DECLARATION OR DEFAULT FUNCTION BODY
   if(isType()){
@@ -225,7 +224,6 @@ void prog() {
         exit(-1);
       }
     }else {
-    //  printf("Tô pegando %d\n %s\n", token.type, token.lexem.value);
       sintatic_erro(11);
       exit(-1);
     }
