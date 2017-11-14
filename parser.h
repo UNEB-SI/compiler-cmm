@@ -30,7 +30,7 @@ void exclude_local_symbol();
 void refix_array(int index);
 void insert_zombie();
 void printf_symbol();
-int isRedeclaration();
+void verifyRedeclaration(symbol sb);
 //-------------------
 
 void prog();

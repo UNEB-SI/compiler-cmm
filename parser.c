@@ -20,6 +20,7 @@ void prog() {
       //just for symbol table
       if ((token.type == SN && strcmp(token.signal, ";") == 0) || (token.type == SN && strcmp(token.signal, ",") == 0)) {
         sb_token.cat = VAR;
+        verifyRedeclaration(sb_token);
         insert_symbol();
       }
       //DEFAULT DECLARATION
@@ -27,6 +28,7 @@ void prog() {
         getToken();
         if(token.type == ID) {
           strcpy(sb_token.name,token.lexem.value);
+          verifyRedeclaration(sb_token);
           insert_symbol();
           getToken();
         } else {
@@ -42,6 +44,7 @@ void prog() {
       else if(token.type == SN && strcmp(token.signal, "(") == 0) {//if it is a function
         getToken();
         sb_token.cat = FUNC;
+        verifyRedeclaration(sb_token);
         insert_symbol();
         types_param();
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
@@ -59,12 +62,14 @@ void prog() {
 
               if(token.type == ID){
                 getToken();
+                verifyRedeclaration(sb_token);
                 insert_symbol();
                 //verify if it is declaration
                 while(token.type == SN && strcmp(token.signal, ",") == 0) {
                   getToken();
                   if(token.type == ID) {
                     strcpy(sb_token.name,token.lexem.value);
+                    verifyRedeclaration(sb_token);
                     insert_symbol();
                     getToken();
                   } else {
@@ -235,6 +240,7 @@ void prog() {
     sb_token.zumbi = 0;// we gonna set the cat later
     if(token.type == ID) {
       sb_token.cat = FUNC;
+      verifyRedeclaration(sb_token);
       insert_symbol();
       getToken();
       if(token.type == SN && strcmp(token.signal, "(") == 0) {//if it is a function
@@ -252,6 +258,7 @@ void prog() {
                 strcpy(sb_token.name, token.lexem.value);
                 sb_token.zumbi = 0;// we gonna set the cat later
                 sb_token.cat = VAR;
+                verifyRedeclaration(sb_token);
                 insert_symbol();
                 getToken();
                 //verify if it is declaration
@@ -259,6 +266,7 @@ void prog() {
                   getToken();
                   if(token.type == ID) {
                     strcpy(sb_token.name, token.lexem.value);
+                    verifyRedeclaration(sb_token);
                     insert_symbol();
                     getToken();
                   } else {
@@ -305,7 +313,7 @@ void prog() {
     }
   }
   else if(token.type == eOF){
-    printf("Compiled with sucess\n");
+    printf("Sucesso na compilação!\n");
     exit(0);
   }
   else{
@@ -337,6 +345,7 @@ void types_param(){
     if(token.type == ID){
       getToken();
       sb_token.cat = PARAN;
+      verifyRedeclaration(sb_token);
       insert_symbol();
       //verify if it is declaration
       while(token.type == SN && strcmp(token.signal, ",") == 0) {
@@ -351,6 +360,7 @@ void types_param(){
           if(token.type == ID) {
             getToken();
             sb_token.cat = PARAN;
+            verifyRedeclaration(sb_token);
             insert_symbol();
           }else {
             printf("Identificador esperado na linha %d\n", line_number);
@@ -465,6 +475,7 @@ int cmd() {
     expr();
     if(token.type == SN && strcmp(token.signal,";") == 0){
       getToken();
+      return 1;
     }else{
       printf("Erro no cmd, esperado ';' para retornar procedimento na linha %d", line_number);
       exit(-1);
@@ -680,12 +691,22 @@ void exclude_local_symbol(){
       i++;
     }
   }
-  printf_symbol();
 }
 
 void refix_array(int index) {
   int i;
   for(i = index; i < (sizeof(symbol_table)/sizeof(*symbol_table)) - 1; i++){
     symbol_table[i] = symbol_table[i+1];
+  }
+}
+
+void verifyRedeclaration(symbol sb) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if(symbol_table[i].scope == sb.scope && strcmp(symbol_table[i].name, sb.name) == 0 && !symbol_table[i].zumbi) {
+      printf("Redeclaração de '%s' na linha %d\n", sb.name, line_number);
+      exit(-1);
+    }
+    i++;
   }
 }

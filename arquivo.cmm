@@ -1,7 +1,23 @@
-real bunda, a, b , decolar;
+/* Sequencia de Fibonacci em Cmm - Recursivo */
 
-semretorno gol(real b, inteiro q) {
-  inteiro b, q, t, u , v, x;
-  caracter queijo;
-  real mortadela;
+prototipo inteiro fibonacci(inteiro);
+
+semretorno principal(semparam) {
+
+     inteiro i, n;
+
+     imprima("Digite a qtd de termos da sequencia: ");
+     leia(n);
+     imprima("A sequencia de Fibonacci solicitada eh: ");
+     imprima(enter);
+     para (i=0; i<n; i=i+1)
+            imprima(fibonacci(i+1));
+      retorne;
+}
+
+inteiro fibbonaci(inteiro num) {
+
+      se ((num==1) || (num==2)) retorne 1;
+      senao
+        retorne (fibonacci(num-1)+fibonacci(num-2));
 }
