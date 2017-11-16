@@ -1,11 +1,13 @@
 /* Sequencia de Fibonacci em Cmm - Recursivo*/
 
+inteiro n, r, h;
+caracter n;
+
 prototipo inteiro fibonacci(inteiro);
 
 semretorno principal(semparam) {
 
      inteiro i, n;
-
      imprima("Digite a qtd de termos da sequencia: ");
      leia(n);
      imprima("A sequencia de Fibonacci solicitada eh: ");

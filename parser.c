@@ -311,7 +311,7 @@ void prog() {
     }
   }
   else if(token.type == eOF){
-    printf("Sucesso na compilação!\n");
+    printf("Sucesso na compilacao!\n");
     return;
   }
   else {
