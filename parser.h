@@ -10,6 +10,10 @@ extern int line_number;
 enum token_cat{VAR,PARAN,FUNC};
 typedef enum token_cat token_cat;
 
+enum code_error{MISSING_SEMI_COLON = 1,MISSING_ID, MISSING_CLOSE_PAREN, MISSING_OPEN_PAREN,
+MISSING_OPEN_KEY, MISSING_CLOSE_KEY, MISSING_CMD, MISSING_EQUAL_SNG, SYMBOL_NOT_RECOG, MISSING_TYPE,
+MISSING_COMMA};
+
 
 typedef struct{
     char name[500];

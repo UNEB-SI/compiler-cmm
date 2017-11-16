@@ -1,8 +1,14 @@
 #ifndef LEXICAL_H
 #define LEXICAL_H
 
+#include <time.h>
+
  enum token_types {ID, PR, SN, INTCON, REALCON, CADEIACON, CARACCON, eOF, COMMENT};
  typedef enum token_types TokenType;
+
+ clock_t start, end;
+ double cpu_time_used;
+
 
 typedef struct {
   int table_position;

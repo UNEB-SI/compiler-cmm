@@ -4,6 +4,7 @@
 #include "lexical.h"
 #include "parser.h"
 
+//Holds symbol table position
 int cont_st = 0;
 
 void prog() {
@@ -31,7 +32,7 @@ void prog() {
           insert_symbol();
           getToken();
         } else {
-            sintatic_erro(2);
+            sintatic_erro(MISSING_ID);
           exit(-1);
         }
       }
@@ -72,7 +73,7 @@ void prog() {
                     insert_symbol();
                     getToken();
                   } else {
-                    sintatic_erro(2);
+                    sintatic_erro(MISSING_ID);
                     exit(-1);
                   }
                 }
@@ -80,7 +81,7 @@ void prog() {
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
                   getToken();
                 } else {
-                  sintatic_erro(1);
+                  sintatic_erro(MISSING_SEMI_COLON);
                   exit(-1);
                 }
               }
@@ -95,24 +96,24 @@ void prog() {
               exclude_local_symbol();
               prog();
             } else {
-              sintatic_erro(6);
+              sintatic_erro(MISSING_CLOSE_KEY);
               exit(-1);
             }
           } else {
-            sintatic_erro(5);
+            sintatic_erro(MISSING_OPEN_KEY);
             exit(-1);
           }
         } else {
-          sintatic_erro(3);
+          sintatic_erro(MISSING_CLOSE_PAREN);
           exit(-1);
         }
 
       } else{
-        sintatic_erro(13);
+        sintatic_erro(SYMBOL_NOT_RECOG);
         exit(-1);
       }
     } else {
-      sintatic_erro(2);
+      sintatic_erro(MISSING_ID);
       exit(-1);
     }
   }
@@ -138,15 +139,15 @@ void prog() {
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
                   } else {
-                    sintatic_erro(3);
+                    sintatic_erro(MISSING_CLOSE_PAREN);
                     exit(-1);
                   }
                 } else {
-                  sintatic_erro(4);
+                  sintatic_erro(MISSING_OPEN_PAREN);
                   exit(-1);
                 }
               } else {
-                sintatic_erro(2);
+                sintatic_erro(MISSING_ID);
                 exit(-1);
               }
             }
@@ -155,19 +156,19 @@ void prog() {
               getToken();
               prog();
             } else {
-              sintatic_erro(1);
+              sintatic_erro(MISSING_SEMI_COLON);
               exit(-1);
             }
           } else {
-            sintatic_erro(3);
+            sintatic_erro(MISSING_CLOSE_PAREN);
             exit(-1);
           }
         } else {
-          sintatic_erro(4);
+          sintatic_erro(MISSING_OPEN_PAREN);
           exit(-1);
         }
       } else {
-        sintatic_erro(2);
+        sintatic_erro(MISSING_ID);
         exit(-1);
       }
     }
@@ -192,15 +193,15 @@ void prog() {
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
                   } else {
-                    sintatic_erro(3);
+                    sintatic_erro(MISSING_CLOSE_PAREN);
                     exit(-1);
                   }
                 } else {
-                  sintatic_erro(4);
+                  sintatic_erro(MISSING_OPEN_PAREN);
                   exit(-1);
                 }
               } else {
-                sintatic_erro(2);
+                sintatic_erro(MISSING_ID);
                 exit(-1);
               }
             }
@@ -209,22 +210,22 @@ void prog() {
               getToken();
               prog();
             } else {
-              sintatic_erro(1);
+              sintatic_erro(MISSING_SEMI_COLON);
               exit(-1);
             }
           } else {
-            sintatic_erro(3);
+            sintatic_erro(MISSING_CLOSE_PAREN);
           }
         } else {
-          sintatic_erro(4);
+          sintatic_erro(MISSING_OPEN_PAREN);
           exit(-1);
         }
       } else {
-        sintatic_erro(2);
+        sintatic_erro(MISSING_ID);
         exit(-1);
       }
     }else {
-      sintatic_erro(11);
+      sintatic_erro(MISSING_TYPE);
       exit(-1);
     }
   }
@@ -267,7 +268,7 @@ void prog() {
                     insert_symbol();
                     getToken();
                   } else {
-                    sintatic_erro(2);
+                    sintatic_erro(MISSING_ID);
                     exit(-1);
                   }
                 }
@@ -275,7 +276,7 @@ void prog() {
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
                   getToken();
                 } else {
-                  sintatic_erro(1);
+                  sintatic_erro(MISSING_SEMI_COLON);
                   exit(-1);
                 }
               }
@@ -288,33 +289,33 @@ void prog() {
               exclude_local_symbol();
               prog();
             } else {
-                sintatic_erro(6);
+                sintatic_erro(MISSING_CLOSE_KEY);
               exit(-1);
             }
           } else {
-            sintatic_erro(4);
+            sintatic_erro(MISSING_OPEN_PAREN);
             exit(-1);
           }
         } else {
-          sintatic_erro(3);
+          sintatic_erro(MISSING_CLOSE_PAREN);
           exit(-1);
         }
 
       } else{
-        sintatic_erro(4);
+        sintatic_erro(MISSING_OPEN_PAREN);
         exit(-1);
       }
     } else {
-      sintatic_erro(7);
+      sintatic_erro(MISSING_ID);
       exit(-1);
     }
   }
   else if(token.type == eOF){
     printf("Sucesso na compilação!\n");
-    exit(0);
+    return;
   }
-  else{
-    sintatic_erro(14);
+  else {
+    sintatic_erro(SYMBOL_NOT_RECOG);
     exit(-1);
   }
 }
@@ -360,20 +361,20 @@ void types_param(){
             verifyRedeclaration(sb_token);
             insert_symbol();
           }else {
-            sintatic_erro(2);
+            sintatic_erro(MISSING_ID);
             exit(-1);
           }
         } else {
-            sintatic_erro(12);
+            sintatic_erro(MISSING_COMMA);
           exit(-1);
         }
       }
     } else {
-      sintatic_erro(2);
+      sintatic_erro(MISSING_ID);
       exit(-1);
     }
   } else {
-    sintatic_erro(10);
+    sintatic_erro(SYMBOL_NOT_RECOG);
     exit(-1);
   }
 }
@@ -388,23 +389,23 @@ int cmd(){
       if(token.type == SN && strcmp(token.signal,")") == 0){
         getToken();
         if(!cmd()) {
-          sintatic_erro(8);
+          sintatic_erro(MISSING_CMD);
           exit(-1);
         }
         if(token.type == PR && strcmp(token.pr,"senao") == 0){
           getToken();
           if(!cmd()) {
-            sintatic_erro(8);
+            sintatic_erro(MISSING_CMD);
             exit(-1);
           }
         }
         return 1;
       }else{
-        sintatic_erro(3);
+        sintatic_erro(MISSING_CLOSE_PAREN);
         exit(-1);
       }
     }else{
-      sintatic_erro(4);
+      sintatic_erro(MISSING_OPEN_PAREN);
       exit(-1);
     }
   }
@@ -417,16 +418,16 @@ int cmd(){
       if(token.type == SN && strcmp(token.signal,")") == 0){
         getToken();
         if(!cmd()) {
-          sintatic_erro(8);
+          sintatic_erro(MISSING_CMD);
           exit(-1);
         }
         return 1;
       }else{
-        sintatic_erro(3);
+        sintatic_erro(MISSING_CLOSE_PAREN);
         exit(1);
       }
     }else{
-      sintatic_erro(4);
+      sintatic_erro(MISSING_OPEN_PAREN);
       exit(1);
     }
   }
@@ -450,19 +451,19 @@ int cmd(){
             }
             return 1;
           }else{
-            sintatic_erro(3);
+            sintatic_erro(MISSING_CLOSE_PAREN);
             exit(-1);
           }
         }else{
-          sintatic_erro(1);
+          sintatic_erro(MISSING_SEMI_COLON);
           exit(-1);
         }
       }else{
-        sintatic_erro(1);
+        sintatic_erro(MISSING_SEMI_COLON);
         exit(-1);
       }
     } else {
-      sintatic_erro(4);
+      sintatic_erro(MISSING_OPEN_PAREN);
       exit(-1);
     }
   }
@@ -474,7 +475,7 @@ int cmd(){
       getToken();
       return 1;
     }else{
-      sintatic_erro(1);
+      sintatic_erro(MISSING_SEMI_COLON);
       exit(-1);
     }
   }
@@ -486,7 +487,7 @@ int cmd(){
       getToken();
       return 1;
     } else {
-      sintatic_erro(6);
+      sintatic_erro(MISSING_CLOSE_KEY);
       exit(-1);
     }
   }
@@ -509,12 +510,12 @@ int cmd(){
           getToken();
           return 1;
         } else {
-          sintatic_erro(1);
+          sintatic_erro(MISSING_SEMI_COLON);
           exit(-1);
         }
     } else {
       // printf("Sou %d %s\n", token.type, token.signal);
-      sintatic_erro(4);
+      sintatic_erro(MISSING_OPEN_PAREN);
       exit(-1);
     }
   }
@@ -524,7 +525,7 @@ int cmd(){
       getToken();
       return 1;
     } else {
-      sintatic_erro(1);
+      sintatic_erro(MISSING_SEMI_COLON);
       exit(-1);
     }
   }
@@ -552,12 +553,12 @@ void opc_p_types() {
           getToken();
         }
       } else {
-        sintatic_erro(11);
+        sintatic_erro(MISSING_TYPE);
         exit(-1);
       }
     }
   } else {
-    sintatic_erro(10);
+    sintatic_erro(SYMBOL_NOT_RECOG);
     exit(-1);
   }
 }
@@ -613,7 +614,7 @@ void fator(){
     if(token.type == SN && strcmp(token.signal,")") == 0){
       getToken();
     }else{
-      sintatic_erro(3);
+      sintatic_erro(MISSING_CLOSE_PAREN);
       exit(-1);
     }
   }
@@ -628,7 +629,7 @@ void fator(){
     if(token.type == SN && strcmp(token.signal, ")") == 0) {
       getToken();
     } else {
-      sintatic_erro(3);
+      sintatic_erro(MISSING_CLOSE_PAREN);
       exit(-1);
     }
   }
@@ -647,7 +648,7 @@ int atrib(){
       expr();
       return 1;
     }else{
-      sintatic_erro(9);
+      sintatic_erro(MISSING_EQUAL_SNG);
       exit(-1);
     }
   }else {
@@ -710,47 +711,38 @@ void verifyRedeclaration(symbol sb) {
 
 void sintatic_erro(int flag){
     switch (flag){
-        case 1:
+        case MISSING_SEMI_COLON:
             printf("';' Esperado na linha %d\n", line_number);
         break;
-        case 2:
+        case MISSING_ID:
             printf("Esperado identificador na linha %d\n", line_number);
         break;
-        case 3:
+        case MISSING_CLOSE_PAREN:
             printf("Esperado ')' na linha %d\n", line_number);
         break;
-        case 4:
+        case MISSING_OPEN_PAREN:
             printf("Esperado '(' na linha %d\n", line_number);
         break;
-        case 5:
+        case MISSING_OPEN_KEY:
             printf("'{' Esperado na linha %d\n", line_number);
         break;
-        case 6:
+        case MISSING_CLOSE_KEY:
             printf("'}' Esperado na linha %d\n", line_number);
         break;
-        case 7:
-            printf("Esperado identificador na linha %d\n", line_number);
-        break;
-        case 8:
+        case MISSING_CMD:
             printf("Comando esperado na linha %d\n ", line_number);
         break;
-        case 9:
+        case MISSING_EQUAL_SNG:
             printf("Esperado sinal '=' na linha %d",line_number);
         break;
-        case 10:
+        case SYMBOL_NOT_RECOG:
             printf("Simbolo não identificado na linha %d\n", line_number);
         break;
-        case 11:
+        case MISSING_TYPE:
             printf("Erro esperado tipo na linha %d\n", line_number);
         break;
-        case 12:
+        case MISSING_COMMA:
             printf("Erro esperado ',' na linha %d\n", line_number);
-        break;
-        case 13:
-            printf("Entrada inválida na linha %d\n", line_number);
-        break;
-        case 14:
-            printf("Esperado fim de arquivo na linha %d\n",line_number);
         break;
     }
 }

@@ -50,8 +50,12 @@ int main(int argc, char **argv){
 void readFile(char *file_name){
     file = fopen(file_name, "r");
     if(file != NULL){
+        start = clock();
         getToken();
         prog();
+        end = clock();
+        cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+        printf("Executado em %f segundos.\n", cpu_time_used);
     }else{
         errorMessage(ERROR_NOT_FOUND_FILE);
     }
@@ -64,13 +68,16 @@ Token getToken() {
     token = next_token;
   }
 
-  //if the program is running for a long firstTime
   while ((actual_char = fgetc(file)) != EOF && (status = checkState(actual_char, file)) != HAS_TOKEN);
 
   if(isFirstTime()) {
-    token = next_token;
-    first_time++;
-    getToken();
+    if(actual_char == EOF) {
+        token.type = eOF;
+    } else {
+        token = next_token;
+        first_time++;
+        getToken();
+    }
   } else {
       first_time++;
   }
@@ -186,7 +193,6 @@ int checkState(char c, FILE *f){
                 addLetter(c);
             }else{
                 addStringFinal();
-                //printToken(REALCON, c);
                 next_token.type = REALCON;
                 next_token.dValue = getFloat();
                 cleanBuffer(f, c);
@@ -236,11 +242,8 @@ int checkState(char c, FILE *f){
             }else{
                 //mensagem de erro
                 printf("Error. Comentário não finalizado na linha %d.\n",line_number);
-                //printf("BUffer: %s", buffer);
-                //printf("PArei em %d\n", last_char);
                 return -1;
             }
-
             break;
         case 11:
             if(c == '/'){//inverted bar
