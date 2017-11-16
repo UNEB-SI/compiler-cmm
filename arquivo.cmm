@@ -1,4 +1,4 @@
-/* Sequencia de Fibonacci em Cmm - Recursivo */
+/* Sequencia de Fibonacci em Cmm - Recursivo*/
 
 prototipo inteiro fibonacci(inteiro);
 

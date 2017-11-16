@@ -68,7 +68,7 @@ Token getToken() {
     token = next_token;
   }
 
-  while ((actual_char = fgetc(file)) != EOF && (status = checkState(actual_char, file)) != HAS_TOKEN);
+  while (status = checkState(file) != HAS_TOKEN && actual_char != EOF);
 
   if(isFirstTime()) {
     if(actual_char == EOF) {
@@ -89,63 +89,62 @@ Token getToken() {
   return token;
 }
 
-int checkState(char c, FILE *f){
+int checkState(FILE *f){
+    actual_char = fgetc(f);
     switch(STATE){
         case 0:
-            if(isLetter(c)){
+            if(isLetter(actual_char)){
                 STATE = 1;
-                addLetter(c);
-            }else if(isdigit(c)){
+                addLetter(actual_char);
+            }else if(isdigit(actual_char)){
                 STATE = 3;
-                addLetter(c);
-            }else if(c == SPACE || c == TAB || c == ENTER){
+                addLetter(actual_char);
+            }else if(actual_char == SPACE || actual_char == TAB || actual_char == ENTER){
                 STATE = 0;
-                if(c == ENTER){
+                if(actual_char == ENTER){
                     line_number++;
                 }
-            }else if(c == BAR){
+            }else if(actual_char == BAR){
                 STATE = 8;
-                addLetter(c);
-                last_char = c;
-            }else if(c == EOF){
+                addLetter(actual_char);
+                last_char = actual_char;
+            }else if(actual_char == EOF){
                 STATE = 0;
                 return END_OF_FILE;
-            }else if(c == '|'){
+            }else if(actual_char == '|'){
                 STATE = 39;
-                addLetter(c);
-            }else if(c == '&'){
+                addLetter(actual_char);
+            }else if(actual_char == '&'){
                 STATE = 38;
-                addLetter(c);
-            }else if(c == APOSTROPHE){//apostrofo
+                addLetter(actual_char);
+            }else if(actual_char == APOSTROPHE){//apostrofo
                 STATE = 24;
                 //addLetter(c);
-            }else if(c == QUOTES){//aspas
+            }else if(actual_char == QUOTES){//aspas
                 STATE = 25;
                 //addLetter(c);
-            }  else if(c == '<' || c == '>' || c == '!' || c == '='){
+            }  else if(actual_char == '<' || actual_char == '>' || actual_char == '!' || actual_char == '='){
                 STATE = 35;
-                addLetter(c);
-            }else if(c == '+' || c == '-' || c == '*'
-                    || c == '{' || c == '}'
-                    || c == '(' || c == ')' || c == ';' || c == ','){
+                addLetter(actual_char);
+            }else if(actual_char == '+' || actual_char == '-' || actual_char == '*'
+                    || actual_char == '{' || actual_char == '}'
+                    || actual_char == '(' || actual_char == ')' || actual_char == ';' || actual_char == ','){
                 STATE = 0;
-                addLetter(c);
+                addLetter(actual_char);
                 addStringFinal();
                 next_token.type = SN;
                 strcpy(next_token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
                 return HAS_TOKEN;
             }else {
-              printf("Symbol '%c' not recognized at line: %d\n",c,line_number);
-              exit(0);
-              return -1;
-
+              printf("Symbol '%c' not recognized at line: %d\n",actual_char,line_number);
+              exit(-1);
             }
             break;
         case 1:
-            if(isLetter(c) || isdigit(c) || c == UNDERLINE){
+            if(isLetter(actual_char) || isdigit(actual_char) || actual_char == UNDERLINE){
                 STATE = 1;
-                addLetter(c);
+                addLetter(actual_char);
             }else{
                 addStringFinal();
                 if(isReservedWord(buffer) != -1){
@@ -159,50 +158,50 @@ int checkState(char c, FILE *f){
                     indetifier_position++;
                 }
 
-                cleanBuffer(f, c);
+                cleanBuffer(f, actual_char);
                 return HAS_TOKEN;
             }
             break;
         case 3:
-            if(isdigit(c)){
+            if(isdigit(actual_char)){
                 STATE = 3;
-                addLetter(c);
-            }else if(c == '.'){
+                addLetter(actual_char);
+            }else if(actual_char == '.'){
                 STATE = 5;
-                addLetter(c);
+                addLetter(actual_char);
             }else{
                 addStringFinal();
                 next_token.type = INTCON;
                 next_token.iValue = getInteger();
-                cleanBuffer(f, c);
+                cleanBuffer(f, actual_char);
                 return HAS_TOKEN;
             }
             break;
         case 5:
-            if(isdigit(c)){
+            if(isdigit(actual_char)){
                 STATE = 6;
-                ungetc(c, f);
+                ungetc(actual_char, f);
             }else{
                 errorMessage(ERROR_NUMBER_FLOAT_FORMAT);
-                return -1;
+                exit(-1);
             }
             break;
         case 6:
-            if(isdigit(c)){
+            if(isdigit(actual_char)){
                 STATE = 6;
-                addLetter(c);
+                addLetter(actual_char);
             }else{
                 addStringFinal();
                 next_token.type = REALCON;
                 next_token.dValue = getFloat();
-                cleanBuffer(f, c);
+                cleanBuffer(f, actual_char);
                 return HAS_TOKEN;
             }
             break;
         case 8:
-            if(c == '*'){
+            if(actual_char == '*'){
                 STATE = 9;
-                addLetter(c);
+                addLetter(actual_char);
             }else{
                 next_token.type = SN;
                 strcpy(next_token.signal, signals[isSignal(buffer)]);
@@ -212,94 +211,92 @@ int checkState(char c, FILE *f){
             }
             break;
         case 9:
-            if(c != '*'){
+            if(actual_char != '*'){
                 STATE = 10;
-                addLetter(c);
-                if(c == '\n'){
+                addLetter(actual_char);
+                if(actual_char == '\n'){
                     line_number++;
                 }
-            }else if(c == '*'){
+            }else if(actual_char == '*'){
                 STATE = 11;
-                addLetter(c);
+                addLetter(actual_char);
             }else{
                 //mensagem de erro
                 printf("Error. Comentário não finalizado após '%s' na linha %d.\n", buffer, line_number);
-                return -1;
+                exit(-1);
             }
             break;
         case 10:
             //treating \n
-            if(c == '\n'){
-                line_number++;
-            }
-
-            if(c == '*'){
+            if(actual_char == '*'){
                 STATE = 11;
-                addLetter(c);
-            }else if(isprint(c) || c == SPACE || c == '\t' || c == '\n'){
+                addLetter(actual_char);
+            }else if(isprint(actual_char) || actual_char == SPACE || actual_char == '\t' || actual_char == '\n'){
                 STATE = 10;
-                addLetter(c);
+                addLetter(actual_char);
+                 if(actual_char == '\n'){
+                    line_number++;
+                }
             }else{
                 //mensagem de erro
                 printf("Error. Comentário não finalizado na linha %d.\n",line_number);
-                return -1;
+                exit(-1);
             }
             break;
         case 11:
-            if(c == '/'){//inverted bar
-                addLetter(c);
+            if(actual_char == '/'){//inverted bar
+                addLetter(actual_char);
                 justCleanBuffer();
-            }else if(c == '*'){
-                addLetter(c);
+            }else if(actual_char == '*'){
+                addLetter(actual_char);
                 STATE = 11;
-            }else if(isprint(c)){
-                addLetter(c);
+            }else if(isprint(actual_char)){
+                addLetter(actual_char);
                 STATE = 10;
             }else{
                 //mensagem de erro
                 printf("Error. Comentário não finalizado após * na linha %d.\n",line_number);
-                return -1;
+                exit(-1);
             }
             break;
         case 19:
-            if(c == 'n' || c == '0'){
-                if(c == 'n') c = '\n';
-                else c = '\0';
-                addLetter(c);
+            if(actual_char == 'n' || actual_char == '0'){
+                if(actual_char == 'n') actual_char = '\n';
+                else actual_char = '\0';
+                addLetter(actual_char);
                 STATE = 26;
             }else{
                 //mensagem de erro
                 printf("Error. Caracter não esperado após %c na linha %d.\n",INVERTED_BAR, line_number);
-                return -1;
+                exit(-1);
             }
             break;
         case 24:
-            if(c == INVERTED_BAR){
+            if(actual_char == INVERTED_BAR){
                //addLetter(c);
                STATE = 19;
-            }else if(c != APOSTROPHE && isprint(c)){
-                addLetter(c);
+            }else if(actual_char != APOSTROPHE && isprint(actual_char)){
+                addLetter(actual_char);
                 STATE = 26;
             }else{
                 //mensagem de erro
                 printf("Error. Você esqueceu algo após ' na linha %d.\n", line_number);
-                return -1;
+                exit(-1);
             }
             break;
         case 25:
-            if(isprint(c) || c == SPACE){
-                addLetter(c);
-                //FAZER AQUi
+            if(isprint(actual_char) || actual_char == SPACE){
+                addLetter(actual_char);
                 STATE = 28;
             }else{
                 //mensagem de erro
                 printf("Error. Você esqueceu algo após \"  na linha %d.\n",line_number);
-                return -1;
+                exit(-1);
             }
             break;
         case 26:
-            if(c == APOSTROPHE){
-                addLetter(c);
+            if(actual_char == APOSTROPHE){
+                addLetter(actual_char);
                 next_token.type = CARACCON;
                 strcpy(next_token.word, buffer);
                 justCleanBuffer();
@@ -307,11 +304,11 @@ int checkState(char c, FILE *f){
             }else{
                 //mensagem de erro
                 printf("Error. Você esqueceu um \' na linha %d.\n",line_number);
-                return -1;
+                exit(-1);
             }
             break;
         case 28:
-            if(c == QUOTES){
+            if(actual_char == QUOTES){
                 strcpy(literals[literal_position], buffer);
                 next_token.type = CADEIACON;
                 next_token.lexem.table_position = literal_position;
@@ -319,17 +316,17 @@ int checkState(char c, FILE *f){
                 literal_position++;
                 justCleanBuffer();
                 return HAS_TOKEN;
-            } else if(isprint(c) || c == SPACE){
-                addLetter(c);
+            } else if(isprint(actual_char) || actual_char == SPACE){
+                addLetter(actual_char);
                 STATE = 28;
-            }else if(c == EOF && last_char != QUOTES){
+            }else if(actual_char == EOF && last_char != QUOTES){
                 //mensagem de erro
                 printf("Error. Você esqueceu um \" na linha %d.\n",line_number);
             }
             break;
         case 35:
-            if(c == '='){
-                addLetter(c);
+            if(actual_char == '='){
+                addLetter(actual_char);
                 next_token.type = SN;
                 strcpy(next_token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
@@ -337,13 +334,13 @@ int checkState(char c, FILE *f){
             }else{
                 next_token.type = SN;
                 strcpy(next_token.signal, signals[isSignal(buffer)]);
-                cleanBuffer(f, c);
+                cleanBuffer(f, actual_char);
                 return HAS_TOKEN;
             }
             break;
         case 38:
-            if(c == '&'){
-                addLetter(c);
+            if(actual_char == '&'){
+                addLetter(actual_char);
                 next_token.type = SN;
                 strcpy(next_token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
@@ -351,12 +348,12 @@ int checkState(char c, FILE *f){
             }else{
                 //mensagem de erro
                 printf("Error. Operador & não reconhecido na linha %d.\n", line_number);
-                return -1;
+                exit(-1);
             }
             break;
         case 39:
-            if(c == '|'){
-                addLetter(c);
+            if(actual_char == '|'){
+                addLetter(actual_char);
                 next_token.type = SN;
                 strcpy(next_token.signal, signals[isSignal(buffer)]);
                 justCleanBuffer();
@@ -364,7 +361,7 @@ int checkState(char c, FILE *f){
             }else{
                 //mensagem de erro
                 printf("Error. Operador | não reconhecido na linha %d.\n", line_number);
-                return -1;
+                exit(-1);
             }
             break;
     }

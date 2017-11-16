@@ -42,7 +42,7 @@ enum signals_name {MAIOR = 0, MENOR, MENOR_IGUAL, MAIOR_IGUAL, NEG, DIF, PT_VIRG
 //functions definition
 void readFile(char *file);
 void errorMessage(const char *error);
-int checkState(char c, FILE *f);
+int checkState(FILE *f);
 int isLetter(char letter);
 int isReservedWord(char *word);
 int isSignal(char *word);
