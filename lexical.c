@@ -4,6 +4,8 @@
 #include<ctype.h>
 #include "lexical.h"
 #include "parser.h"
+#include "table.h"
+#include "sintatic_erros.h"
 
 char actual_char;
 char last_char;
@@ -69,7 +71,7 @@ Token getToken() {
     token = next_token;
   }
 
-  while (status = checkState(file) != HAS_TOKEN && actual_char != EOF);
+  while ((status = checkState(file) != HAS_TOKEN )&& (actual_char != EOF));
 
   if(isFirstTime()) {
     if(actual_char == EOF) {
