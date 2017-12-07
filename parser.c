@@ -715,27 +715,32 @@ int atrib(){
   }
 }
 //-----------------------------------------------------
-void insert_symbol(){
+void insert_symbol() {
     //if it is function, verify if has a prototype
     if(sb_token.cat == FUNC) {
       int position = hasPrototype(sb_token);
       if(position != -1) {//has prototype just overwrite
           symbol_table[position] = sb_token;
           return;
+      } else {
+        default_insert_table();
       }
     } else if(sb_token.cat == PARAN) {
         int position = hasPrototype(last_function);
         if(position != -1) {
           insert_param_on_prototype(position);
           return;
+        } else {
+          default_insert_table();
         }
+    } else if(sb_token.cat == VAR) {
+      default_insert_table();
     }
-
-    default_insert_table();
 }
 
 void printf_symbol(){
   int i = 0;
+
   while(strcmp(symbol_table[i].name, "") != 0) {
     char type[500] = "";
     if(symbol_table[i].cat == FUNC) {
@@ -745,22 +750,29 @@ void printf_symbol(){
     } else if (symbol_table[i].cat == PARAN) {
       strcpy(type, "Parametro");
     }
-    printf("ID: %s Type: %s Zombie: %d  Tipagem: %s\n", symbol_table[i].name, type, symbol_table[i].zumbi, symbol_table[i].type);
+    printf("ID: %s Type: %s  Tipagem: %s\n", symbol_table[i].name, type, symbol_table[i].type);
     i++;
   }
 }
 
 void default_insert_table() {
   int i = 0;
-  while(strcmp(symbol_table[i].name, "") != 0) {
-    i++;
+  if(sb_token.cat == VAR) {
+    while(strcmp(symbol_table[i].name, "") != 0) {
+      i++;
+    }
+    symbol_table[i] = sb_token;
+  } else {
+    while(strcmp(symbol_table[i].type, "") != 0) {
+      i++;
+    }
+    symbol_table[i] = sb_token;
   }
-  symbol_table[i] = sb_token;
 }
 
 void insert_param_on_prototype(int position) {
   int i = position + 1;
-  while(strcmp(symbol_table[i].name, "") != 0) {
+  while(strcmp(symbol_table[i].type, "") != 0) {
     if (symbol_table[i].cat == FUNC) {
       printf("Parâmetro não esperado na linha %d\n", line_number);
       exit(-1);
@@ -859,11 +871,13 @@ void sintatic_erro(int flag){
 int hasPrototype(symbol s) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
+    if(strcmp(s.name, "fibbonaci") == 0) {
+      printf("here");
+    }
     if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0) {
       return i;
     } else if(strcmp(symbol_table[i].name, s.name) == 0 && strcmp(symbol_table[i].type, s.type) != 0) {
-      printf("S: %s Table: %s\n", s.type, symbol_table[i].type);
-      //printf("Esperado tipo '%s' para a função %s na linha %d\n", symbol_table[i].type, s.name, line_number);
+      printf("Esperado tipo '%s' para a função %s na linha %d\n", symbol_table[i].type, s.name, line_number);
       exit(-1);
     }
     i++;

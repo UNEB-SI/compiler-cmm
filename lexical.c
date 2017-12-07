@@ -55,7 +55,6 @@ void readFile(char *file_name){
         prog();
         end = clock();
         cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-        printf_symbol();
         printf("Executado em %f segundos.\n", cpu_time_used);
     }else{
         errorMessage(ERROR_NOT_FOUND_FILE);
