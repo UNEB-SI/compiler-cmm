@@ -27,14 +27,14 @@ symbol sb_token;
 symbol symbol_table[1000];
 // Counter for index on symbol table
 int cont_st;
-
-//-------------------
 void insert_symbol();
+//-------------------
 void exclude_local_symbol();
 void refix_array(int index);
 void insert_zombie();
 void printf_symbol();
 void verifyRedeclaration(symbol sb);
+int hasPrototype(int *position);
 //-------------------
 
 //int firstTime;

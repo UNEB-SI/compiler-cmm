@@ -119,22 +119,40 @@ void prog() {
   }
   // RECOGNIZE PROTOTYPE
   else if(token.type == PR && strcmp(token.pr, "prototipo") == 0) {
+    //just to keep the type of last function
+    char last_function_type[300];
     getToken();
     if(isType()) {
+      strcpy(sb_token.type, token.pr);
+      strcpy(last_function_type, token.pr);
       getToken();
+      sb_token.scope = GLOBAL;
+      strcpy(sb_token.name,token.lexem.value);
+      sb_token.zumbi = 0;// we gonna set the cat later
       if(token.type == ID) {
         getToken();
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
           getToken();
+          sb_token.cat = FUNC;
+          verifyRedeclaration(sb_token);
+          insert_symbol();
           opc_p_types();
           if(token.type == SN && strcmp(token.signal, ")") == 0) {
             getToken();
             while(token.type == SN && strcmp(token.signal, ",") == 0) {
               getToken();
+              sb_token.scope = GLOBAL;
+              strcpy(sb_token.name, token.lexem.value);
+              sb_token.zumbi = 0;// we gonna set the cat later
               if(token.type == ID) {
+                //keep function type
+                strcpy(sb_token.type, last_function_type);
                 getToken();
                 if(token.type == SN && strcmp(token.signal, "(") == 0) {
                   getToken();
+                  sb_token.cat = FUNC;
+                  verifyRedeclaration(sb_token);
+                  insert_symbol();
                   opc_p_types();
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
@@ -172,23 +190,38 @@ void prog() {
         exit(-1);
       }
     }
-
     //PROTOTYPE WITHOUT TYPE
     else if(token.type == PR && strcmp(token.pr, "semretorno") == 0) {
+      strcpy(sb_token.type, token.pr);
+      strcpy(last_function_type, token.pr);
       getToken();
+      sb_token.scope = GLOBAL;
+      strcpy(sb_token.name,token.lexem.value);
+      sb_token.zumbi = 0;// we gonna set the cat later
       if(token.type == ID){
         getToken();
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
           getToken();
+          sb_token.cat = FUNC;
+          verifyRedeclaration(sb_token);
+          insert_symbol();
           opc_p_types();
           if(token.type == SN && strcmp(token.signal, ")") == 0) {
             getToken();
             while(token.type == SN && strcmp(token.signal, ",") == 0) {
               getToken();
+              sb_token.scope = GLOBAL;
+              strcpy(sb_token.name, token.lexem.value);
+              sb_token.zumbi = 0;// we gonna set the cat later
               if(token.type == ID) {
+                //keep function type
+                strcpy(sb_token.type, last_function_type);
                 getToken();
                 if(token.type == SN && strcmp(token.signal, "(") == 0) {
                   getToken();
+                  sb_token.cat = FUNC;
+                  verifyRedeclaration(sb_token);
+                  insert_symbol();
                   opc_p_types();
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
@@ -539,19 +572,37 @@ void opc_p_types() {
     getToken();
   } else if(isType()) {
     strcpy(sb_token.type, token.pr);
+    sb_token.cat = PARAN;
+    sb_token.scope = LOCAL;
+    sb_token.zumbi = 0;
     getToken();
-    if(token.type == ID){
+    if(token.type == ID) {
+      //keep identify
+      strcpy(sb_token.name, token.lexem.value);
       getToken();
+    } else {
+        strcpy(sb_token.name, " ");
     }
+    //insert into symbol table
+    insert_symbol();
     //verify if it is declaration
     while(token.type == SN && strcmp(token.signal, ",") == 0) {
       getToken();
-      //printf("Sai daqui %d\n %s\n", token.type, token.lexem.value);
       if(isType()){
+        strcpy(sb_token.type, token.pr);
+        sb_token.cat = PARAN;
+        sb_token.scope = LOCAL;
+        sb_token.zumbi = 0;
         getToken();
         if(token.type == ID) {
+          //keep identify
+          strcpy(sb_token.name, token.lexem.value);
           getToken();
+        } else {
+            strcpy(sb_token.name, " ");
         }
+        //insert into symbol table
+        insert_symbol();
       } else {
         sintatic_erro(MISSING_TYPE);
         exit(-1);
@@ -665,7 +716,7 @@ void insert_symbol(){
 void printf_symbol(){
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
-    printf("ID: %s Zombie: %d\n", symbol_table[i].name,  symbol_table[i].zumbi);
+    printf("ID: %s Type: %d Zombie: %d  Tipagem: %s\n", symbol_table[i].name, symbol_table[i].cat, symbol_table[i].zumbi, symbol_table[i].type);
     i++;
   }
 }
