@@ -21,6 +21,7 @@ typedef struct{
     token_cat cat;
     char type[10];
     int scope;
+    int fullfill;
 }symbol;
 
 symbol sb_token;
@@ -34,7 +35,9 @@ void refix_array(int index);
 void insert_zombie();
 void printf_symbol();
 void verifyRedeclaration(symbol sb);
-int hasPrototype(int *position);
+int hasPrototype(symbol s);
+void insert_param_on_prototype(int position);
+void default_insert_table();
 //-------------------
 
 //int firstTime;

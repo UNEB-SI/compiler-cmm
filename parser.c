@@ -6,12 +6,14 @@
 
 //Holds symbol table position
 int cont_st = 0;
+symbol last_function;
 
 void prog() {
   // RECOGNIZE GLOBAL DECLARATION OR DEFAULT FUNCTION BODY
   if(isType()){
-    getToken();
+    //just to keep the type of last function
     strcpy(sb_token.type, token.pr);
+    getToken();
     sb_token.scope = GLOBAL;
     strcpy(sb_token.name,token.lexem.value);
     sb_token.zumbi = 0;// we gonna set the cat later
@@ -46,6 +48,7 @@ void prog() {
         sb_token.cat = FUNC;
         verifyRedeclaration(sb_token);
         insert_symbol();
+        last_function = sb_token;
         types_param();
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
@@ -128,7 +131,7 @@ void prog() {
       getToken();
       sb_token.scope = GLOBAL;
       strcpy(sb_token.name,token.lexem.value);
-      sb_token.zumbi = 0;// we gonna set the cat later
+      sb_token.zumbi = 1;// we gonna set the cat later
       if(token.type == ID) {
         getToken();
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
@@ -143,7 +146,7 @@ void prog() {
               getToken();
               sb_token.scope = GLOBAL;
               strcpy(sb_token.name, token.lexem.value);
-              sb_token.zumbi = 0;// we gonna set the cat later
+              sb_token.zumbi = 1;// we gonna set the cat later
               if(token.type == ID) {
                 //keep function type
                 strcpy(sb_token.type, last_function_type);
@@ -197,7 +200,7 @@ void prog() {
       getToken();
       sb_token.scope = GLOBAL;
       strcpy(sb_token.name,token.lexem.value);
-      sb_token.zumbi = 0;// we gonna set the cat later
+      sb_token.zumbi = 1;// we gonna set the cat later
       if(token.type == ID){
         getToken();
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
@@ -212,7 +215,7 @@ void prog() {
               getToken();
               sb_token.scope = GLOBAL;
               strcpy(sb_token.name, token.lexem.value);
-              sb_token.zumbi = 0;// we gonna set the cat later
+              sb_token.zumbi = 1;// we gonna set the cat later
               if(token.type == ID) {
                 //keep function type
                 strcpy(sb_token.type, last_function_type);
@@ -273,6 +276,7 @@ void prog() {
       sb_token.cat = FUNC;
       verifyRedeclaration(sb_token);
       insert_symbol();
+      last_function = sb_token;
       getToken();
       if(token.type == SN && strcmp(token.signal, "(") == 0) {//if it is a function
         getToken();
@@ -382,8 +386,8 @@ void types_param(){
       while(token.type == SN && strcmp(token.signal, ",") == 0) {
         getToken();
         if(isType()){
-          getToken();
           strcpy(sb_token.type, token.pr);
+          getToken();
           sb_token.scope = LOCAL;
           sb_token.cat = PARAN;
           strcpy(sb_token.name,token.lexem.value);
@@ -575,10 +579,12 @@ void opc_p_types() {
     sb_token.cat = PARAN;
     sb_token.scope = LOCAL;
     sb_token.zumbi = 0;
+    sb_token.fullfill = 0;
     getToken();
     if(token.type == ID) {
       //keep identify
       strcpy(sb_token.name, token.lexem.value);
+      sb_token.zumbi = 1;
       getToken();
     } else {
         strcpy(sb_token.name, " ");
@@ -593,10 +599,12 @@ void opc_p_types() {
         sb_token.cat = PARAN;
         sb_token.scope = LOCAL;
         sb_token.zumbi = 0;
+        sb_token.fullfill = 0;
         getToken();
         if(token.type == ID) {
           //keep identify
           strcpy(sb_token.name, token.lexem.value);
+          sb_token.zumbi = 1;
           getToken();
         } else {
             strcpy(sb_token.name, " ");
@@ -707,16 +715,66 @@ int atrib(){
   }
 }
 //-----------------------------------------------------
-
 void insert_symbol(){
-    symbol_table[cont_st] = sb_token;
-    cont_st++;
+    //if it is function, verify if has a prototype
+    if(sb_token.cat == FUNC) {
+      int position = hasPrototype(sb_token);
+      if(position != -1) {//has prototype just overwrite
+          symbol_table[position] = sb_token;
+          return;
+      }
+    } else if(sb_token.cat == PARAN) {
+        int position = hasPrototype(last_function);
+        if(position != -1) {
+          insert_param_on_prototype(position);
+          return;
+        }
+    }
+
+    default_insert_table();
 }
 
 void printf_symbol(){
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
-    printf("ID: %s Type: %d Zombie: %d  Tipagem: %s\n", symbol_table[i].name, symbol_table[i].cat, symbol_table[i].zumbi, symbol_table[i].type);
+    char type[500] = "";
+    if(symbol_table[i].cat == FUNC) {
+        strcpy(type, "Função");
+    } else if(symbol_table[i].cat == VAR) {
+      strcpy(type, "Variável");
+    } else if (symbol_table[i].cat == PARAN) {
+      strcpy(type, "Parametro");
+    }
+    printf("ID: %s Type: %s Zombie: %d  Tipagem: %s\n", symbol_table[i].name, type, symbol_table[i].zumbi, symbol_table[i].type);
+    i++;
+  }
+}
+
+void default_insert_table() {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    i++;
+  }
+  symbol_table[i] = sb_token;
+}
+
+void insert_param_on_prototype(int position) {
+  int i = position + 1;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if (symbol_table[i].cat == FUNC) {
+      printf("Parâmetro não esperado na linha %d\n", line_number);
+      exit(-1);
+    } else if (!symbol_table[i].fullfill && symbol_table[i].cat == PARAN) {
+        if(strcmp(symbol_table[i].type, sb_token.type) == 0) {
+           symbol_table[i] = sb_token;
+           symbol_table[i].fullfill = 1;
+           return;
+        } else {
+          printf("S: %s Symbol: %s\n", sb_token.type, symbol_table[i].type);
+          printf("Esperado tipo %s, encontrado tipo %s em '%s' na linha %d\n", symbol_table[i].type, sb_token.type, last_function.name,line_number);
+          exit(-1);
+        }
+    }
     i++;
   }
 }
@@ -796,4 +854,19 @@ void sintatic_erro(int flag){
             printf("Erro esperado ',' na linha %d\n", line_number);
         break;
     }
+}
+
+int hasPrototype(symbol s) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0) {
+      return i;
+    } else if(strcmp(symbol_table[i].name, s.name) == 0 && strcmp(symbol_table[i].type, s.type) != 0) {
+      printf("S: %s Table: %s\n", s.type, symbol_table[i].type);
+      //printf("Esperado tipo '%s' para a função %s na linha %d\n", symbol_table[i].type, s.name, line_number);
+      exit(-1);
+    }
+    i++;
+  }
+  return -1;
 }
