@@ -22,6 +22,7 @@ typedef struct{
     char type[10];
     int scope;
     int fullfill;
+    float mem_space;
 }symbol;
 
 symbol sb_token;
