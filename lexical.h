@@ -9,7 +9,6 @@
  clock_t start, end;
  double cpu_time_used;
 
-
 typedef struct {
   int table_position;
   char value[300];
