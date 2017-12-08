@@ -3,10 +3,11 @@
 #include <string.h>
 #include "lexical.h"
 #include "parser.h"
-
+#include "semantic.h"
 //Holds symbol table position
 int cont_st = 0;
 symbol last_function;
+int contAuxLabel = 0;
 
 void prog() {
   // RECOGNIZE GLOBAL DECLARATION OR DEFAULT FUNCTION BODY
@@ -418,24 +419,37 @@ void types_param(){
 
 int cmd(){
   //SE EXPRESSION
+  //variaveis para auxiliar o for
+    int labelw,labely,labelz,labelx;
+  //-----------------------------
   if(token.type == PR && strcmp(token.pr, "se") == 0){
+   // getLabel();
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
       expr();
+      labely = getGoTO("GOFALSE");
       if(token.type == SN && strcmp(token.signal,")") == 0){
+
         getToken();
         if(!cmd()) {
           sintatic_erro(MISSING_CMD);
           exit(-1);
         }
         if(token.type == PR && strcmp(token.pr,"senao") == 0){
+          labelx = getGoTO("GOTO");
+          printf("LABEL L%d\n",labely);
+          getLabel();
           getToken();
           if(!cmd()) {
             sintatic_erro(MISSING_CMD);
             exit(-1);
           }
+          printf("LABEL L%d\n",labelx);
+        }else{
+            printf("LABEL L%d\n",labely);
         }
+
         return 1;
       }else{
         sintatic_erro(MISSING_CLOSE_PAREN);
@@ -450,14 +464,18 @@ int cmd(){
   else if(token.type == PR && strcmp(token.pr,"enquanto") == 0){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
+      contAuxLabel = getLabel();
       getToken();
       expr();//add return
+      labelw = getGoTO("GOFALSE");
       if(token.type == SN && strcmp(token.signal,")") == 0){
         getToken();
         if(!cmd()) {
           sintatic_erro(MISSING_CMD);
           exit(-1);
         }
+        printf("GOTO L%d\n",contAuxLabel); //Aqui termina o while
+        printf("LABEL L%d\n",labelw);
         return 1;
       }else{
         sintatic_erro(MISSING_CLOSE_PAREN);
@@ -467,6 +485,8 @@ int cmd(){
       sintatic_erro(MISSING_OPEN_PAREN);
       exit(1);
     }
+
+
   }
   // PARA EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"para") == 0){
@@ -474,18 +494,25 @@ int cmd(){
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
       atrib();
+      labelw = getLabel();
       if(token.type == SN && strcmp(token.signal,";") == 0){
         getToken();
         expr();
+        labelx = getGoTO("GOFALSE");
+        labely = getGoTO("GOTO");
+        labelz = getLabel();
         if(token.type == SN && strcmp(token.signal,";") == 0){
           getToken();
           atrib();
+          printf("GOTO L%d\n",labelw);
+          printf("LABEL L%d\n",labely);
           if(token.type == SN && strcmp(token.signal,")") == 0){
             getToken();
             if(!cmd()){
-
               exit(-1);
             }
+            printf("GOTO L%d\n",labelz);
+            printf("LABEL L%d",labelx);
             return 1;
           }else{
             sintatic_erro(MISSING_CLOSE_PAREN);
@@ -506,6 +533,7 @@ int cmd(){
   }
   // RETORNE EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"retorne") == 0){
+    printf("RET\n");
     getToken();
     expr();
     if(token.type == SN && strcmp(token.signal,";") == 0){
@@ -644,18 +672,26 @@ void expr_simp(){
 }
 
 int op_rel(){ // Não acrescenta token novo
+    Token aux_token;
   if(token.type == SN && (strcmp(token.signal,"==") == 0 || strcmp(token.signal,"!=") == 0 || strcmp(token.signal,"<=") == 0 || strcmp(token.signal,"<") == 0 || strcmp(token.signal,">") == 0 || strcmp(token.signal,">=") == 0)){
+    aux_token = token;
     getToken();
+    getLoadOrPush(token);
+    printf("SUB\n");
+    operator_check(aux_token);
     return 1;
   }
   return 0;
 }
 
 void termo(){
+int and_aux = 0;
   fator();
   while(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
+
       getToken();
       fator();
+
   }
 }
 
@@ -679,6 +715,7 @@ void fator(){
   }
   // CONSTANTS TYPE
   else if(token.type == INTCON || token.type == REALCON || token.type == CARACCON || token.type  == CADEIACON || token.type == ID){
+    getLoadOrPush(token);
     getToken();
   }
   // EXPRESSION BETWEEN PARENTHESES
@@ -701,6 +738,7 @@ void fator(){
 
 int atrib(){
   if(token.type == ID){
+    printf("LOAD %s\n",token.lexem.value);
     getToken();
     if(token.type == SN && strcmp(token.signal,"=") == 0){
       getToken();

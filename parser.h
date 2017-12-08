@@ -15,7 +15,7 @@ MISSING_OPEN_KEY, MISSING_CLOSE_KEY, MISSING_CMD, MISSING_EQUAL_SNG, SYMBOL_NOT_
 MISSING_COMMA};
 
 
-typedef struct{
+ typedef struct{
     char name[500];
     int zumbi;
     token_cat cat;
