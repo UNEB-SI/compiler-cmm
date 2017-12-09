@@ -1,16 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "table.h"
 #include "lexical.h"
 #include "parser.h"
-
-int cont_st = 0;
+#include "sintatic_erros.h"
 
 void prog() {
   // RECOGNIZE GLOBAL DECLARATION OR DEFAULT FUNCTION BODY
   if(isType()){
-    getToken();
     strcpy(sb_token.type, token.pr);
+    getToken();
     sb_token.scope = GLOBAL;
     strcpy(sb_token.name,token.lexem.value);
     sb_token.zumbi = 0;// we gonna set the cat later
@@ -31,7 +31,7 @@ void prog() {
           insert_symbol();
           getToken();
         } else {
-            sintatic_erro(2);
+            sintatic_erro(MISSING_ID);
           exit(-1);
         }
       }
@@ -45,6 +45,7 @@ void prog() {
         sb_token.cat = FUNC;
         verifyRedeclaration(sb_token);
         insert_symbol();
+        last_function = sb_token;
         types_param();
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
@@ -72,7 +73,7 @@ void prog() {
                     insert_symbol();
                     getToken();
                   } else {
-                    sintatic_erro(2);
+                    sintatic_erro(MISSING_ID);
                     exit(-1);
                   }
                 }
@@ -80,7 +81,7 @@ void prog() {
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
                   getToken();
                 } else {
-                  sintatic_erro(1);
+                  sintatic_erro(MISSING_SEMI_COLON);
                   exit(-1);
                 }
               }
@@ -95,58 +96,76 @@ void prog() {
               exclude_local_symbol();
               prog();
             } else {
-              sintatic_erro(6);
+              sintatic_erro(MISSING_CLOSE_KEY);
               exit(-1);
             }
           } else {
-            sintatic_erro(5);
+            sintatic_erro(MISSING_OPEN_KEY);
             exit(-1);
           }
         } else {
-          sintatic_erro(3);
+          sintatic_erro(MISSING_CLOSE_PAREN);
           exit(-1);
         }
 
       } else{
-        sintatic_erro(13);
+        sintatic_erro(SYMBOL_NOT_RECOG);
         exit(-1);
       }
     } else {
-      sintatic_erro(2);
+      sintatic_erro(MISSING_ID);
       exit(-1);
     }
   }
   // RECOGNIZE PROTOTYPE
   else if(token.type == PR && strcmp(token.pr, "prototipo") == 0) {
+    //just to keep the type of last function
+    char last_function_type[300];
     getToken();
     if(isType()) {
+      strcpy(sb_token.type, token.pr);
+      strcpy(last_function_type, token.pr);
       getToken();
+      sb_token.scope = GLOBAL;
+      strcpy(sb_token.name,token.lexem.value);
+      sb_token.zumbi = 1;// we gonna set the cat later
       if(token.type == ID) {
         getToken();
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
           getToken();
+          sb_token.cat = FUNC;
+          verifyRedeclaration(sb_token);
+          insert_symbol();
           opc_p_types();
           if(token.type == SN && strcmp(token.signal, ")") == 0) {
             getToken();
             while(token.type == SN && strcmp(token.signal, ",") == 0) {
               getToken();
+              sb_token.scope = GLOBAL;
+              strcpy(sb_token.name, token.lexem.value);
+              sb_token.zumbi = 1;// we gonna set the cat later
               if(token.type == ID) {
+                //keep function type
+                strcpy(sb_token.type, last_function_type);
                 getToken();
                 if(token.type == SN && strcmp(token.signal, "(") == 0) {
                   getToken();
+                  sb_token.cat = FUNC;
+                  verifyRedeclaration(sb_token);
+                  insert_symbol();
                   opc_p_types();
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
                   } else {
-                    sintatic_erro(3);
+                    sintatic_erro(MISSING_CLOSE_PAREN);
                     exit(-1);
                   }
                 } else {
-                  sintatic_erro(4);
+                  sintatic_erro(MISSING_OPEN_PAREN);
                   exit(-1);
                 }
               } else {
-                sintatic_erro(2);
+                sintatic_erro(MISSING_ID);
                 exit(-1);
               }
             }
@@ -155,52 +174,67 @@ void prog() {
               getToken();
               prog();
             } else {
-              sintatic_erro(1);
+              sintatic_erro(MISSING_SEMI_COLON);
               exit(-1);
             }
           } else {
-            sintatic_erro(3);
+            sintatic_erro(MISSING_CLOSE_PAREN);
             exit(-1);
           }
         } else {
-          sintatic_erro(4);
+          sintatic_erro(MISSING_OPEN_PAREN);
           exit(-1);
         }
       } else {
-        sintatic_erro(2);
+        sintatic_erro(MISSING_ID);
         exit(-1);
       }
     }
-
     //PROTOTYPE WITHOUT TYPE
     else if(token.type == PR && strcmp(token.pr, "semretorno") == 0) {
+      strcpy(sb_token.type, token.pr);
+      strcpy(last_function_type, token.pr);
       getToken();
+      sb_token.scope = GLOBAL;
+      strcpy(sb_token.name,token.lexem.value);
+      sb_token.zumbi = 1;// we gonna set the cat later
       if(token.type == ID){
         getToken();
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
           getToken();
+          sb_token.cat = FUNC;
+          verifyRedeclaration(sb_token);
+          insert_symbol();
           opc_p_types();
           if(token.type == SN && strcmp(token.signal, ")") == 0) {
             getToken();
             while(token.type == SN && strcmp(token.signal, ",") == 0) {
               getToken();
+              sb_token.scope = GLOBAL;
+              strcpy(sb_token.name, token.lexem.value);
+              sb_token.zumbi = 1;// we gonna set the cat later
               if(token.type == ID) {
+                //keep function type
+                strcpy(sb_token.type, last_function_type);
                 getToken();
                 if(token.type == SN && strcmp(token.signal, "(") == 0) {
                   getToken();
+                  sb_token.cat = FUNC;
+                  verifyRedeclaration(sb_token);
+                  insert_symbol();
                   opc_p_types();
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
                   } else {
-                    sintatic_erro(3);
+                    sintatic_erro(MISSING_CLOSE_PAREN);
                     exit(-1);
                   }
                 } else {
-                  sintatic_erro(4);
+                  sintatic_erro(MISSING_OPEN_PAREN);
                   exit(-1);
                 }
               } else {
-                sintatic_erro(2);
+                sintatic_erro(MISSING_ID);
                 exit(-1);
               }
             }
@@ -209,22 +243,22 @@ void prog() {
               getToken();
               prog();
             } else {
-              sintatic_erro(1);
+              sintatic_erro(MISSING_SEMI_COLON);
               exit(-1);
             }
           } else {
-            sintatic_erro(3);
+            sintatic_erro(MISSING_CLOSE_PAREN);
           }
         } else {
-          sintatic_erro(4);
+          sintatic_erro(MISSING_OPEN_PAREN);
           exit(-1);
         }
       } else {
-        sintatic_erro(2);
+        sintatic_erro(MISSING_ID);
         exit(-1);
       }
     }else {
-      sintatic_erro(11);
+      sintatic_erro(MISSING_TYPE);
       exit(-1);
     }
   }
@@ -239,6 +273,7 @@ void prog() {
       sb_token.cat = FUNC;
       verifyRedeclaration(sb_token);
       insert_symbol();
+      last_function = sb_token;
       getToken();
       if(token.type == SN && strcmp(token.signal, "(") == 0) {//if it is a function
         getToken();
@@ -267,7 +302,7 @@ void prog() {
                     insert_symbol();
                     getToken();
                   } else {
-                    sintatic_erro(2);
+                    sintatic_erro(MISSING_ID);
                     exit(-1);
                   }
                 }
@@ -275,7 +310,7 @@ void prog() {
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
                   getToken();
                 } else {
-                  sintatic_erro(1);
+                  sintatic_erro(MISSING_SEMI_COLON);
                   exit(-1);
                 }
               }
@@ -288,33 +323,33 @@ void prog() {
               exclude_local_symbol();
               prog();
             } else {
-                sintatic_erro(6);
+                sintatic_erro(MISSING_CLOSE_KEY);
               exit(-1);
             }
           } else {
-            sintatic_erro(4);
+            sintatic_erro(MISSING_OPEN_PAREN);
             exit(-1);
           }
         } else {
-          sintatic_erro(3);
+          sintatic_erro(MISSING_CLOSE_PAREN);
           exit(-1);
         }
 
       } else{
-        sintatic_erro(4);
+        sintatic_erro(MISSING_OPEN_PAREN);
         exit(-1);
       }
     } else {
-      sintatic_erro(7);
+      sintatic_erro(MISSING_ID);
       exit(-1);
     }
   }
   else if(token.type == eOF){
-    printf("Sucesso na compilação!\n");
-    exit(0);
+    printf("Sucesso na compilacao!\n");
+    return;
   }
-  else{
-    sintatic_erro(14);
+  else {
+    sintatic_erro(SYMBOL_NOT_RECOG);
     exit(-1);
   }
 }
@@ -348,8 +383,8 @@ void types_param(){
       while(token.type == SN && strcmp(token.signal, ",") == 0) {
         getToken();
         if(isType()){
-          getToken();
           strcpy(sb_token.type, token.pr);
+          getToken();
           sb_token.scope = LOCAL;
           sb_token.cat = PARAN;
           strcpy(sb_token.name,token.lexem.value);
@@ -360,20 +395,20 @@ void types_param(){
             verifyRedeclaration(sb_token);
             insert_symbol();
           }else {
-            sintatic_erro(2);
+            sintatic_erro(MISSING_ID);
             exit(-1);
           }
         } else {
-            sintatic_erro(12);
+            sintatic_erro(MISSING_COMMA);
           exit(-1);
         }
       }
     } else {
-      sintatic_erro(2);
+      sintatic_erro(MISSING_ID);
       exit(-1);
     }
   } else {
-    sintatic_erro(10);
+    sintatic_erro(SYMBOL_NOT_RECOG);
     exit(-1);
   }
 }
@@ -388,23 +423,23 @@ int cmd(){
       if(token.type == SN && strcmp(token.signal,")") == 0){
         getToken();
         if(!cmd()) {
-          sintatic_erro(8);
+          sintatic_erro(MISSING_CMD);
           exit(-1);
         }
         if(token.type == PR && strcmp(token.pr,"senao") == 0){
           getToken();
           if(!cmd()) {
-            sintatic_erro(8);
+            sintatic_erro(MISSING_CMD);
             exit(-1);
           }
         }
         return 1;
       }else{
-        sintatic_erro(3);
+        sintatic_erro(MISSING_CLOSE_PAREN);
         exit(-1);
       }
     }else{
-      sintatic_erro(4);
+      sintatic_erro(MISSING_OPEN_PAREN);
       exit(-1);
     }
   }
@@ -417,16 +452,16 @@ int cmd(){
       if(token.type == SN && strcmp(token.signal,")") == 0){
         getToken();
         if(!cmd()) {
-          sintatic_erro(8);
+          sintatic_erro(MISSING_CMD);
           exit(-1);
         }
         return 1;
       }else{
-        sintatic_erro(3);
+        sintatic_erro(MISSING_CLOSE_PAREN);
         exit(1);
       }
     }else{
-      sintatic_erro(4);
+      sintatic_erro(MISSING_OPEN_PAREN);
       exit(1);
     }
   }
@@ -450,19 +485,19 @@ int cmd(){
             }
             return 1;
           }else{
-            sintatic_erro(3);
+            sintatic_erro(MISSING_CLOSE_PAREN);
             exit(-1);
           }
         }else{
-          sintatic_erro(1);
+          sintatic_erro(MISSING_SEMI_COLON);
           exit(-1);
         }
       }else{
-        sintatic_erro(1);
+        sintatic_erro(MISSING_SEMI_COLON);
         exit(-1);
       }
     } else {
-      sintatic_erro(4);
+      sintatic_erro(MISSING_OPEN_PAREN);
       exit(-1);
     }
   }
@@ -474,7 +509,7 @@ int cmd(){
       getToken();
       return 1;
     }else{
-      sintatic_erro(1);
+      sintatic_erro(MISSING_SEMI_COLON);
       exit(-1);
     }
   }
@@ -486,7 +521,7 @@ int cmd(){
       getToken();
       return 1;
     } else {
-      sintatic_erro(6);
+      sintatic_erro(MISSING_CLOSE_KEY);
       exit(-1);
     }
   }
@@ -509,12 +544,12 @@ int cmd(){
           getToken();
           return 1;
         } else {
-          sintatic_erro(1);
+          sintatic_erro(MISSING_SEMI_COLON);
           exit(-1);
         }
     } else {
       // printf("Sou %d %s\n", token.type, token.signal);
-      sintatic_erro(4);
+      sintatic_erro(MISSING_OPEN_PAREN);
       exit(-1);
     }
   }
@@ -524,7 +559,7 @@ int cmd(){
       getToken();
       return 1;
     } else {
-      sintatic_erro(1);
+      sintatic_erro(MISSING_SEMI_COLON);
       exit(-1);
     }
   }
@@ -538,26 +573,48 @@ void opc_p_types() {
     getToken();
   } else if(isType()) {
     strcpy(sb_token.type, token.pr);
+    sb_token.cat = PARAN;
+    sb_token.scope = LOCAL;
+    sb_token.zumbi = 0;
+    sb_token.fullfill = 0;
     getToken();
-    if(token.type == ID){
+    if(token.type == ID) {
+      //keep identify
+      strcpy(sb_token.name, token.lexem.value);
+      sb_token.zumbi = 1;
       getToken();
+    } else {
+        strcpy(sb_token.name, " ");
     }
+    //insert into symbol table
+    insert_symbol();
     //verify if it is declaration
     while(token.type == SN && strcmp(token.signal, ",") == 0) {
       getToken();
-      //printf("Sai daqui %d\n %s\n", token.type, token.lexem.value);
       if(isType()){
+        strcpy(sb_token.type, token.pr);
+        sb_token.cat = PARAN;
+        sb_token.scope = LOCAL;
+        sb_token.zumbi = 0;
+        sb_token.fullfill = 0;
         getToken();
         if(token.type == ID) {
+          //keep identify
+          strcpy(sb_token.name, token.lexem.value);
+          sb_token.zumbi = 1;
           getToken();
+        } else {
+            strcpy(sb_token.name, " ");
         }
+        //insert into symbol table
+        insert_symbol();
       } else {
-        sintatic_erro(11);
+        sintatic_erro(MISSING_TYPE);
         exit(-1);
       }
     }
   } else {
-    sintatic_erro(10);
+    sintatic_erro(SYMBOL_NOT_RECOG);
     exit(-1);
   }
 }
@@ -613,7 +670,7 @@ void fator(){
     if(token.type == SN && strcmp(token.signal,")") == 0){
       getToken();
     }else{
-      sintatic_erro(3);
+      sintatic_erro(MISSING_CLOSE_PAREN);
       exit(-1);
     }
   }
@@ -628,7 +685,7 @@ void fator(){
     if(token.type == SN && strcmp(token.signal, ")") == 0) {
       getToken();
     } else {
-      sintatic_erro(3);
+      sintatic_erro(MISSING_CLOSE_PAREN);
       exit(-1);
     }
   }
@@ -647,110 +704,10 @@ int atrib(){
       expr();
       return 1;
     }else{
-      sintatic_erro(9);
+      sintatic_erro(MISSING_EQUAL_SNG);
       exit(-1);
     }
   }else {
     return 0;
   }
-}
-//-----------------------------------------------------
-
-void insert_symbol(){
-    symbol_table[cont_st] = sb_token;
-    cont_st++;
-}
-
-void printf_symbol(){
-  int i = 0;
-  while(strcmp(symbol_table[i].name, "") != 0) {
-    printf("ID: %s Zombie: %d\n", symbol_table[i].name,  symbol_table[i].zumbi);
-    i++;
-  }
-}
-
-void insert_zombie(){
-  int i = 0;
-  while(strcmp(symbol_table[i].name, "") != 0) {
-    if(symbol_table[i].cat == PARAN) {
-      symbol_table[i].zumbi = 1;
-    }
-    i++;
-  }
-}
-
-void exclude_local_symbol(){
-  int i = 0;
-  while(strcmp(symbol_table[i].name, "") != 0) {
-    if(symbol_table[i].scope == LOCAL && !symbol_table[i].zumbi) {
-      refix_array(i);
-    } else {
-      i++;
-    }
-  }
-}
-
-void refix_array(int index) {
-  int i;
-  for(i = index; i < (sizeof(symbol_table)/sizeof(*symbol_table)) - 1; i++){
-    symbol_table[i] = symbol_table[i+1];
-  }
-}
-
-void verifyRedeclaration(symbol sb) {
-  int i = 0;
-  while(strcmp(symbol_table[i].name, "") != 0) {
-    if(symbol_table[i].scope == sb.scope && strcmp(symbol_table[i].name, sb.name) == 0 && !symbol_table[i].zumbi) {
-      printf("Redeclaração de '%s' na linha %d\n", sb.name, line_number);
-      exit(-1);
-    }
-    i++;
-  }
-}
-
-void sintatic_erro(int flag){
-    switch (flag){
-        case 1:
-            printf("';' Esperado na linha %d\n", line_number);
-        break;
-        case 2:
-            printf("Esperado identificador na linha %d\n", line_number);
-        break;
-        case 3:
-            printf("Esperado ')' na linha %d\n", line_number);
-        break;
-        case 4:
-            printf("Esperado '(' na linha %d\n", line_number);
-        break;
-        case 5:
-            printf("'{' Esperado na linha %d\n", line_number);
-        break;
-        case 6:
-            printf("'}' Esperado na linha %d\n", line_number);
-        break;
-        case 7:
-            printf("Esperado identificador na linha %d\n", line_number);
-        break;
-        case 8:
-            printf("Comando esperado na linha %d\n ", line_number);
-        break;
-        case 9:
-            printf("Esperado sinal '=' na linha %d",line_number);
-        break;
-        case 10:
-            printf("Simbolo não identificado na linha %d\n", line_number);
-        break;
-        case 11:
-            printf("Erro esperado tipo na linha %d\n", line_number);
-        break;
-        case 12:
-            printf("Erro esperado ',' na linha %d\n", line_number);
-        break;
-        case 13:
-            printf("Entrada inválida na linha %d\n", line_number);
-        break;
-        case 14:
-            printf("Esperado fim de arquivo na linha %d\n",line_number);
-        break;
-    }
 }

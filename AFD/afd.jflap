@@ -43,6 +43,12 @@
 				<symbol>}</symbol>
 				<symbol>í</symbol>
 			</structure>
+			<structure type="start_state">
+				<state>
+					<name>q0</name>
+					<id>0</id>
+				</state>
+			</structure>
 			<structure type="state_set">
 				<state>
 					<name>q0</name>
@@ -239,12 +245,6 @@
 				<state>
 					<name>q48</name>
 					<id>48</id>
-				</state>
-			</structure>
-			<structure type="start_state">
-				<state>
-					<name>q0</name>
-					<id>0</id>
 				</state>
 			</structure>
 			<structure type="final_states">
@@ -1123,36 +1123,36 @@
 			<state_point>
 				<state>8</state>
 				<point>
-					<x>658.0</x>
+					<x>659.0</x>
 					<y>2341.0</y>
 				</point>
 			</state_point>
 			<state_point>
 				<state>9</state>
 				<point>
-					<x>710.0</x>
-					<y>2496.0</y>
+					<x>720.0</x>
+					<y>2443.0</y>
 				</point>
 			</state_point>
 			<state_point>
 				<state>10</state>
 				<point>
-					<x>801.0</x>
-					<y>2393.0</y>
+					<x>803.0</x>
+					<y>2400.0</y>
 				</point>
 			</state_point>
 			<state_point>
 				<state>11</state>
 				<point>
-					<x>975.0</x>
-					<y>2456.0</y>
+					<x>1030.0</x>
+					<y>2479.0</y>
 				</point>
 			</state_point>
 			<state_point>
 				<state>12</state>
 				<point>
-					<x>1142.0</x>
-					<y>2437.0</y>
+					<x>1194.0</x>
+					<y>2446.0</y>
 				</point>
 			</state_point>
 			<state_point>
@@ -1485,7 +1485,7 @@
 				<from>8</from>
 				<to>48</to>
 				<point>
-					<x>637.0</x>
+					<x>637.5</x>
 					<y>2408.5</y>
 				</point>
 			</control_point>
@@ -1581,32 +1581,32 @@
 				<from>9</from>
 				<to>11</to>
 				<point>
-					<x>842.5</x>
-					<y>2476.0</y>
+					<x>875.0</x>
+					<y>2461.0</y>
 				</point>
 			</control_point>
 			<control_point>
 				<from>11</from>
 				<to>11</to>
 				<point>
-					<x>975.0</x>
-					<y>2386.0</y>
+					<x>1030.0</x>
+					<y>2409.0</y>
 				</point>
 			</control_point>
 			<control_point>
 				<from>8</from>
 				<to>9</to>
 				<point>
-					<x>684.0</x>
-					<y>2418.5</y>
+					<x>689.5</x>
+					<y>2392.0</y>
 				</point>
 			</control_point>
 			<control_point>
 				<from>10</from>
 				<to>11</to>
 				<point>
-					<x>893.488931590961</x>
-					<y>2409.340093701155</y>
+					<x>921.7993397220978</x>
+					<y>2424.2727833301747</y>
 				</point>
 			</control_point>
 			<control_point>
@@ -1677,7 +1677,7 @@
 				<from>0</from>
 				<to>8</to>
 				<point>
-					<x>637.0</x>
+					<x>637.5</x>
 					<y>2282.5</y>
 				</point>
 			</control_point>
@@ -1789,8 +1789,8 @@
 				<from>10</from>
 				<to>10</to>
 				<point>
-					<x>801.0</x>
-					<y>2323.0</y>
+					<x>803.0</x>
+					<y>2330.0</y>
 				</point>
 			</control_point>
 			<control_point>
@@ -1813,8 +1813,8 @@
 				<from>11</from>
 				<to>10</to>
 				<point>
-					<x>882.511068409039</x>
-					<y>2439.659906298845</y>
+					<x>911.2006602779022</x>
+					<y>2454.7272166698253</y>
 				</point>
 			</control_point>
 			<control_point>
@@ -1845,16 +1845,16 @@
 				<from>9</from>
 				<to>10</to>
 				<point>
-					<x>755.5</x>
-					<y>2444.5</y>
+					<x>761.5</x>
+					<y>2421.5</y>
 				</point>
 			</control_point>
 			<control_point>
 				<from>11</from>
 				<to>12</to>
 				<point>
-					<x>1058.5</x>
-					<y>2446.5</y>
+					<x>1112.0</x>
+					<y>2462.5</y>
 				</point>
 			</control_point>
 			<control_point>
@@ -1937,6 +1937,13 @@
 			<point>
 				<x>1249.0</x>
 				<y>1988.0</y>
+			</point>
+		</note>
+		<note>
+			<value>&lt;COMENTARIO&gt;</value>
+			<point>
+				<x>1194.0</x>
+				<y>2446.0</y>
 			</point>
 		</note>
 		<note>
@@ -2028,13 +2035,6 @@
 			<point>
 				<x>152.0</x>
 				<y>2243.0</y>
-			</point>
-		</note>
-		<note>
-			<value>&lt;COMENTARIO&gt;</value>
-			<point>
-				<x>1142.0</x>
-				<y>2437.0</y>
 			</point>
 		</note>
 		<note>
