@@ -133,10 +133,20 @@ void refix_array(int index) {
 
 void verifyRedeclaration(symbol sb) {
   int i = 0;
+
   while(strcmp(symbol_table[i].name, "") != 0) {
-    if(symbol_table[i].scope == sb.scope && strcmp(symbol_table[i].name, sb.name) == 0 && !symbol_table[i].zumbi) {
-      printf("Redeclaração de '%s' na linha %d\n", sb.name, line_number);
-      exit(-1);
+    //verify prototype Redeclaration
+    if(sb.cat == FUNC && sb.zumbi) {
+      if(symbol_table[i].scope == sb.scope && strcmp(symbol_table[i].name, sb.name) == 0
+         && symbol_table[i].zumbi == sb.zumbi) {
+            printf("Redeclaração da função '%s' na linha %d\n", sb.name, line_number);
+            exit(-1);
+         }
+    } else {
+      if(symbol_table[i].scope == sb.scope && strcmp(symbol_table[i].name, sb.name) == 0 && !symbol_table[i].zumbi) {
+        printf("Redeclaração de '%s' na linha %d\n", sb.name, line_number);
+        exit(-1);
+      }
     }
     i++;
   }
