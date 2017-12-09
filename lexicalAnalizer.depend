@@ -1,0 +1,31 @@
+# depslib dependency file v1.0
+1512678337 source:c:\users\fernando\desktop\compilador\temp\university-compiler\lexical.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	"lexical.h"
+	"parser.h"
+
+1512694151 c:\users\fernando\desktop\compilador\temp\university-compiler\lexical.h
+	<time.h>
+
+1512680219 c:\users\fernando\desktop\compilador\temp\university-compiler\parser.h
+
+1512783986 source:c:\users\fernando\desktop\compilador\temp\university-compiler\semantic.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"semantic.h"
+	"lexical.h"
+
+1512767550 c:\users\fernando\desktop\compilador\temp\university-compiler\semantic.h
+
+1512788497 source:c:\users\fernando\desktop\compilador\temp\university-compiler\parser.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+	"semantic.h"
+

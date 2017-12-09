@@ -8,6 +8,7 @@
 int cont_st = 0;
 symbol last_function;
 int contAuxLabel = 0;
+int global_aux;
 
 void prog() {
   // RECOGNIZE GLOBAL DECLARATION OR DEFAULT FUNCTION BODY
@@ -418,17 +419,19 @@ void types_param(){
 }
 
 int cmd(){
+    int aux;
   //SE EXPRESSION
   //variaveis para auxiliar o for
     int labelw,labely,labelz,labelx;
   //-----------------------------
   if(token.type == PR && strcmp(token.pr, "se") == 0){
    // getLabel();
+
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
       expr();
-      labely = getGoTO("GOFALSE");
+      printf("GOFALSE %d\n",global_aux);
       if(token.type == SN && strcmp(token.signal,")") == 0){
 
         getToken();
@@ -438,8 +441,8 @@ int cmd(){
         }
         if(token.type == PR && strcmp(token.pr,"senao") == 0){
           labelx = getGoTO("GOTO");
-          printf("LABEL L%d\n",labely);
-          getLabel();
+          printf("LABEL L%d\n",global_aux);
+         // getLabel();
           getToken();
           if(!cmd()) {
             sintatic_erro(MISSING_CMD);
@@ -447,7 +450,7 @@ int cmd(){
           }
           printf("LABEL L%d\n",labelx);
         }else{
-            printf("LABEL L%d\n",labely);
+            printf("LABEL L%d\n",global_aux);
         }
 
         return 1;
@@ -467,7 +470,7 @@ int cmd(){
       contAuxLabel = getLabel();
       getToken();
       expr();//add return
-      labelw = getGoTO("GOFALSE");
+      global_aux = getGoTO("GOFALSE");
       if(token.type == SN && strcmp(token.signal,")") == 0){
         getToken();
         if(!cmd()) {
@@ -475,7 +478,7 @@ int cmd(){
           exit(-1);
         }
         printf("GOTO L%d\n",contAuxLabel); //Aqui termina o while
-        printf("LABEL L%d\n",labelw);
+       getLabel();
         return 1;
       }else{
         sintatic_erro(MISSING_CLOSE_PAREN);
@@ -546,6 +549,7 @@ int cmd(){
   }
   // KEY EXPRESSION
   else if(token.type == SN && strcmp(token.signal,"{") == 0){
+
     getToken();
     while(cmd());
     if(token.type == SN && strcmp(token.signal,"}") == 0) {
@@ -688,7 +692,11 @@ void termo(){
 int and_aux = 0;
   fator();
   while(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
-
+      if(strcmp(token.signal,"&&") == 0){
+        printf("COPY\n");
+        printf("GOFALSE L%d\n",global_aux);
+        printf("POP\n");
+      }
       getToken();
       fator();
 

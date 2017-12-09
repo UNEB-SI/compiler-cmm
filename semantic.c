@@ -40,6 +40,7 @@ void getLoadOrPush(Token t){
                 printf("PUSH %s\n",t.word);
             }
         markID++;
+        contLabel++;
     }else{
         markID = 0;
     }
@@ -47,15 +48,16 @@ void getLoadOrPush(Token t){
 }
 
 void operator_check(Token t){
-
+    int aux_z = 0,aux_x = 0, aux_y = 0;
+printf("-------------------------------------------------------------\n");
     if(strcmp(t.signal,"==") == 0){ //Semantico
-                getGoTO("GOFALSE");
+              aux_x = getGoTO("GOFALSE");
                 printf("PUSH 0\n");
-                getGoTO("GOTO");
-                getLabel();
+              aux_y = getGoTO("GOTO");
+                printf("LABEL L%d\n",aux_x);
                 printf("PUSH 1\n");
-                getLabel();
-                getGoTO("GOFALSE");
+                printf("LABEL L%d\n",aux_y);
+                contLabel = aux_y;
             }else if(strcmp(t.signal,">=") == 0){
                 printf("COPY\n");
                 getGoTO("GOFALSE");
@@ -84,25 +86,26 @@ void operator_check(Token t){
                     */
             }else if(strcmp(t.signal,"<") == 0){
                 printf("COPY\n");
-                getGoTO("GOFALSE");
-                getGoTO("GOTRUE");
+               aux_x = getGoTO("GOFALSE");
+               aux_y = getGoTO("GOTRUE");
                 printf("PUSH 1\n");
-                getGoTO("GOTO");
-                getLabel();
+               aux_z = getGoTO("GOTO");
+                printf("LABEL L%d\n",aux_x);
                 printf("POP\n");
-                getLabel();
+                printf("LABEL L%d\n",aux_y);
                 printf("PUSH 0\n");
-                getLabel();
-
+                printf("LABEL L%d\n",aux_z);
+                contLabel = aux_z;
             }else if(strcmp(t.signal,">") == 0){
-                getGoTO("GOTRUE");
+                aux_x = getGoTO("GOTRUE");
                 printf("PUSH 0\n");
-                getGoTO("GOTO");
-                getLabel();
+                aux_y = getGoTO("GOTO");
+                printf("LABEL L%d\n",aux_x);
                 printf("PUSH 1\n");
-                getLabel();
-
+                printf("LABEL L%d\n",aux_y);
+                contLabel = aux_y;
             }else if(strcmp(t.signal,"!=") == 0){
 
             }
+printf("-------------------------------------------------------------\n");
 }

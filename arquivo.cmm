@@ -2,11 +2,9 @@
 inteiro aux(semparam){
     inteiro num;
     
-    enquanto(num >= num2){
-        se((num == num2) && (num == num4)){
+    enquanto(num > num2){
+        se(a == b) {
             num = 1;
-        }senao{
-
         }
     }
 }
