@@ -5,11 +5,6 @@
 #include "parser.h"
 #include "table.h"
 #include "sintatic_erros.h"
-//Holds symbol table position
-
-
-//-----------------------------------------------------
-
 
 void sintatic_erro(int flag){
     switch (flag){
