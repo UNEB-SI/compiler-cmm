@@ -175,6 +175,48 @@ int hasPreviousBody(symbol s) {
   return 0;
 }
 
+void hasBeenDeclared(char* var) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if (strcmp(symbol_table[i].name, var) == 0
+        && symbol_table[i].cat != FUNC) {
+        return;
+    }
+    i++;
+  }
+  printf("Variável '%s' não declarada na linha %d\n", var, line_number);
+  exit(-1);
+}
+
+void functionHasBeenDeclared(char* var) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if (strcmp(symbol_table[i].name, var) == 0
+        && symbol_table[i].cat == FUNC) {
+        return;
+    }
+    i++;
+  }
+  printf("Função '%s' não declarada na linha %d\n", var, line_number);
+  exit(-1);
+}
+
+void functionHasReturn(char* var) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if (strcmp(symbol_table[i].name, var) == 0){
+      if(strcmp(symbol_table[i].type, "semretorno") != 0) {
+        return;
+      } else {
+        printf("Função '%s' não possui valor de retorno na linha %d\n", var,
+               line_number);
+        exit(-1);
+      }
+    }
+    i++;
+  }
+}
+
 void verifyParams(symbol sb){
   int position = hasPrototype(sb);
   if(position != -1) {

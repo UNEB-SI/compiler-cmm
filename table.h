@@ -32,6 +32,9 @@ void default_insert_table();
 void generate_mem_space(int position);
 void verifyParams(symbol sb);
 int hasPreviousBody(symbol s);
+void hasBeenDeclared(char* var);
+void functionHasBeenDeclared(char* var);
+void functionHasReturn(char* var);
 //-------------------
 //erro function;
 #endif // TABLE

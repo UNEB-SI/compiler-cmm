@@ -537,6 +537,7 @@ int cmd(){
   }
   // FUNCTION CALL
   else if(token.type == ID && strcmp(next_token.signal,"(") == 0){
+    functionHasBeenDeclared(token.lexem.value);
     getToken();
     getToken();
     expr();
@@ -569,9 +570,7 @@ int cmd(){
       exit(-1);
     }
   }
-
-    return 0;
-
+  return 0;
 }
 
 void opc_p_types() {
@@ -633,7 +632,7 @@ void expr() {
 
 }
 
-void expr_simp(){
+void expr_simp() {
   if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
     getToken();
   }
@@ -654,7 +653,7 @@ int op_rel(){ // Não acrescenta token novo
   return 0;
 }
 
-void termo(){
+void termo() {
   fator();
   while(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
       getToken();
@@ -662,9 +661,11 @@ void termo(){
   }
 }
 
-void fator(){
+void fator() {
   // FUNCTION CALL
   if(token.type == ID && next_token.type == SN && strcmp(next_token.signal,"(") == 0) {
+    functionHasBeenDeclared(token.lexem.value);
+    functionHasReturn(token.lexem.value);
     getToken();
     getToken();
     expr();
@@ -682,6 +683,9 @@ void fator(){
   }
   // CONSTANTS TYPE
   else if(token.type == INTCON || token.type == REALCON || token.type == CARACCON || token.type  == CADEIACON || token.type == ID){
+    if(token.type == ID) {
+      hasBeenDeclared(token.lexem.value);
+    }
     getToken();
   }
   // EXPRESSION BETWEEN PARENTHESES
@@ -704,6 +708,7 @@ void fator(){
 
 int atrib(){
   if(token.type == ID){
+    hasBeenDeclared(token.lexem.value);
     getToken();
     if(token.type == SN && strcmp(token.signal,"=") == 0){
       getToken();
