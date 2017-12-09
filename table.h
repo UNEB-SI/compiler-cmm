@@ -11,13 +11,14 @@ typedef struct{
     char type[10];
     int scope;
     int fullfill;
-    float mem_space;
+    char mem_space[50];
 }symbol;
 
 symbol sb_token;
 extern symbol last_function;
 symbol symbol_table[1000];
 //-------------------
+// Counter for index on symbol table
 void insert_symbol();
 //-------------------
 void exclude_local_symbol();
@@ -28,6 +29,7 @@ void verifyRedeclaration(symbol sb);
 int hasPrototype(symbol s);
 void insert_param_on_prototype(int position);
 void default_insert_table();
+void generate_mem_space(int position);
 //-------------------
 //erro function;
 #endif // TABLE

@@ -18,6 +18,7 @@ void insert_symbol() {
         default_insert_table();
       }
     } else if(sb_token.cat == PARAN) {
+        //sb_token.scope = LOCAL;
         int position = hasPrototype(last_function);
         if(position != -1) {
           insert_param_on_prototype(position);
@@ -53,23 +54,42 @@ void default_insert_table() {
     while(strcmp(symbol_table[i].name, "") != 0) {
       i++;
     }
+    generate_mem_space(i);
     symbol_table[i] = sb_token;
   } else {
     while(strcmp(symbol_table[i].type, "") != 0) {
       i++;
     }
+    if(sb_token.cat == PARAN) generate_mem_space(i);
     symbol_table[i] = sb_token;
   }
+}
+
+void generate_mem_space(int position) {
+
+  char mem_position[12];
+  char positions[12];
+
+  sprintf(positions, "%d", position);
+  sprintf(mem_position, "%d", sb_token.scope);
+
+  strcat(mem_position, ".");
+  strcat(mem_position, positions);
+
+  strcpy(sb_token.mem_space, mem_position);
 }
 
 void insert_param_on_prototype(int position) {
   int i = position + 1;
   while(strcmp(symbol_table[i].type, "") != 0) {
     if (symbol_table[i].cat == FUNC) {
+      printf("Sou %s\n", sb_token.name);
       printf("Parâmetro não esperado na linha %d\n", line_number);
       exit(-1);
     } else if (!symbol_table[i].fullfill && symbol_table[i].cat == PARAN) {
         if(strcmp(symbol_table[i].type, sb_token.type) == 0) {
+           float mem_position = i / 100;
+           generate_mem_space(i);
            symbol_table[i] = sb_token;
            symbol_table[i].fullfill = 1;
            return;
@@ -125,9 +145,6 @@ void verifyRedeclaration(symbol sb) {
 int hasPrototype(symbol s) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
-    if(strcmp(s.name, "fibbonaci") == 0) {
-      printf("here");
-    }
     if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0) {
       return i;
     } else if(strcmp(symbol_table[i].name, s.name) == 0 && strcmp(symbol_table[i].type, s.type) != 0) {
