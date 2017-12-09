@@ -1,6 +1,6 @@
 /* Sequencia de Fibonacci em Cmm - Recursivo */
 
-prototipo inteiro fibonacci(inteiro);
+prototipo caracter fibonacci(inteiro, caracter);
 
 semretorno principal(semparam) {
 
@@ -15,7 +15,7 @@ semretorno principal(semparam) {
       retorne;
 }
 
-inteiro fibonacci(inteiro num) {
+caracter fibonacci(inteiro num, caracter i) {
 
       se ((num==1) || (num==2)) retorne 1;
       senao

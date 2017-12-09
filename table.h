@@ -30,6 +30,8 @@ int hasPrototype(symbol s);
 void insert_param_on_prototype(int position);
 void default_insert_table();
 void generate_mem_space(int position);
+void verifyParams(symbol sb);
+int hasPreviousBody(symbol s);
 //-------------------
 //erro function;
 #endif // TABLE

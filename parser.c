@@ -47,6 +47,8 @@ void prog() {
         insert_symbol();
         last_function = sb_token;
         types_param();
+        //verify if all parameters was good
+        verifyParams(last_function);
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
           if(token.type == SN && strcmp(token.signal, "{") == 0) {
@@ -134,6 +136,7 @@ void prog() {
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
           getToken();
           sb_token.cat = FUNC;
+          hasPreviousBody(sb_token);
           verifyRedeclaration(sb_token);
           insert_symbol();
           opc_p_types();
@@ -203,6 +206,7 @@ void prog() {
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
           getToken();
           sb_token.cat = FUNC;
+          hasPreviousBody(sb_token);
           verifyRedeclaration(sb_token);
           insert_symbol();
           opc_p_types();
@@ -278,6 +282,8 @@ void prog() {
       if(token.type == SN && strcmp(token.signal, "(") == 0) {//if it is a function
         getToken();
         types_param();
+        //verify if all parameters was good
+        verifyParams(last_function);
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
           if(token.type == SN && strcmp(token.signal, "{") == 0) {
