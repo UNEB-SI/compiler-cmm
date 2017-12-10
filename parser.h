@@ -13,6 +13,7 @@ typedef struct{
     char cValue;
     float dValue;
     int iValue;
+    int bValue;
     char signal[2];
     char word[1000];
   };
@@ -23,7 +24,7 @@ int isType();
 void types_param();
 int cmd();
 void opc_p_types();
-void expr();
+expression expr();
 expression expr_simp();
 expression termo();
 expression fator();

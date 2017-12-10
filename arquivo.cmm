@@ -1,5 +1,5 @@
 /* Sequencia de Fibonacci em Cmm - Recursivo */
 
 inteiro principal(semparam) {
-  retorne 2 + 4 * 4;
+  retorne  5 *  (10  / (2+3));
 }

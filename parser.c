@@ -641,7 +641,7 @@ void opc_p_types() {
   }
 }
 
-void expr() {
+expression expr() {
   expression expre;
   expre = expr_simp();
   //if has a value type print result
@@ -654,11 +654,16 @@ void expr() {
   if(op_rel()){
       expr_simp();
   }
+
+  return expre;
 }
 
 expression expr_simp() {
   expression expre;
+  char front_signal = '0';
+
   if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
+    front_signal = token.signal[0];
     getToken();
   }
 
@@ -678,17 +683,27 @@ expression expr_simp() {
       if(signal != '0') {
           //it is compatible
           if(strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) {
+              if(front_signal == '-') {
+                expre.iValue = expre.iValue * -1;
+              }
               if(signal == '+') expre.iValue = expre.iValue + expre2.iValue;
               else if (signal == '-') expre.iValue = expre.iValue - expre2.iValue;
 
           } else if (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0) {
+              if(front_signal == '-') {
+                expre.iValue = expre.iValue * -1;
+              }
               if(signal == '+') expre.dValue = expre.dValue + expre2.dValue;
               else if(signal == '-') expre.dValue = expre.dValue - expre2.dValue;
 
           } else if ((strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0) || (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "inteiro") == 0) || (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0)) {
              strcpy(expre.type, "inteiro");
-             if(signal == '+') expre.iValue = expre.cValue + expre2.cValue;
-             else if(signal == '-') expre.iValue = expre.cValue - expre2.cValue;
+             int first_value = expre.cValue;
+             if(front_signal == '-') {
+               first_value = first_value * -1;
+             }
+             if(signal == '+') expre.iValue = first_value + expre2.cValue;
+             else if(signal == '-') expre.iValue = first_value - expre2.cValue;
 
           } else {
             printf("Operação inválida entre os tipos %s e %s na linha %d\n", expre.type, expre2.type, line_number);
@@ -802,7 +817,7 @@ expression fator() {
   // EXPRESSION BETWEEN PARENTHESES
   else if(token.type == SN && strcmp(token.signal, "(") == 0) {
     getToken();
-    expr();
+    expre = expr();
     if(token.type == SN && strcmp(token.signal, ")") == 0) {
       getToken();
     } else {
