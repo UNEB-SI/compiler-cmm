@@ -510,6 +510,22 @@ int cmd(){
   // RETORNE EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"retorne") == 0){
     getToken();
+    //SEMANTIC
+    //verify if function has return and if has, have to has a express returning
+    if(strcmp(last_function.type, "semretorno") == 0) {
+      if(strcmp(token.signal, ";") != 0) {
+          printf("Retorno inesperado para a função '%s' na linha %d\n",
+                 last_function.name, line_number);
+          exit(-1);
+      }
+    } else {
+      if(strcmp(token.signal, ";") == 0) {
+          printf("Retorno '%s' esperado para a função '%s' na linha %d\n",
+                 last_function.type, last_function.name, line_number);
+          exit(-1);
+      }
+    }
+
     expr();
     if(token.type == SN && strcmp(token.signal,";") == 0){
       getToken();
@@ -538,6 +554,7 @@ int cmd(){
   // FUNCTION CALL
   else if(token.type == ID && strcmp(next_token.signal,"(") == 0){
     functionHasBeenDeclared(token.lexem.value);
+    functionHasNoReturn(token.lexem.value);
     getToken();
     getToken();
     expr();
@@ -625,27 +642,65 @@ void opc_p_types() {
 }
 
 void expr() {
-  expr_simp();
+  expression expre;
+  expre = expr_simp();
+  //if has a value type print result
+  if(strcmp(expre.type, "inteiro") == 0) {
+    printf("Resultado: %d\n", expre.iValue);
+  } else if(strcmp(expre.type, "real") == 0) {
+    printf("Resultado: %.2f\n", expre.dValue);
+  }
+
   if(op_rel()){
       expr_simp();
   }
-
 }
 
-void expr_simp() {
+expression expr_simp() {
+  expression expre;
   if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
     getToken();
   }
 
-  termo();
+  expre = termo();
 
   while(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0 || strcmp(token.signal,"||") == 0)){
+     //segura o sinal + ou -
+      char signal = '0';
+      if(strcmp(token.signal,"+") == 0) {
+        signal = '+';
+      } else if (strcmp(token.signal,"-") == 0) {
+        signal = '-';
+      }
       getToken();
-      termo();
+      expression expre2 = termo();
+      //se há conta faça-a
+      if(signal != '0') {
+          //it is compatible
+          if(strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) {
+              if(signal == '+') expre.iValue = expre.iValue + expre2.iValue;
+              else if (signal == '-') expre.iValue = expre.iValue - expre2.iValue;
+
+          } else if (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0) {
+              if(signal == '+') expre.dValue = expre.dValue + expre2.dValue;
+              else if(signal == '-') expre.dValue = expre.dValue - expre2.dValue;
+
+          } else if ((strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0) || (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "inteiro") == 0) || (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0)) {
+             strcpy(expre.type, "inteiro");
+             if(signal == '+') expre.iValue = expre.cValue + expre2.cValue;
+             else if(signal == '-') expre.iValue = expre.cValue - expre2.cValue;
+
+          } else {
+            printf("Operação inválida entre os tipos %s e %s na linha %d\n", expre.type, expre2.type, line_number);
+            exit(-1);
+          }
+      }
   }
+
+  return expre;
 }
 
-int op_rel(){ // Não acrescenta token novo
+int op_rel(){
   if(token.type == SN && (strcmp(token.signal,"==") == 0 || strcmp(token.signal,"!=") == 0 || strcmp(token.signal,"<=") == 0 || strcmp(token.signal,"<") == 0 || strcmp(token.signal,">") == 0 || strcmp(token.signal,">=") == 0)){
     getToken();
     return 1;
@@ -653,15 +708,47 @@ int op_rel(){ // Não acrescenta token novo
   return 0;
 }
 
-void termo() {
-  fator();
+expression termo() {
+  expression expr;
+  expr = fator();//2, 4
   while(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
+      char signal = '0';
+      //guardar sinal de * ou / ou &&
+      if(strcmp(token.signal,"*") == 0) {
+        signal = '*';
+      } else if(strcmp(token.signal,"/") == 0) {
+        signal = '/';
+      }
       getToken();
-      fator();
+      expression expr2 = fator();
+      //se há conta faça-a
+      if(signal != '0') {
+          //it is compatible
+          if(strcmp(expr.type, "inteiro") == 0 && strcmp(expr2.type, "inteiro") == 0) {
+              if(signal == '*') expr.iValue = expr.iValue * expr2.iValue;
+              else if (signal == '/') expr.iValue = expr.iValue / expr2.iValue;
+
+          } else if (strcmp(expr.type, "real") == 0 && strcmp(expr2.type, "real") == 0) {
+              if(signal == '*') expr.dValue = expr.dValue * expr2.dValue;
+              else if(signal == '/') expr.dValue = expr.dValue / expr2.dValue;
+
+          } else if ((strcmp(expr.type, "caracter") == 0 && strcmp(expr2.type, "caracter") == 0) || (strcmp(expr.type, "caracter") == 0 && strcmp(expr2.type, "inteiro") == 0) || (strcmp(expr.type, "inteiro") == 0 && strcmp(expr2.type, "caracter") == 0)) {
+             strcpy(expr.type, "inteiro");
+             if(signal == '*') expr.iValue = expr.cValue * expr2.cValue;
+             else if(signal == '/') expr.iValue = expr.cValue / expr2.cValue;
+
+          } else {
+            printf("Operação inválida entre os tipos %s e %s na linha %d\n", expr.type, expr2.type, line_number);
+            exit(-1);
+          }
+      }
   }
+  return expr;
 }
 
-void fator() {
+expression fator() {
+  expression expre;
+  strcpy(expre.type, "nothing");
   // FUNCTION CALL
   if(token.type == ID && next_token.type == SN && strcmp(next_token.signal,"(") == 0) {
     functionHasBeenDeclared(token.lexem.value);
@@ -683,9 +770,33 @@ void fator() {
   }
   // CONSTANTS TYPE
   else if(token.type == INTCON || token.type == REALCON || token.type == CARACCON || token.type  == CADEIACON || token.type == ID){
-    if(token.type == ID) {
-      hasBeenDeclared(token.lexem.value);
+    symbol s;
+    //keep the values to return
+    switch (token.type) {
+      case ID:
+        s = hasBeenDeclared(token.lexem.value);
+        strcpy(expre.type, s.type);
+        //for now return the name, but in future return the value of it
+        strcpy(expre.word, s.name);
+      break;
+      case INTCON:
+        strcpy(expre.type, "inteiro");
+        expre.iValue = token.iValue;
+      break;
+      case REALCON:
+        strcpy(expre.type, "real");
+        expre.dValue = token.dValue;
+      break;
+      case CARACCON:
+        strcpy(expre.type, "caracter");
+        expre.cValue = token.cValue;
+      break;
+      case CADEIACON:
+        strcpy(expre.type, "literal");
+        strcpy(expre.word, s.name);
+      break;
     }
+
     getToken();
   }
   // EXPRESSION BETWEEN PARENTHESES
@@ -704,6 +815,8 @@ void fator() {
     getToken();
     fator();
   }
+
+  return expre;
 }
 
 int atrib(){

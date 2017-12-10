@@ -7,15 +7,26 @@
 extern Token token;
 extern int line_number;
 
+typedef struct{
+  char type[10];
+  union {
+    char cValue;
+    float dValue;
+    int iValue;
+    char signal[2];
+    char word[1000];
+  };
+} expression;
+
 void prog();
 int isType();
 void types_param();
 int cmd();
 void opc_p_types();
 void expr();
-void expr_simp();
-void termo();
-void fator();
+expression expr_simp();
+expression termo();
+expression fator();
 int op_rel();
 int atrib();
 #endif // PARSER

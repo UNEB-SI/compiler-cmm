@@ -14,6 +14,7 @@ typedef struct{
     char mem_space[50];
 }symbol;
 
+
 symbol sb_token;
 extern symbol last_function;
 symbol symbol_table[1000];
@@ -32,9 +33,10 @@ void default_insert_table();
 void generate_mem_space(int position);
 void verifyParams(symbol sb);
 int hasPreviousBody(symbol s);
-void hasBeenDeclared(char* var);
+symbol hasBeenDeclared(char* var);
 void functionHasBeenDeclared(char* var);
 void functionHasReturn(char* var);
+void functionHasNoReturn(char* var);
 //-------------------
 //erro function;
 #endif // TABLE

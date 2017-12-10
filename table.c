@@ -175,12 +175,12 @@ int hasPreviousBody(symbol s) {
   return 0;
 }
 
-void hasBeenDeclared(char* var) {
+symbol hasBeenDeclared(char* var) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
     if (strcmp(symbol_table[i].name, var) == 0
         && symbol_table[i].cat != FUNC) {
-        return;
+        return symbol_table[i];
     }
     i++;
   }
@@ -209,6 +209,22 @@ void functionHasReturn(char* var) {
         return;
       } else {
         printf("Função '%s' não possui valor de retorno na linha %d\n", var,
+               line_number);
+        exit(-1);
+      }
+    }
+    i++;
+  }
+}
+
+void functionHasNoReturn(char* var) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if (strcmp(symbol_table[i].name, var) == 0){
+      if(strcmp(symbol_table[i].type, "semretorno") == 0) {
+        return;
+      } else {
+        printf("A chamada para a função '%s' não deve possuir valor de retorno na linha %d\n", var,
                line_number);
         exit(-1);
       }
