@@ -725,7 +725,7 @@ int op_rel(){
 
 expression termo() {
   expression expr;
-  expr = fator();//2, 4
+  expr = fator();
   while(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
       char signal = '0';
       //guardar sinal de * ou / ou &&
@@ -791,8 +791,18 @@ expression fator() {
       case ID:
         s = hasBeenDeclared(token.lexem.value);
         strcpy(expre.type, s.type);
-        //for now return the name, but in future return the value of it
-        strcpy(expre.word, s.name);
+        if(s.init != 0) {
+          if(strcmp(s.type, "inteiro") == 0) {
+            expre.iValue = s.iValue;
+          } else if (strcmp(s.type, "real") == 0) {
+            expre.dValue = s.dValue;
+          } else if (strcmp(s.type, "caracter") == 0) {
+            expre.cValue = s.cValue;
+          }
+        } else {
+          printf("Variável '%s' não inicializada na linha %d\n", s.name, line_number);
+          exit(-1);
+        }
       break;
       case INTCON:
         strcpy(expre.type, "inteiro");
@@ -805,13 +815,13 @@ expression fator() {
       case CARACCON:
         strcpy(expre.type, "caracter");
         expre.cValue = token.cValue;
+        expre.iValue = token.cValue;
       break;
       case CADEIACON:
         strcpy(expre.type, "literal");
         strcpy(expre.word, s.name);
       break;
     }
-
     getToken();
   }
   // EXPRESSION BETWEEN PARENTHESES
@@ -835,12 +845,38 @@ expression fator() {
 }
 
 int atrib(){
+  expression value;
   if(token.type == ID){
-    hasBeenDeclared(token.lexem.value);
+    symbol s = hasBeenDeclared(token.lexem.value);
     getToken();
     if(token.type == SN && strcmp(token.signal,"=") == 0){
       getToken();
-      expr();
+      value = expr();
+      //verify if the types matches, if yes make attribution
+      if(strcmp(s.type, value.type) == 0) {
+         if(strcmp(s.type, "inteiro") == 0) {
+           s.iValue = value.iValue;
+         } else if(strcmp(s.type, "real") == 0) {
+           s.dValue = value.dValue;
+         } else if(strcmp(s.type, "caracter") == 0) {
+           s.cValue = value.cValue;
+         }
+         s.init = 1;//mark that variable has been initialized
+         updateVariableValue(s);
+      } else {
+        if(strcmp(s.type, "caracter") == 0  && strcmp(value.type, "inteiro") == 0) {
+          s.cValue = value.iValue;
+          s.init = 1;//mark that variable has been initialized
+          updateVariableValue(s);
+        } else if (strcmp(s.type, "inteiro") == 0  && strcmp(value.type, "caracter") == 0) {
+          s.init = 1;//mark that variable has been initialized
+          s.iValue = value.cValue;
+          updateVariableValue(s);
+        } else {
+          printf("Atribuição não compatível entre os tipos %s e %s na linha %d\n", s.type, value.type, line_number);
+          exit(-1);
+        }
+      }
       return 1;
     }else{
       sintatic_erro(MISSING_EQUAL_SNG);

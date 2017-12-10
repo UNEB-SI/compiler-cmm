@@ -10,8 +10,15 @@ typedef struct{
     token_cat cat;
     char type[10];
     int scope;
+    int init;
     int fullfill;
     char mem_space[50];
+    union {
+      char cValue;
+      float dValue;
+      int iValue;
+      int bValue;
+    };
 }symbol;
 
 
@@ -37,6 +44,7 @@ symbol hasBeenDeclared(char* var);
 void functionHasBeenDeclared(char* var);
 void functionHasReturn(char* var);
 void functionHasNoReturn(char* var);
+void updateVariableValue(symbol sb);
 //-------------------
 //erro function;
 #endif // TABLE

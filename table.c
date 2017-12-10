@@ -188,6 +188,18 @@ symbol hasBeenDeclared(char* var) {
   exit(-1);
 }
 
+void updateVariableValue(symbol sb) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if (strcmp(symbol_table[i].name, sb.name) == 0
+        && symbol_table[i].cat != FUNC && sb.scope == symbol_table[i].scope) {
+        symbol_table[i] = sb;
+        return;
+    }
+    i++;
+  }
+}
+
 void functionHasBeenDeclared(char* var) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
