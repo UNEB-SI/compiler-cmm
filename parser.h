@@ -48,10 +48,10 @@ int isType();
 void types_param();
 int cmd();
 void opc_p_types();
-void expr();
-void expr_simp();
-void termo();
-void fator();
+void expr(int aux_and,int aux_or);
+void expr_simp(int aux_and,int aux_or);
+void termo(int aux_and,int aux_or);
+void fator(int aux_and,int aux_or);
 int op_rel();
 int atrib();
 #endif // PARSER

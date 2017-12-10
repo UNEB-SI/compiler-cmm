@@ -4,6 +4,7 @@
 #include<ctype.h>
 #include "lexical.h"
 #include "parser.h"
+#include "stacksemantic.h"
 
 char actual_char;
 char last_char;
@@ -38,8 +39,10 @@ int END_OF_FILE = -1;
 
 FILE *file;
 
+
 int main(int argc, char **argv){
     if(argc > 1){
+         openStackFile();
         readFile(argv[1]);
     }else{
         errorMessage(ERROR_PASS_FILE);

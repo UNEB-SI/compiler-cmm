@@ -1,10 +1,18 @@
-#ifndef SEMANTIC_H
-#define SEMANTIC_H
+#ifndef STACKSEMANTIC_H
+#define STACKSEMANTIC_H
 
 typedef struct operators{
     char * type;
     int flag;
 }operators;
+
+FILE *stack_file;
+
+typedef struct storeid{
+    char idname[500];
+    int labelnumber;
+}storeid;
+
 
 operators aux_operators;
 

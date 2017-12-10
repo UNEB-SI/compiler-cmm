@@ -1,10 +1,23 @@
 
-inteiro aux(semparam){
-    inteiro num;
+
+inteiro a,b,c,d,e;
+ 
+
+ 
+ inteiro aa(semparam){
+    real a,o;
+    caracter b,d;
+    se(a == b){
     
-    enquanto(num > num2){
-        se(a == b) {
-            num = 1;
-        }
     }
+ 
+ }
+ 
+inteiro aux(inteiro a, real a2){
+    inteiro a,b,c,d,e;
+    se(a == b){
+    
+    }
+    aux(d,q,w,e);   
 }
+
