@@ -425,7 +425,13 @@ int cmd(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
-      expr();
+      expression expre = expr();
+
+      if (strcmp(expre.type, "booleano") != 0) {
+        printf ("Argumento imcopatível em expressão 'se' na linha %d\n", line_number);
+        exit(-1);
+      }
+
       if(token.type == SN && strcmp(token.signal,")") == 0){
         getToken();
         if(!cmd()) {
@@ -454,7 +460,13 @@ int cmd(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
-      expr();//add return
+      expression expre = expr();//add return
+
+      if (strcmp(expre.type, "booleano") != 0) {
+        printf ("Argumento imcopatível em expressão 'se' na linha %d\n", line_number);
+        exit(-1);
+      }
+
       if(token.type == SN && strcmp(token.signal,")") == 0){
         getToken();
         if(!cmd()) {
@@ -472,14 +484,20 @@ int cmd(){
     }
   }
   // PARA EXPRESSION
-  else if(token.type == PR && strcmp(token.pr,"para") == 0){
+  else if(token.type == PR && strcmp(token.pr,"para") == 0) {
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
       atrib();
       if(token.type == SN && strcmp(token.signal,";") == 0){
         getToken();
-        expr();
+        expression expre = expr();
+
+        if (strcmp(expre.type, "booleano") != 0) {
+          printf ("Argumento imcopatível em expressão 'se' na linha %d\n", line_number);
+          exit(-1);
+        }
+
         if(token.type == SN && strcmp(token.signal,";") == 0){
           getToken();
           atrib();
@@ -659,9 +677,269 @@ void opc_p_types() {
 expression expr() {
   expression expre;
   expre = expr_simp();
-
-  if(op_rel()){
-      expr_simp();
+  char operator[5];
+  if(op_rel(operator)){
+      expression expre2 = expr_simp();
+      if((strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) || (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0)
+          || (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0) || (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0)
+          || (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "inteiro") == 0)) {
+            if(strcmp(operator, "==") == 0) {
+               if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) {
+                  if (expre.iValue == expre2.iValue) {
+                    strcpy(expre.type, "booleano");
+                    expre.bValue = 1;
+                  } else {
+                    strcpy(expre.type, "booleano");
+                    expre.bValue = 0;
+                  }
+               }else if (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0) {
+                 if (expre.dValue == expre2.dValue) {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 1;
+                 } else {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 0;
+                 }
+               } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0){
+                 if (expre.cValue == expre2.cValue) {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 1;
+                 } else {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 0;
+                 }
+               } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "inteiro") == 0){
+                 if (expre.cValue == expre2.iValue) {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 1;
+                 } else {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 0;
+                 }
+               } else if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0){
+                 if (expre.iValue == expre2.cValue) {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 1;
+                 } else {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 0;
+                 }
+               }
+            } else if (strcmp(operator, "!=") == 0) {
+              if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) {
+                 if (expre.iValue != expre2.iValue) {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 1;
+                 } else {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 0;
+                 }
+              }else if (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0) {
+                if (expre.dValue != expre2.dValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0){
+                if (expre.cValue != expre2.cValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "inteiro") == 0){
+                if (expre.cValue != expre2.iValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0){
+                if (expre.iValue != expre2.cValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              }
+            } else if (strcmp(operator, "<=") == 0) {
+              if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) {
+                 if (expre.iValue <= expre2.iValue) {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 1;
+                 } else {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 0;
+                 }
+              }else if (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0) {
+                if (expre.dValue <= expre2.dValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0){
+                if (expre.cValue <= expre2.cValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "inteiro") == 0){
+                if (expre.cValue <= expre2.iValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0){
+                if (expre.iValue <= expre2.cValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              }
+            } else if (strcmp(operator, "<") == 0) {
+              if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) {
+                 if (expre.iValue < expre2.iValue) {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 1;
+                 } else {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 0;
+                 }
+              }else if (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0) {
+                if (expre.dValue < expre2.dValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0){
+                if (expre.cValue < expre2.cValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "inteiro") == 0){
+                if (expre.cValue < expre2.iValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0){
+                if (expre.iValue < expre2.cValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              }
+            } else if (strcmp(operator, ">") == 0) {
+              if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) {
+                 if (expre.iValue > expre2.iValue) {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 1;
+                 } else {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 0;
+                 }
+              }else if (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0) {
+                if (expre.dValue > expre2.dValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0){
+                if (expre.cValue > expre2.cValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "inteiro") == 0){
+                if (expre.cValue > expre2.iValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0){
+                if (expre.iValue > expre2.cValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              }
+            } else if (strcmp(operator, ">=") == 0) {
+              if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) {
+                 if (expre.iValue >= expre2.iValue) {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 1;
+                 } else {
+                   strcpy(expre.type, "booleano");
+                   expre.bValue = 0;
+                 }
+              }else if (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0) {
+                if (expre.dValue >= expre2.dValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0){
+                if (expre.cValue >= expre2.cValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "inteiro") == 0){
+                if (expre.cValue >= expre2.iValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              } else if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0){
+                if (expre.iValue >= expre2.cValue) {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 1;
+                } else {
+                  strcpy(expre.type, "booleano");
+                  expre.bValue = 0;
+                }
+              }
+            }
+      } else {
+          printf("Tipo %s não pode ser comparado com tipo %s na linha %d\n", expre.type, expre2.type, line_number);
+          exit(-1);
+      }
   }
 
   return expre;
@@ -681,6 +959,7 @@ expression expr_simp() {
   while(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0 || strcmp(token.signal,"||") == 0)){
      //segura o sinal + ou -
       char signal = '0';
+
       if(strcmp(token.signal,"+") == 0) {
         signal = '+';
       } else if (strcmp(token.signal,"-") == 0) {
@@ -719,13 +998,47 @@ expression expr_simp() {
             exit(-1);
           }
       }
+
+      if (strcmp(token.signal,"||") == 0) {
+        if ((strcmp(expre.type, "inteiro") == 0 ||strcmp(expre.type, "booleano") == 0) && (strcmp(expre2.type, "inteiro") == 0 ||strcmp(expre2.type, "booleano") == 0) ) {
+          if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) {
+            if (expre.iValue || expre2.iValue) {
+              strcpy(expre.type, "booleano");
+              expre.bValue = 1;
+            } else {
+              strcpy(expre.type, "booleano");
+              expre.bValue = 0;
+            }
+          } else if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "booleano") == 0) {
+            if (expre.iValue || expre2.bValue) {
+              strcpy(expre.type, "booleano");
+              expre.bValue = 1;
+            } else {
+              strcpy(expre.type, "booleano");
+              expre.bValue = 0;
+            }
+          } else if (strcmp(expre.type, "booleano") == 0 && strcmp(expre2.type, "inteiro") == 0) {
+            if (expre.bValue || expre2.iValue) {
+              strcpy(expre.type, "booleano");
+              expre.bValue = 1;
+            } else {
+              strcpy(expre.type, "booleano");
+              expre.bValue = 0;
+            }
+          }
+        } else {
+          printf("Comparação não possível entre os tipos %s e %s na linha %d\n", expre.type, expre2.type, line_number);
+          exit(-1);
+        }
+      }
   }
 
   return expre;
 }
 
-int op_rel(){
+int op_rel(char operator[]){
   if(token.type == SN && (strcmp(token.signal,"==") == 0 || strcmp(token.signal,"!=") == 0 || strcmp(token.signal,"<=") == 0 || strcmp(token.signal,"<") == 0 || strcmp(token.signal,">") == 0 || strcmp(token.signal,">=") == 0)){
+    strcpy(operator, token.signal);
     getToken();
     return 1;
   }
@@ -765,6 +1078,39 @@ expression termo() {
             printf("Operação inválida entre os tipos %s e %s na linha %d\n", expr.type, expr2.type, line_number);
             exit(-1);
           }
+      }
+
+      if (strcmp(token.signal,"&&") == 0) {
+        if ((strcmp(expr.type, "inteiro") == 0 ||strcmp(expr.type, "booleano") == 0) && (strcmp(expr2.type, "inteiro") == 0 ||strcmp(expr2.type, "booleano") == 0) ) {
+          if (strcmp(expr.type, "inteiro") == 0 && strcmp(expr2.type, "inteiro") == 0) {
+            if (expr.iValue && expr2.iValue) {
+              strcpy(expr.type, "booleano");
+              expr.bValue = 1;
+            } else {
+              strcpy(expr.type, "booleano");
+              expr.bValue = 0;
+            }
+          } else if (strcmp(expr.type, "inteiro") == 0 && strcmp(expr2.type, "booleano") == 0) {
+            if (expr.iValue && expr2.bValue) {
+              strcpy(expr.type, "booleano");
+              expr.bValue = 1;
+            } else {
+              strcpy(expr.type, "booleano");
+              expr.bValue = 0;
+            }
+          } else if (strcmp(expr.type, "booleano") == 0 && strcmp(expr2.type, "inteiro") == 0) {
+            if (expr.bValue && expr2.iValue) {
+              strcpy(expr.type, "booleano");
+              expr.bValue = 1;
+            } else {
+              strcpy(expr.type, "booleano");
+              expr.bValue = 0;
+            }
+          }
+        } else {
+          printf("Comparação não possível entre os tipos %s e %s na linha %d\n", expr.type, expr2.type, line_number);
+          exit(-1);
+        }
       }
   }
   return expr;
@@ -855,7 +1201,24 @@ expression fator() {
   //NEGATION OF A FATOR
   else if(token.type == SN && strcmp(token.signal,"!") == 0){
     getToken();
-    fator();
+    expression expre2 = fator();
+    if(strcmp(expre2.type, "inteiro") == 0){
+      if(!expre2.iValue) {
+        strcpy(expre.type, "booleano");
+        expre.bValue = 1;
+      } else {
+        strcpy(expre.type, "booleano");
+        expre.bValue = 0;
+      }
+    } else if (strcmp(expre2.type, "booleano") == 0) {
+      if(!expre2.bValue) {
+        strcpy(expre.type, "booleano");
+        expre.bValue = 1;
+      } else {
+        strcpy(expre.type, "booleano");
+        expre.bValue = 0;
+      }
+    }
   }
 
   return expre;

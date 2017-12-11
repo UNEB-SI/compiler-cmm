@@ -28,6 +28,6 @@ expression expr();
 expression expr_simp();
 expression termo();
 expression fator();
-int op_rel();
+int op_rel(char operator[]);
 int atrib();
 #endif // PARSER
