@@ -11,6 +11,7 @@ typedef struct{
     char type[10];
     int scope;
     int init;
+    int matchParam;
     int fullfill;
     char mem_space[50];
     union {
@@ -41,10 +42,11 @@ void generate_mem_space(int position);
 void verifyParams(symbol sb);
 int hasPreviousBody(symbol s);
 symbol hasBeenDeclared(char* var);
-void functionHasBeenDeclared(char* var);
+symbol functionHasBeenDeclared(char* var);
 void functionHasReturn(char* var);
 void functionHasNoReturn(char* var);
 void updateVariableValue(symbol sb);
+void validateParams(symbol sb, char params[][50]);
 //-------------------
 //erro function;
 #endif // TABLE

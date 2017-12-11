@@ -22,7 +22,7 @@ void prog() {
         verifyRedeclaration(sb_token);
         insert_symbol();
       }
-      //DEFAULT DECLARATION
+      // DEFAULT DECLARATION
       while(token.type == SN && strcmp(token.signal, ",") == 0) {
         getToken();
         if(token.type == ID) {
@@ -510,7 +510,6 @@ int cmd(){
   // RETORNE EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"retorne") == 0){
     getToken();
-    //SEMANTIC
     //verify if function has return and if has, have to has a express returning
     if(strcmp(last_function.type, "semretorno") == 0) {
       if(strcmp(token.signal, ";") != 0) {
@@ -526,7 +525,16 @@ int cmd(){
       }
     }
 
-    expr();
+    expression expre = expr();
+
+    if(strcmp(expre.type, "nothing") != 0) {
+      //verify if return type is equal to function type
+      if ((strcmp(last_function.type, expre.type) != 0) && !(strcmp(last_function.type, "caracter") == 0 && strcmp(expre.type, "inteiro") == 0) && !(strcmp(last_function.type, "inteiro") == 0 && strcmp(expre.type, "caracter") == 0)){
+        printf("Retorno '%s' não esperado para a função %s\n", expre.type, last_function.name);
+        exit(-1);
+      }
+    }
+
     if(token.type == SN && strcmp(token.signal,";") == 0){
       getToken();
       return 1;
@@ -553,15 +561,22 @@ int cmd(){
   }
   // FUNCTION CALL
   else if(token.type == ID && strcmp(next_token.signal,"(") == 0){
-    functionHasBeenDeclared(token.lexem.value);
+    symbol s = functionHasBeenDeclared(token.lexem.value);
     functionHasNoReturn(token.lexem.value);
     getToken();
     getToken();
-    expr();
+    char array_expression[50][50];
+    expression express =  expr();
+    strcpy(array_expression[0], express.type);
+    int array_i = 1;
     while(token.type == SN && strcmp(token.signal, ",") == 0) {
       getToken();
-      expr();
+      express = expr();
+      strcpy(array_expression[array_i], express.type);
+      array_i++;
     }
+    //verify if all params matches
+    validateParams(s, array_expression);
     if(token.type == SN && strcmp(token.signal, ")") == 0){
         getToken();
         if(token.type == SN && strcmp(token.signal, ";") == 0){
@@ -644,12 +659,6 @@ void opc_p_types() {
 expression expr() {
   expression expre;
   expre = expr_simp();
-  //if has a value type print result
-  if(strcmp(expre.type, "inteiro") == 0) {
-    printf("Resultado: %d\n", expre.iValue);
-  } else if(strcmp(expre.type, "real") == 0) {
-    printf("Resultado: %.2f\n", expre.dValue);
-  }
 
   if(op_rel()){
       expr_simp();
@@ -766,15 +775,23 @@ expression fator() {
   strcpy(expre.type, "nothing");
   // FUNCTION CALL
   if(token.type == ID && next_token.type == SN && strcmp(next_token.signal,"(") == 0) {
-    functionHasBeenDeclared(token.lexem.value);
+    symbol s = functionHasBeenDeclared(token.lexem.value);
     functionHasReturn(token.lexem.value);
+    strcpy(expre.type, s.type);
     getToken();
     getToken();
-    expr();
+    char array_expression[50][50];
+    expression express = expr();
+    strcpy(array_expression[0], express.type);
+    int array_i = 1;
     while(token.type == SN && strcmp(token.signal,",") == 0){
         getToken();
-        expr();
+        express = expr();
+        strcpy(array_expression[array_i], express.type);
+        array_i++;
     }
+    //verify if all params matches
+    validateParams(s, array_expression);
     //close function
     if(token.type == SN && strcmp(token.signal,")") == 0){
       getToken();

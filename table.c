@@ -59,7 +59,9 @@ void default_insert_table() {
     while(strcmp(symbol_table[i].type, "") != 0) {
       i++;
     }
-    if(sb_token.cat == PARAN) generate_mem_space(i);
+    if(sb_token.cat == PARAN) {
+        generate_mem_space(i);
+    }
     symbol_table[i] = sb_token;
   }
 }
@@ -152,7 +154,7 @@ void verifyRedeclaration(symbol sb) {
 int hasPrototype(symbol s) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
-    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0) {
+    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0 && symbol_table[i].zumbi) {
       return i;
     } else if(strcmp(symbol_table[i].name, s.name) == 0 && strcmp(symbol_table[i].type, s.type) != 0) {
       printf("Esperado tipo '%s' para a função %s na linha %d\n", symbol_table[i].type, s.name, line_number);
@@ -200,12 +202,12 @@ void updateVariableValue(symbol sb) {
   }
 }
 
-void functionHasBeenDeclared(char* var) {
+symbol functionHasBeenDeclared(char* var) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
     if (strcmp(symbol_table[i].name, var) == 0
         && symbol_table[i].cat == FUNC) {
-        return;
+        return symbol_table[i];
     }
     i++;
   }
@@ -263,5 +265,32 @@ void verifyParams(symbol sb){
     }
   } else {
     return;
+  }
+}
+
+void validateParams(symbol sb, char params[][50]) {
+  int i = 0;
+
+  while(strcmp(symbol_table[i].name, "") != 0) {
+   if(symbol_table[i].cat == FUNC && strcmp(symbol_table[i].name, sb.name) == 0 && strcmp(symbol_table[i].type, sb.type) == 0) {
+      i = i + 1;
+      break;
+    }
+    i++;
+  }
+
+  int param_position = 0;
+
+  while(strcmp(params[param_position], "") != 0) {
+    if ((strcmp(params[param_position], symbol_table[i].type) != 0) || (symbol_table[i].cat != PARAN)) {
+      printf("Esperado %s na função %s como %d argumento, linha %d\n", symbol_table[i].type, sb.name, param_position+1, line_number);
+      exit(-1);
+    }
+    param_position++;
+    i++;
+  }
+  if(symbol_table[i].cat == PARAN) {
+    printf("Falta parâmetro do tipo '%s' na chamada da função %s na linha %d\n", symbol_table[i].type,sb.name, line_number);
+    exit(-1);
   }
 }

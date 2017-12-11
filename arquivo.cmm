@@ -1,7 +1,14 @@
 /* Sequencia de Fibonacci em Cmm - Recursivo */
 
-inteiro principal(semparam) {
+semretorno ch(inteiro b){
+  retorne;
+}
+
+semretorno principal(semparam) {
   inteiro n;
+  inteiro b;
+  b = 12;
   n = 5;
-  retorne  n * 10;
+  ch(b);
+  retorne;
 }
