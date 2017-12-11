@@ -4,10 +4,12 @@
 #include "lexical.h"
 #include "parser.h"
 #include "stacksemantic.h"
+#include "table.h"
+#include "erros.h"
 //Holds symbol table position
 
 symbol last_function;
-
+//
 
 int flag = 1; //Flag para auxiliar na solução de um problema
 
@@ -49,8 +51,11 @@ void prog() {
       }
       if(token.type == SN && strcmp(token.signal, ";") == 0) {//final of declaration
         amem++;
-        if(amem > 0)
+        if(amem > 0){
             fprintf(stack_file,"AMEM %d\n",amem);
+            printf("AMEM %d\n",amem);
+        }
+
 
         getToken();
         prog();
@@ -66,12 +71,14 @@ void prog() {
         verifyRedeclaration(sb_token);
         insert_symbol();
         last_function = sb_token;
+        getStoreID(auxIdStore); //Store the name of function and its label to use on declarations
+        printf("LABEL L%d\n",loadLabelId(auxIdStore));
+        fprintf(stack_file,"LABEL L%d\n",loadLabelId(auxIdStore));
         types_param();
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
           if(token.type == SN && strcmp(token.signal, "{") == 0) {
-            getStoreID(auxIdStore); //Store the name of function and its label to use on declarations
-         fprintf(stack_file,"LABEL L%d\n",loadLabelId(auxIdStore));
+
             getToken();
             while(isType()){
               strcpy(sb_token.type, token.pr);
@@ -105,6 +112,7 @@ void prog() {
                 //if it is ; declaration finish
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
                            amem++;
+                           printf("AMEM %d\n",amem);
                            fprintf(stack_file,"AMEM %d\n",amem); //Goes to the function what have been called
 
                   getToken();
@@ -444,9 +452,10 @@ void types_param(){
     sintatic_erro(SYMBOL_NOT_RECOG);
     exit(-1);
   }
-  if(amem > 0)
+  if(amem > 0){
+    printf("AMEM %d\n",amem);
     fprintf(stack_file,"AMEM %d\n",amem);
-
+  }
 }
 
 int cmd(){
@@ -463,8 +472,10 @@ int cmd(){
       aux_and = getLabel();
       aux_or = getLabel();
       expr(aux_and,aux_or);
+      printf("GOFALSE L%d\n",aux_and);
       fprintf(stack_file,"GOFALSE L%d\n",aux_and);
       if(token.type == SN && strcmp(token.signal,")") == 0){
+        printf("LABEL L%d\n",aux_or);
         fprintf(stack_file,"LABEL L%d\n",aux_or);
         getToken();
         if(!cmd()){
@@ -473,6 +484,8 @@ int cmd(){
         }
         if(token.type == PR && strcmp(token.pr,"senao") == 0){
           labelx = getLabel();
+          printf("GOTO L%d\n",labelx);
+          printf("LABEL L%d\n",aux_and);
           fprintf(stack_file,"GOTO L%d\n",labelx);
           fprintf(stack_file,"LABEL L%d\n",aux_and);
          // getLabel();
@@ -481,8 +494,10 @@ int cmd(){
             sintatic_erro(MISSING_CMD);
             exit(-1);
           }
+          printf("LABEL %d\n",labelx);
           fprintf(stack_file,"LABEL L%d\n",labelx);
         }else{
+            printf("LABEL L%d\n",aux_and);
             fprintf(stack_file,"LABEL L%d\n",aux_and);
         }
 
@@ -503,17 +518,22 @@ int cmd(){
       getToken();
        aux_and = getLabel();
        aux_or = getLabel();
+       printf("LABEL L%d\n",aux_and);
        fprintf(stack_file,"LABEL L%d\n",aux_and);
       expr(aux_and,aux_or);//add return
        labely = getLabel();
+       printf("GOFALSE L%d\n",labely);
        fprintf(stack_file,"GOFALSE L%d\n",labely);
       if(token.type == SN && strcmp(token.signal,")") == 0){
-        fprintf(stack_file,"LABEL %d\n",aux_or);
+        printf("LABEL L%d\n",aux_or);
+        fprintf(stack_file,"LABEL L%d\n",aux_or);
         getToken();
         if(!cmd()) {
           sintatic_erro(MISSING_CMD);
           exit(-1);
         }
+        printf("GOTO L%d\n",aux_and);
+        printf("LABEL L%d\n",labely);
         fprintf(stack_file,"GOTO L%d\n",aux_and); //Aqui termina o while
         fprintf(stack_file,"LABEL L%d\n",labely);
         return 1;
@@ -533,28 +553,37 @@ int cmd(){
       getToken();
       atrib();
       labelw = getLabel();
+      printf("LABEL L%d\n",labelw);
       fprintf(stack_file,"LABEL L%d\n",labelw);
       if(token.type == SN && strcmp(token.signal,";") == 0){
         getToken();
         labelx = getLabel();
+        printf("GOFALSE L%d\n",labelx);
         fprintf(stack_file,"GOFALSE L%d\n",labelx);
         aux_or = getLabel();
         expr(labelx,aux_or);
         labely = getLabel();
+        printf("GOTO L%d\n",labely);
         fprintf(stack_file,"GOTO L%d\n",labely);
         labelz = getLabel();
+        printf("LABEL L%d\n",labelz);
         fprintf(stack_file,"LABEL L%d\n",labelz);
         if(token.type == SN && strcmp(token.signal,";") == 0){
           getToken();
           atrib();
+          printf("GOTO L%d\n",labelw);
+          printf("LABEL L%d\n",labely);
           fprintf(stack_file,"GOTO L%d\n",labelw);
           fprintf(stack_file,"LABEL L%d\n",labely);
           if(token.type == SN && strcmp(token.signal,")") == 0){
             getToken();
+            printf("LABEL %d\n",aux_or);
             fprintf(stack_file,"LABEL %d\n",aux_or);
             if(!cmd()){
               exit(-1);
             }
+            printf("GOTO L%d\n",labelz);
+            printf("LABEL L%d",labelx);
             fprintf(stack_file,"GOTO L%d\n",labelz);
             fprintf(stack_file,"LABEL L%d",labelx);
             return 1;
@@ -577,6 +606,7 @@ int cmd(){
   }
   // RETORNE EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"retorne") == 0){
+    printf("RET\n");
     fprintf(stack_file,"RET\n");
     getToken();
     expr(aux_and,aux_or);
@@ -619,6 +649,7 @@ int cmd(){
     if(token.type == SN && strcmp(token.signal, ")") == 0){
         getToken();
         if(token.type == SN && strcmp(token.signal, ";") == 0){
+          printf("GOTO L%d\n",labelid);
           fprintf(stack_file,"GOTO L%d\n",labelid);
           getToken();
           return 1;
@@ -701,6 +732,7 @@ void opc_p_types() {
     exit(-1);
   }
   if(amem > 0){
+    printf("AMEM %d\n",amem);
     fprintf(stack_file,"AMEM %d\n",amem);
   }
 }
@@ -719,8 +751,10 @@ void expr_simp(int aux_and, int aux_or){
   if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
     getToken();
     if(strcmp(t.signal,"+") == 0 ){
+        printf("ADD\n");
         fprintf(stack_file,"ADD\n");
       }else if(strcmp(t.signal,"-") == 0){
+        printf("SUB\n");
         fprintf(stack_file,"SUB\n");
       }
   }
@@ -731,6 +765,9 @@ void expr_simp(int aux_and, int aux_or){
 while(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0 || strcmp(token.signal,"||") == 0)){
 
       if(strcmp(token.signal,"||") == 0){
+        printf("COPY\n");
+        printf("GOTRUE L%d\n",aux_or);
+        printf("POP\n");
         fprintf(stack_file,"COPY\n");
         fprintf(stack_file,"GOTRUE L%d\n",aux_or);
         fprintf(stack_file,"POP\n");
@@ -739,8 +776,10 @@ while(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,
       getToken();
       termo(aux_and,aux_or);
       if(strcmp(t.signal,"+") == 0 ){
+        printf("ADD\n");
         fprintf(stack_file,"ADD\n");
       }else if(strcmp(t.signal,"-") == 0){
+        printf("SUB\n");
         fprintf(stack_file,"SUB\n");
       }
 
@@ -753,6 +792,7 @@ int op_rel(){ // Não acrescenta token novo  all right
     aux_token = token;
     getToken();
     getLoadOrPush(token);
+    printf("SUB\n");
     fprintf(stack_file,"SUB\n");
     operator_check(aux_token);
     flag = 0;
@@ -768,6 +808,9 @@ void termo(int aux_and,int aux_or){ // all right
   while(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
 
       if(strcmp(token.signal,"&&") == 0){
+        printf("COPY\n");
+        printf("GOFALSE L%d\n",aux_and);
+        printf("POP\n");
         fprintf(stack_file,"COPY\n");
         fprintf(stack_file,"GOFALSE L%d\n",aux_and);
         fprintf(stack_file,"POP\n");
@@ -776,9 +819,11 @@ void termo(int aux_and,int aux_or){ // all right
       fator(aux_and,aux_or);
 
       if(strcmp(t.signal,"*") == 0 ){
-        printf(stack_file,"MUL\n");
+        printf("MUL\n");
+        fprintf(stack_file,"MUL\n");
       }else if(strcmp(t.signal,"/") == 0){
-        printf(stack_file,"DIV\n");
+        printf("DIV\n");
+        fprintf(stack_file,"DIV\n");
       }
   }
 }
@@ -831,6 +876,7 @@ void fator(int aux_and, int aux_or){ //all right
 }
 
 int atrib(){
+
     Token aux_atrib;
   if(token.type == ID){
     aux_atrib = token;
@@ -839,7 +885,8 @@ int atrib(){
       getToken();
       expr(0,0);
       getLoadOrPush(token);
-      printf(stack_file,"STOR %s\n",aux_atrib.lexem.value);
+      printf("STOR %s\n",aux_atrib.lexem.value);
+      fprintf(stack_file,"STOR %s\n",aux_atrib.lexem.value);
       return 1;
     }else{
       sintatic_erro(MISSING_EQUAL_SNG);
@@ -850,172 +897,3 @@ int atrib(){
   }
 }
 //-----------------------------------------------------
-void insert_symbol() {
-    //if it is function, verify if has a prototype
-    if(sb_token.cat == FUNC) {
-      int position = hasPrototype(sb_token);
-      if(position != -1) {//has prototype just overwrite
-          symbol_table[position] = sb_token;
-          return;
-      } else {
-        default_insert_table();
-      }
-    } else if(sb_token.cat == PARAN) {
-        int position = hasPrototype(last_function);
-        if(position != -1) {
-          insert_param_on_prototype(position);
-          return;
-        } else {
-          default_insert_table();
-        }
-    } else if(sb_token.cat == VAR) {
-      default_insert_table();
-    }
-}
-
-void printf_symbol(){
-  int i = 0;
-
-  while(strcmp(symbol_table[i].name, "") != 0) {
-    char type[500] = "";
-    if(symbol_table[i].cat == FUNC) {
-        strcpy(type, "Função");
-    } else if(symbol_table[i].cat == VAR) {
-      strcpy(type, "Variável");
-    } else if (symbol_table[i].cat == PARAN) {
-      strcpy(type, "Parametro");
-    }
-    printf("ID: %s Type: %s  Tipagem: %s\n", symbol_table[i].name, type, symbol_table[i].type);
-    i++;
-  }
-}
-
-void default_insert_table() {
-  int i = 0;
-  if(sb_token.cat == VAR) {
-    while(strcmp(symbol_table[i].name, "") != 0) {
-      i++;
-    }
-    symbol_table[i] = sb_token;
-  } else {
-    while(strcmp(symbol_table[i].type, "") != 0) {
-      i++;
-    }
-    symbol_table[i] = sb_token;
-  }
-}
-
-void insert_param_on_prototype(int position) {
-  int i = position + 1;
-  while(strcmp(symbol_table[i].type, "") != 0) {
-    if (symbol_table[i].cat == FUNC) {
-      printf("Parâmetro não esperado na linha %d\n", line_number);
-      exit(-1);
-    } else if (!symbol_table[i].fullfill && symbol_table[i].cat == PARAN) {
-        if(strcmp(symbol_table[i].type, sb_token.type) == 0) {
-           symbol_table[i] = sb_token;
-           symbol_table[i].fullfill = 1;
-           return;
-        } else {
-          printf("S: %s Symbol: %s\n", sb_token.type, symbol_table[i].type);
-          printf("Esperado tipo %s, encontrado tipo %s em '%s' na linha %d\n", symbol_table[i].type, sb_token.type, last_function.name,line_number);
-          exit(-1);
-        }
-    }
-    i++;
-  }
-}
-
-void insert_zombie(){
-  int i = 0;
-  while(strcmp(symbol_table[i].name, "") != 0) {
-    if(symbol_table[i].cat == PARAN) {
-      symbol_table[i].zumbi = 1;
-    }
-    i++;
-  }
-}
-
-void exclude_local_symbol(){
-  int i = 0;
-  while(strcmp(symbol_table[i].name, "") != 0) {
-    if(symbol_table[i].scope == LOCAL && !symbol_table[i].zumbi) {
-      refix_array(i);
-    } else {
-      i++;
-    }
-  }
-}
-
-void refix_array(int index) {
-  int i;
-  for(i = index; i < (sizeof(symbol_table)/sizeof(*symbol_table)) - 1; i++){
-    symbol_table[i] = symbol_table[i+1];
-  }
-}
-
-void verifyRedeclaration(symbol sb) {
-  int i = 0;
-  while(strcmp(symbol_table[i].name, "") != 0) {
-    if(symbol_table[i].scope == sb.scope && strcmp(symbol_table[i].name, sb.name) == 0 && !symbol_table[i].zumbi) {
-      printf("Redeclaração de '%s' na linha %d\n", sb.name, line_number);
-      exit(-1);
-    }
-    i++;
-  }
-}
-
-void sintatic_erro(int flag){
-    switch (flag){
-        case MISSING_SEMI_COLON:
-            printf("';' Esperado na linha %d\n", line_number);
-        break;
-        case MISSING_ID:
-            printf("Esperado identificador na linha %d\n", line_number);
-        break;
-        case MISSING_CLOSE_PAREN:
-            printf("Esperado ')' na linha %d\n", line_number);
-        break;
-        case MISSING_OPEN_PAREN:
-            printf("Esperado '(' na linha %d\n", line_number);
-        break;
-        case MISSING_OPEN_KEY:
-            printf("'{' Esperado na linha %d\n", line_number);
-        break;
-        case MISSING_CLOSE_KEY:
-            printf("'}' Esperado na linha %d\n", line_number);
-        break;
-        case MISSING_CMD:
-            printf("Comando esperado na linha %d\n ", line_number);
-        break;
-        case MISSING_EQUAL_SNG:
-            printf("Esperado sinal '=' na linha %d",line_number);
-        break;
-        case SYMBOL_NOT_RECOG:
-            printf("Simbolo não identificado na linha %d\n", line_number);
-        break;
-        case MISSING_TYPE:
-            printf("Erro esperado tipo na linha %d\n", line_number);
-        break;
-        case MISSING_COMMA:
-            printf("Erro esperado ',' na linha %d\n", line_number);
-        break;
-    }
-}
-
-int hasPrototype(symbol s) {
-  int i = 0;
-  while(strcmp(symbol_table[i].name, "") != 0) {
-    if(strcmp(s.name, "fibbonaci") == 0) {
-      printf("here");
-    }
-    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0) {
-      return i;
-    } else if(strcmp(symbol_table[i].name, s.name) == 0 && strcmp(symbol_table[i].type, s.type) != 0) {
-      printf("Esperado tipo '%s' para a função %s na linha %d\n", symbol_table[i].type, s.name, line_number);
-      exit(-1);
-    }
-    i++;
-  }
-  return -1;
-}

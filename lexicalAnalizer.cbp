@@ -33,6 +33,10 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="arquivo.cmm" />
+		<Unit filename="erros.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="erros.h" />
 		<Unit filename="lexical.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -45,6 +49,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="stacksemantic.h" />
+		<Unit filename="table.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="table.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
