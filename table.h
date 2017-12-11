@@ -47,6 +47,7 @@ void functionHasReturn(char* var);
 void functionHasNoReturn(char* var);
 void updateVariableValue(symbol sb);
 void validateParams(symbol sb, char params[][50]);
+void hasMainFunction();
 //-------------------
 //erro function;
 #endif // TABLE

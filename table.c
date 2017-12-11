@@ -294,3 +294,16 @@ void validateParams(symbol sb, char params[][50]) {
     exit(-1);
   }
 }
+
+void hasMainFunction() {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if(strcmp(symbol_table[i].name, "principal") == 0 && symbol_table[i].cat == FUNC) {
+      return;
+    }
+    i++;
+  }
+  
+  printf("Você esqueceu de declarar uma função 'principal'\n");
+  exit(-1);
+}

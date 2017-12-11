@@ -351,6 +351,8 @@ void prog() {
     }
   }
   else if(token.type == eOF){
+    //verify if has program on the body
+    hasMainFunction();
     printf("Sucesso na compilacao!\n");
     return;
   }
