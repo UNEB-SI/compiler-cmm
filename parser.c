@@ -1247,12 +1247,12 @@ int atrib(){
          updateVariableValue(s);
       } else {
         if(strcmp(s.type, "caracter") == 0  && strcmp(value.type, "inteiro") == 0) {
-          s.cValue = value.iValue;
+          s.cValue = (char) value.iValue;
           s.init = 1;//mark that variable has been initialized
           updateVariableValue(s);
         } else if (strcmp(s.type, "inteiro") == 0  && strcmp(value.type, "caracter") == 0) {
           s.init = 1;//mark that variable has been initialized
-          s.iValue = value.cValue;
+          s.iValue = (unsigned int) value.cValue;
           updateVariableValue(s);
         } else {
           printf("Atribuição não compatível entre os tipos %s e %s na linha %d\n", s.type, value.type, line_number);
