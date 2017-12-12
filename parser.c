@@ -5,7 +5,7 @@
 #include "parser.h"
 #include "stacksemantic.h"
 #include "table.h"
-#include "erros.h"
+#include "sintatic_erros.h"
 //Holds symbol table position
 
 symbol last_function;

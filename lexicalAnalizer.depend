@@ -1,22 +1,4 @@
 # depslib dependency file v1.0
-1512957770 source:c:\users\fernando\desktop\compilador\temp\university-compiler\erros.c
-	<stdlib.h>
-	<stdio.h>
-	<string.h>
-	"lexical.h"
-	"parser.h"
-	"table.h"
-	"erros.h"
-
-1512694151 c:\users\fernando\desktop\compilador\temp\university-compiler\lexical.h
-	<time.h>
-
-1512957756 c:\users\fernando\desktop\compilador\temp\university-compiler\parser.h
-
-1513042468 c:\users\fernando\desktop\compilador\temp\university-compiler\table.h
-
-1512957820 c:\users\fernando\desktop\compilador\temp\university-compiler\erros.h
-
 1512931269 source:c:\users\fernando\desktop\compilador\temp\university-compiler\lexical.c
 	<stdio.h>
 	<stdlib.h>
@@ -26,17 +8,12 @@
 	"parser.h"
 	"stacksemantic.h"
 
-1512931240 c:\users\fernando\desktop\compilador\temp\university-compiler\stacksemantic.h
+1512694151 c:\users\fernando\desktop\compilador\temp\university-compiler\lexical.h
+	<time.h>
 
-1513047469 source:c:\users\fernando\desktop\compilador\temp\university-compiler\parser.c
-	<stdlib.h>
-	<stdio.h>
-	<string.h>
-	"lexical.h"
-	"parser.h"
-	"stacksemantic.h"
-	"table.h"
-	"erros.h"
+1512957756 c:\users\fernando\desktop\compilador\temp\university-compiler\parser.h
+
+1512931240 c:\users\fernando\desktop\compilador\temp\university-compiler\stacksemantic.h
 
 1513047972 source:c:\users\fernando\desktop\compilador\temp\university-compiler\stacksemantic.c
 	<stdio.h>
@@ -46,6 +23,8 @@
 	"lexical.h"
 	"table.h"
 
+1513042468 c:\users\fernando\desktop\compilador\temp\university-compiler\table.h
+
 1513042412 source:c:\users\fernando\desktop\compilador\temp\university-compiler\table.c
 	<stdio.h>
 	<stdlib.h>
@@ -54,4 +33,25 @@
 	"lexical.h"
 	"table.h"
 	"parser.h"
+
+1513081803 source:c:\users\fernando\desktop\compilador\temp\university-compiler\parser.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+	"stacksemantic.h"
+	"table.h"
+	"sintatic_erros.h"
+
+1513081864 c:\users\fernando\desktop\compilador\temp\university-compiler\sintatic_erros.h
+
+1513081787 source:c:\users\fernando\desktop\compilador\temp\university-compiler\sintatic_erros.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+	"table.h"
+	"sintatic_erros.h"
 
