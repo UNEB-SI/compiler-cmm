@@ -8,7 +8,8 @@ semretorno principal(semparam) {
   inteiro n;
   inteiro b;
   caracter c;
-
-
+  n = 1;
+  c = n;
+  b = n/c;
   retorne;
 }
