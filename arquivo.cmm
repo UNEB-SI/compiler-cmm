@@ -1,26 +1,25 @@
 
 
 inteiro a,b,c,d,e;
- 
 
- 
+
+
  inteiro aa(semparam){
     real a,o;
     caracter b,d;
     se(a == b){
       a = 8;
     }
- 
+
  }
- 
+
 inteiro aux(inteiro a, real a2){
     inteiro a,b,c,d,e;
     se(a == b){
         enquanto(i == y){
             delta = 2/3+4;
         }
-        
-    }
-    aa(d,q,w,e);   
-}
 
+    }
+    aa(d,q,w,e);
+}
