@@ -5,11 +5,10 @@ semretorno ch(inteiro b){
 }
 
 semretorno principal(semparam) {
-  inteiro n;
-  inteiro b;
-  caracter c;
-  n = 1;
+  inteiro n, b, c;
+  n = 10;
   c = n;
-  b = n/c;
+  b = n / c;
+
   retorne;
 }
