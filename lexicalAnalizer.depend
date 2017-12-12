@@ -1,31 +1,56 @@
 # depslib dependency file v1.0
-1512678337 source:c:\users\fernando\desktop\compilador\temp\university-compiler\lexical.c
+1512957770 source:c:\users\fernando\desktop\compilador\temp\university-compiler\erros.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+	"table.h"
+	"erros.h"
+
+1512694151 c:\users\fernando\desktop\compilador\temp\university-compiler\lexical.h
+	<time.h>
+
+1512957756 c:\users\fernando\desktop\compilador\temp\university-compiler\parser.h
+
+1512957297 c:\users\fernando\desktop\compilador\temp\university-compiler\table.h
+
+1512957820 c:\users\fernando\desktop\compilador\temp\university-compiler\erros.h
+
+1512931269 source:c:\users\fernando\desktop\compilador\temp\university-compiler\lexical.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<ctype.h>
 	"lexical.h"
 	"parser.h"
+	"stacksemantic.h"
 
-1512694151 c:\users\fernando\desktop\compilador\temp\university-compiler\lexical.h
-	<time.h>
+1512931240 c:\users\fernando\desktop\compilador\temp\university-compiler\stacksemantic.h
 
-1512862334 c:\users\fernando\desktop\compilador\temp\university-compiler\parser.h
-
-1512853603 source:c:\users\fernando\desktop\compilador\temp\university-compiler\semantic.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	"semantic.h"
-	"lexical.h"
-
-1512847521 c:\users\fernando\desktop\compilador\temp\university-compiler\semantic.h
-
-1512862462 source:c:\users\fernando\desktop\compilador\temp\university-compiler\parser.c
+1513025800 source:c:\users\fernando\desktop\compilador\temp\university-compiler\parser.c
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
 	"lexical.h"
 	"parser.h"
-	"semantic.h"
+	"stacksemantic.h"
+	"table.h"
+	"erros.h"
+
+1512931256 source:c:\users\fernando\desktop\compilador\temp\university-compiler\stacksemantic.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"stacksemantic.h"
+	"lexical.h"
+
+1512956680 source:c:\users\fernando\desktop\compilador\temp\university-compiler\table.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"stacksemantic.h"
+	"lexical.h"
+	"table.h"
+	"parser.h"
 

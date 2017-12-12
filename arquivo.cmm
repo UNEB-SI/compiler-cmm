@@ -18,6 +18,7 @@ inteiro aux(inteiro a, real a2){
     se(a == b){
         enquanto(i == y){
             a = 5;
+            delta = 2+3+4*3\(2+1);
         }
         
     }

@@ -71,9 +71,9 @@ void prog() {
         verifyRedeclaration(sb_token);
         insert_symbol();
         last_function = sb_token;
-        getStoreID(auxIdStore); //Store the name of function and its label to use on declarations
-        printf("LABEL L%d\n",loadLabelId(auxIdStore));
-        fprintf(stack_file,"LABEL L%d\n",loadLabelId(auxIdStore));
+        //getStoreID(auxIdStore); //Store the name of function and its label to use on declarations
+        printf("LABEL L%s\n",auxIdStore);
+        fprintf(stack_file,"LABEL L%s\n",auxIdStore);
         types_param();
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
@@ -460,6 +460,7 @@ void types_param(){
 
 int cmd(){
     int aux_and = 0,aux_or = 0,labelid = 0;
+    char functionValue[500];
   //SE EXPRESSION
   //variaveis para auxiliar o for
     int labelw = 0,labely = 0,labelz = 0,labelx = 0;
@@ -637,7 +638,7 @@ int cmd(){
   }
   // FUNCTION CALL
   else if(token.type == ID && strcmp(next_token.signal,"(") == 0){
-    labelid = loadLabelId(token.lexem.value);
+    strcpy(functionValue,token.lexem.value);
     getToken();
     getToken();
     expr(aux_and,aux_or);
@@ -649,8 +650,8 @@ int cmd(){
     if(token.type == SN && strcmp(token.signal, ")") == 0){
         getToken();
         if(token.type == SN && strcmp(token.signal, ";") == 0){
-          printf("GOTO L%d\n",labelid);
-          fprintf(stack_file,"GOTO L%d\n",labelid);
+          printf("CALL %s\n",functionValue);
+          fprintf(stack_file,"CAll L%s\n",functionValue);
           getToken();
           return 1;
         } else {
