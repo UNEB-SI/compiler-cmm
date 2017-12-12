@@ -10,9 +10,6 @@
 symbol last_function;
 int flag = 1; //Flag para auxiliar na solução de um problema
 //
-
-
-
 void prog() {
    char auxIdStore[500];
    int amem = 0;
@@ -476,7 +473,7 @@ int cmd(){
       getToken();
       aux_and = getLabel();
       aux_or = getLabel();
-      expression expre = expr();
+      expression expre = expr(aux_and, aux_or);
       printf("GOFALSE L%d\n",aux_and);
       fprintf(stack_file,"GOFALSE L%d\n",aux_and);
       if(token.type == SN && strcmp(token.signal,")") == 0){
@@ -525,7 +522,7 @@ int cmd(){
        aux_or = getLabel();
        printf("LABEL L%d\n",aux_and);
        fprintf(stack_file,"LABEL L%d\n",aux_and);
-      expression expre = expr();//add return
+       expression expre = expr(aux_and, aux_or);//add return
        labely = getLabel();
        printf("GOFALSE L%d\n",labely);
        fprintf(stack_file,"GOFALSE L%d\n",labely);
@@ -571,7 +568,7 @@ int cmd(){
         printf("GOFALSE L%d\n",labelx);
         fprintf(stack_file,"GOFALSE L%d\n",labelx);
         aux_or = getLabel();
-        expression expre = expr();
+        expression expre = expr(aux_and, aux_or);
         labely = getLabel();
         printf("GOTO L%d\n",labely);
         fprintf(stack_file,"GOTO L%d\n",labely);
@@ -640,7 +637,7 @@ int cmd(){
       }
     }
 
-    expression expre = expr();
+    expression expre = expr(aux_and, aux_or);
 
     if(strcmp(expre.type, "nothing") != 0) {
       //verify if return type is equal to function type
@@ -683,12 +680,12 @@ int cmd(){
     getToken();
     getToken();
     char array_expression[50][50];
-    expression express =  expr();
+    expression express =  expr(aux_and, aux_or);
     strcpy(array_expression[0], express.type);
     int array_i = 1;
     while(token.type == SN && strcmp(token.signal, ",") == 0) {
       getToken();
-      express = expr();
+      express = expr(aux_and, aux_or);
       strcpy(array_expression[array_i], express.type);
       array_i++;
     }
@@ -783,12 +780,12 @@ void opc_p_types() {
   }
 }
 
-expression expr() {
+expression expr(int aux_and, int aux_or) {
   expression expre;
-  expre = expr_simp();
+  expre = expr_simp(aux_and, aux_or);
   char operator[5];
   if(op_rel(operator)){
-      expression expre2 = expr_simp();
+      expression expre2 = expr_simp(aux_and, aux_or);
       if((strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) || (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0)
           || (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0) || (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0)
           || (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "inteiro") == 0)) {
@@ -1054,7 +1051,7 @@ expression expr() {
   return expre;
 }
 
-expression expr_simp() {
+expression expr_simp(int aux_and, int aux_or) {
   expression expre;
   char front_signal = '0';
   Token t = token;
@@ -1065,7 +1062,7 @@ expression expr_simp() {
     cont_operator++;
   }
 
-  expre = termo();
+  expre = termo(aux_and, aux_or);
 //-------------------------------------------------
   if(cont_operator != 0){
       if(strcmp(t.signal,"+") == 0 ){
@@ -1097,7 +1094,7 @@ expression expr_simp() {
         signal = '-';
       }
       getToken();
-      expression expre2 = termo();
+      expression expre2 = termo(aux_and, aux_or);
       if(strcmp(t.signal,"+") == 0 ){
         printf("ADD\n");
         fprintf(stack_file,"ADD\n");
@@ -1190,10 +1187,10 @@ int op_rel(char operator[]){
   return 0;
 }
 
-expression termo() {
+expression termo(int aux_and, int aux_or) {
   expression expr;
   Token t;
-  expr = fator();
+  expr = fator(aux_and, aux_or);
   t = token;
   while(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
       if(strcmp(token.signal,"&&") == 0){
@@ -1212,7 +1209,7 @@ expression termo() {
         signal = '/';
       }
       getToken();
-      expression expr2 = fator();
+      expression expr2 = fator(aux_and, aux_or);
 
       if(strcmp(t.signal,"*") == 0 ){
         printf("MUL\n");
@@ -1279,7 +1276,7 @@ expression termo() {
   return expr;
 }
 
-expression fator() {
+expression fator(int aux_and, int aux_or) {
   expression expre;
   strcpy(expre.type, "nothing");
   // FUNCTION CALL
@@ -1290,12 +1287,12 @@ expression fator() {
     getToken();
     getToken();
     char array_expression[50][50];
-    expression express = expr();
+    expression express = expr(aux_and, aux_or);
     strcpy(array_expression[0], express.type);
     int array_i = 1;
     while(token.type == SN && strcmp(token.signal,",") == 0){
         getToken();
-        express = expr();
+        express = expr(aux_and, aux_or);
         strcpy(array_expression[array_i], express.type);
         array_i++;
     }
@@ -1360,7 +1357,7 @@ expression fator() {
   // EXPRESSION BETWEEN PARENTHESES
   else if(token.type == SN && strcmp(token.signal, "(") == 0) {
     getToken();
-    expre = expr();
+    expre = expr(aux_and, aux_or);
     if(token.type == SN && strcmp(token.signal, ")") == 0) {
       getToken();
     } else {
@@ -1371,7 +1368,7 @@ expression fator() {
   //NEGATION OF A FATOR
   else if(token.type == SN && strcmp(token.signal,"!") == 0){ //Tem que analisar isso aqui depois vei
     getToken();
-    expression expre2 = fator();
+    expression expre2 = fator(aux_and, aux_or);
     if(strcmp(expre2.type, "inteiro") == 0){
       if(!expre2.iValue) {
         strcpy(expre.type, "booleano");
@@ -1403,7 +1400,7 @@ int atrib(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"=") == 0){
       getToken();
-      value = expr();
+      value = expr(0, 0);
       getLoadOrPush(token);
       printf("STOR %s\n",get_mem_space(aux_atrib.lexem.value));
       fprintf(stack_file,"STOR %s\n",get_mem_space(aux_atrib.lexem.value));

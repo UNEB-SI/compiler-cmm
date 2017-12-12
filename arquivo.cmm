@@ -1,13 +1,5 @@
-
-semretorno ch(inteiro b){
-  retorne;
-}
+inteiro b, c;
 
 semretorno principal(semparam) {
-  inteiro n, b, c;
-  n = 10;
-  c = n;
-  b = n / c;
-
   retorne;
 }

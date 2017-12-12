@@ -303,7 +303,18 @@ void hasMainFunction() {
     }
     i++;
   }
-  
+
   printf("Você esqueceu de declarar uma função 'principal'\n");
   exit(-1);
+}
+
+char* get_mem_space(char variable_name[]) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if(strcmp(symbol_table[i].name, variable_name) == 0 && symbol_table[i].cat != FUNC) {
+      return symbol_table[i].mem_space;
+    }
+    i++;
+  }
+  return NULL;
 }

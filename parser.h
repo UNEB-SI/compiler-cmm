@@ -7,15 +7,10 @@
 extern Token token;
 extern int line_number;
 
-
-
 // Counter for index on symbol table
 
 //-------------------
 //-------------------
-
-//int firstTime;
-void sintatic_erro(int flag);
 typedef struct{
   char type[10];
   union {
@@ -33,10 +28,11 @@ int isType();
 void types_param();
 int cmd();
 void opc_p_types();
-expression expr();
-expression expr_simp();
-expression termo();
-expression fator();
+expression expr(int aux_and, int aux_or);
+expression expr_simp(int aux_and, int aux_or);
+expression termo(int aux_and, int aux_or);
+expression fator(int aux_and, int aux_or);
 int op_rel(char operator[]);
 int atrib();
+void sintatic_erro(int flag);
 #endif // PARSER
