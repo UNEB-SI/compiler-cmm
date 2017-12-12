@@ -13,7 +13,7 @@
 
 1512957756 c:\users\fernando\desktop\compilador\temp\university-compiler\parser.h
 
-1512957297 c:\users\fernando\desktop\compilador\temp\university-compiler\table.h
+1513042468 c:\users\fernando\desktop\compilador\temp\university-compiler\table.h
 
 1512957820 c:\users\fernando\desktop\compilador\temp\university-compiler\erros.h
 
@@ -28,7 +28,7 @@
 
 1512931240 c:\users\fernando\desktop\compilador\temp\university-compiler\stacksemantic.h
 
-1513025800 source:c:\users\fernando\desktop\compilador\temp\university-compiler\parser.c
+1513047469 source:c:\users\fernando\desktop\compilador\temp\university-compiler\parser.c
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
@@ -38,14 +38,15 @@
 	"table.h"
 	"erros.h"
 
-1512931256 source:c:\users\fernando\desktop\compilador\temp\university-compiler\stacksemantic.c
+1513047972 source:c:\users\fernando\desktop\compilador\temp\university-compiler\stacksemantic.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"stacksemantic.h"
 	"lexical.h"
+	"table.h"
 
-1512956680 source:c:\users\fernando\desktop\compilador\temp\university-compiler\table.c
+1513042412 source:c:\users\fernando\desktop\compilador\temp\university-compiler\table.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

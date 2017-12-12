@@ -3,6 +3,7 @@
 #include<string.h>
 #include"stacksemantic.h"
 #include"lexical.h"
+#include"table.h"
 
 int contLabel = 0;
 int cont = 0;
@@ -46,7 +47,7 @@ void getLoadOrPush(Token t){
     //printf(" mark %d\n",markID);
    // if(markID <= 2){
         if(t.type == ID){ //Semantico
-                fprintf(stack_file,"LOAD %s\n",t.lexem.value);
+                fprintf(stack_file,"LOAD %s\n",get_mem_space(t.lexem.value));
 
             }else if(t.type == INTCON){
                 fprintf(stack_file,"PUSH %i\n",t.iValue);

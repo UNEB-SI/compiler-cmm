@@ -56,10 +56,8 @@ void prog() {
             printf("AMEM %d\n",amem);
         }
 
-
         getToken();
         prog();
-
 
       }
 
@@ -72,8 +70,8 @@ void prog() {
         insert_symbol();
         last_function = sb_token;
         //getStoreID(auxIdStore); //Store the name of function and its label to use on declarations
-        printf("LABEL L%s\n",auxIdStore);
-        fprintf(stack_file,"LABEL L%s\n",auxIdStore);
+        printf("LOAD %s\n",get_mem_space(auxIdStore));
+        fprintf(stack_file,"LOAD %s\n",get_mem_space(auxIdStore));
         types_param();
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
@@ -495,7 +493,7 @@ int cmd(){
             sintatic_erro(MISSING_CMD);
             exit(-1);
           }
-          printf("LABEL %d\n",labelx);
+          printf("LABEL L%d\n",labelx);
           fprintf(stack_file,"LABEL L%d\n",labelx);
         }else{
             printf("LABEL L%d\n",aux_and);
@@ -650,8 +648,8 @@ int cmd(){
     if(token.type == SN && strcmp(token.signal, ")") == 0){
         getToken();
         if(token.type == SN && strcmp(token.signal, ";") == 0){
-          printf("CALL %s\n",functionValue);
-          fprintf(stack_file,"CAll L%s\n",functionValue);
+          printf("CALL %s\n",get_mem_space(functionValue));
+          fprintf(stack_file,"CAll %s\n",get_mem_space(functionValue));
           getToken();
           return 1;
         } else {
@@ -749,19 +747,24 @@ void expr(int aux_and, int aux_or) {
 
 void expr_simp(int aux_and, int aux_or){
   Token t = token;
+  int cont_operator = 0;
   if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
     getToken();
-    if(strcmp(t.signal,"+") == 0 ){
-        printf("ADD\n");
-        fprintf(stack_file,"ADD\n");
-      }else if(strcmp(t.signal,"-") == 0){
-        printf("SUB\n");
-        fprintf(stack_file,"SUB\n");
-      }
+    cont_operator++;
   }
 
   termo(aux_and,aux_or);
-
+//-------------------------------------------------
+  if(cont_operator != 0){
+      if(strcmp(t.signal,"+") == 0 ){
+            printf("ADD\n");
+            fprintf(stack_file,"ADD\n");
+          }else if(strcmp(t.signal,"-") == 0){
+            printf("SUB\n");
+            fprintf(stack_file,"SUB\n");
+          }
+  }
+//---------------------------------------------------
 
 while(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0 || strcmp(token.signal,"||") == 0)){
 
@@ -783,7 +786,6 @@ while(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,
         printf("SUB\n");
         fprintf(stack_file,"SUB\n");
       }
-
   }
 }
 
@@ -886,8 +888,8 @@ int atrib(){
       getToken();
       expr(0,0);
       getLoadOrPush(token);
-      printf("STOR %s\n",aux_atrib.lexem.value);
-      fprintf(stack_file,"STOR %s\n",aux_atrib.lexem.value);
+      printf("STOR %s\n",get_mem_space(aux_atrib.lexem.value));
+      fprintf(stack_file,"STOR %s\n",get_mem_space(aux_atrib.lexem.value));
       return 1;
     }else{
       sintatic_erro(MISSING_EQUAL_SNG);
