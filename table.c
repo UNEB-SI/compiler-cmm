@@ -60,7 +60,8 @@ void default_insert_table() {
     while(strcmp(symbol_table[i].type, "") != 0) {
       i++;
     }
-    if(sb_token.cat == PARAN) generate_mem_space(i);
+    if(sb_token.cat == PARAN)
+    generate_mem_space(i);
     symbol_table[i] = sb_token;
   }
 }
@@ -159,7 +160,7 @@ int hasPrototype(symbol s) {
 char* get_mem_space(char variable_name[]) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
-    if(strcmp(symbol_table[i].name, variable_name) == 0 && symbol_table[i].cat != FUNC) {
+    if(strcmp(symbol_table[i].name, variable_name) == 0) {
       return symbol_table[i].mem_space;
     }
     i++;
