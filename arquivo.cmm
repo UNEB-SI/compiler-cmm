@@ -1,4 +1,3 @@
-/* Sequencia de Fibonacci em Cmm - Recursivo */
 
 semretorno ch(inteiro b){
   retorne;

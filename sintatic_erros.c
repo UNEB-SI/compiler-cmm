@@ -33,7 +33,7 @@ void sintatic_erro(int flag){
             printf("Esperado sinal '=' na linha %d",line_number);
         break;
         case SYMBOL_NOT_RECOG:
-            printf("Simbolo não identificado na linha %d\n", line_number);
+            printf("Simbolo n�o identificado na linha %d\n", line_number);
         break;
         case MISSING_TYPE:
             printf("Erro esperado tipo na linha %d\n", line_number);

@@ -7,6 +7,15 @@
 extern Token token;
 extern int line_number;
 
+
+
+// Counter for index on symbol table
+
+//-------------------
+//-------------------
+
+//int firstTime;
+void sintatic_erro(int flag);
 typedef struct{
   char type[10];
   union {
