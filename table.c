@@ -18,7 +18,6 @@ void insert_symbol() {
         default_insert_table();
       }
     } else if(sb_token.cat == PARAN) {
-        //sb_token.scope = LOCAL;
         int position = hasPrototype(last_function);
         if(position != -1) {
           insert_param_on_prototype(position);
@@ -60,8 +59,9 @@ void default_insert_table() {
     while(strcmp(symbol_table[i].type, "") != 0) {
       i++;
     }
-    if(sb_token.cat == PARAN)
-    generate_mem_space(i);
+    if(sb_token.cat == PARAN) {
+        generate_mem_space(i);
+    }
     symbol_table[i] = sb_token;
   }
 }
@@ -83,13 +83,11 @@ void generate_mem_space(int position) {
 void insert_param_on_prototype(int position) {
   int i = position + 1;
   while(strcmp(symbol_table[i].type, "") != 0) {
-    if (symbol_table[i].cat == FUNC) {
-      printf("Sou %s\n", sb_token.name);
+    if (symbol_table[i].cat != PARAN) {
       printf("Parâmetro não esperado na linha %d\n", line_number);
       exit(-1);
     } else if (!symbol_table[i].fullfill && symbol_table[i].cat == PARAN) {
         if(strcmp(symbol_table[i].type, sb_token.type) == 0) {
-           float mem_position = i / 100;
            generate_mem_space(i);
            symbol_table[i] = sb_token;
            symbol_table[i].fullfill = 1;
@@ -134,10 +132,20 @@ void refix_array(int index) {
 
 void verifyRedeclaration(symbol sb) {
   int i = 0;
+
   while(strcmp(symbol_table[i].name, "") != 0) {
-    if(symbol_table[i].scope == sb.scope && strcmp(symbol_table[i].name, sb.name) == 0 && !symbol_table[i].zumbi) {
-      printf("Redeclaração de '%s' na linha %d\n", sb.name, line_number);
-      exit(-1);
+    //verify prototype Redeclaration
+    if(sb.cat == FUNC && sb.zumbi) {
+      if(symbol_table[i].scope == sb.scope && strcmp(symbol_table[i].name, sb.name) == 0
+         && symbol_table[i].zumbi == sb.zumbi) {
+            printf("Redeclaração da função '%s' na linha %d\n", sb.name, line_number);
+            exit(-1);
+         }
+    } else {
+      if(symbol_table[i].scope == sb.scope && strcmp(symbol_table[i].name, sb.name) == 0 && !symbol_table[i].zumbi) {
+        printf("Redeclaração de '%s' na linha %d\n", sb.name, line_number);
+        exit(-1);
+      }
     }
     i++;
   }
@@ -146,7 +154,7 @@ void verifyRedeclaration(symbol sb) {
 int hasPrototype(symbol s) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
-    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0) {
+    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0 && symbol_table[i].zumbi) {
       return i;
     } else if(strcmp(symbol_table[i].name, s.name) == 0 && strcmp(symbol_table[i].type, s.type) != 0) {
       printf("Esperado tipo '%s' para a função %s na linha %d\n", symbol_table[i].type, s.name, line_number);
@@ -157,10 +165,153 @@ int hasPrototype(symbol s) {
   return -1;
 }
 
+int hasPreviousBody(symbol s) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC) {
+      printf("Redeclaração da função %s na linha %d\n", s.name, line_number);
+      exit(-1);
+    }
+    i++;
+  }
+  return 0;
+}
+
+symbol hasBeenDeclared(char* var) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if (strcmp(symbol_table[i].name, var) == 0
+        && symbol_table[i].cat != FUNC) {
+        return symbol_table[i];
+    }
+    i++;
+  }
+  printf("Variável '%s' não declarada na linha %d\n", var, line_number);
+  exit(-1);
+}
+
+void updateVariableValue(symbol sb) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if (strcmp(symbol_table[i].name, sb.name) == 0
+        && symbol_table[i].cat != FUNC && sb.scope == symbol_table[i].scope) {
+        symbol_table[i] = sb;
+        return;
+    }
+    i++;
+  }
+}
+
+symbol functionHasBeenDeclared(char* var) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if (strcmp(symbol_table[i].name, var) == 0
+        && symbol_table[i].cat == FUNC) {
+        return symbol_table[i];
+    }
+    i++;
+  }
+  printf("Função '%s' não declarada na linha %d\n", var, line_number);
+  exit(-1);
+}
+
+void functionHasReturn(char* var) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if (strcmp(symbol_table[i].name, var) == 0){
+      if(strcmp(symbol_table[i].type, "semretorno") != 0) {
+        return;
+      } else {
+        printf("Função '%s' não possui valor de retorno na linha %d\n", var,
+               line_number);
+        exit(-1);
+      }
+    }
+    i++;
+  }
+}
+
+void functionHasNoReturn(char* var) {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if (strcmp(symbol_table[i].name, var) == 0){
+      if(strcmp(symbol_table[i].type, "semretorno") == 0) {
+        return;
+      } else {
+        printf("A chamada para a função '%s' não deve possuir valor de retorno na linha %d\n", var,
+               line_number);
+        exit(-1);
+      }
+    }
+    i++;
+  }
+}
+
+void verifyParams(symbol sb){
+  int position = hasPrototype(sb);
+  if(position != -1) {
+    int i = position + 1;
+    while(strcmp(symbol_table[i].name, "") != 0) {
+      if(symbol_table[i].cat != PARAN){
+        return;
+      } else if(symbol_table[i].cat == PARAN) {
+        if(!symbol_table[i].fullfill) {
+          printf("Parâmetro do tipo '%s' esperado na função %s linha %d\n",
+                 symbol_table[i].type, sb.name, line_number);
+          exit(-1);
+        }
+      }
+      i++;
+    }
+  } else {
+    return;
+  }
+}
+
+void validateParams(symbol sb, char params[][50]) {
+  int i = 0;
+
+  while(strcmp(symbol_table[i].name, "") != 0) {
+   if(symbol_table[i].cat == FUNC && strcmp(symbol_table[i].name, sb.name) == 0 && strcmp(symbol_table[i].type, sb.type) == 0) {
+      i = i + 1;
+      break;
+    }
+    i++;
+  }
+
+  int param_position = 0;
+
+  while(strcmp(params[param_position], "") != 0) {
+    if ((strcmp(params[param_position], symbol_table[i].type) != 0) || (symbol_table[i].cat != PARAN)) {
+      printf("Esperado %s na função %s como %d argumento, linha %d\n", symbol_table[i].type, sb.name, param_position+1, line_number);
+      exit(-1);
+    }
+    param_position++;
+    i++;
+  }
+  if(symbol_table[i].cat == PARAN) {
+    printf("Falta parâmetro do tipo '%s' na chamada da função %s na linha %d\n", symbol_table[i].type,sb.name, line_number);
+    exit(-1);
+  }
+}
+
+void hasMainFunction() {
+  int i = 0;
+  while(strcmp(symbol_table[i].name, "") != 0) {
+    if(strcmp(symbol_table[i].name, "principal") == 0 && symbol_table[i].cat == FUNC) {
+      return;
+    }
+    i++;
+  }
+
+  printf("Você esqueceu de declarar uma função 'principal'\n");
+  exit(-1);
+}
+
 char* get_mem_space(char variable_name[]) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
-    if(strcmp(symbol_table[i].name, variable_name) == 0) {
+    if(strcmp(symbol_table[i].name, variable_name) == 0 && symbol_table[i].cat != FUNC) {
       return symbol_table[i].mem_space;
     }
     i++;

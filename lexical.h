@@ -54,5 +54,6 @@ int getInteger();
 float getFloat();
 Token getToken();
 int isFirstTime();
-
+void getLoadOrPush(Token t);
+void operator_check(Token t);
 #endif // LEXICAL

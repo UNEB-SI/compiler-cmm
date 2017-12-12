@@ -1,0 +1,3 @@
+AMEM 2
+RET
+HALT

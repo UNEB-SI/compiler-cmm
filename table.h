@@ -10,9 +10,18 @@ typedef struct{
     token_cat cat;
     char type[10];
     int scope;
+    int init;
+    int matchParam;
     int fullfill;
     char mem_space[50];
+    union {
+      char cValue;
+      float dValue;
+      int iValue;
+      int bValue;
+    };
 }symbol;
+
 
 symbol sb_token;
 extern symbol last_function;
@@ -30,6 +39,15 @@ int hasPrototype(symbol s);
 void insert_param_on_prototype(int position);
 void default_insert_table();
 void generate_mem_space(int position);
+void verifyParams(symbol sb);
+int hasPreviousBody(symbol s);
+symbol hasBeenDeclared(char* var);
+symbol functionHasBeenDeclared(char* var);
+void functionHasReturn(char* var);
+void functionHasNoReturn(char* var);
+void updateVariableValue(symbol sb);
+void validateParams(symbol sb, char params[][50]);
+void hasMainFunction();
 char* get_mem_space(char variable_name[]);
 //-------------------
 //erro function;
