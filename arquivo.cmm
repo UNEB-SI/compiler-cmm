@@ -1,13 +1,15 @@
-inteiro principal(inteiro dex) {
+caracter principal(inteiro dex) {
 
 real a,b;
 inteiro c,d;
-    d = 8;
+ caracter w;
+ w = 'q';
+ d = 8;
     c =  3/ (2+3);
       b = 4.0;    
       a = b * 5.0;
       para(c = 3; c < 5; c = c + 1){
         a = b;
       }
-retorne d;
+retorne w;
 }

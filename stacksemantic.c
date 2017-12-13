@@ -4,6 +4,7 @@
 #include"stacksemantic.h"
 #include"lexical.h"
 #include"table.h"
+#include "parser.h"
 
 int contLabel = 0;
 int cont = 0;
@@ -20,6 +21,20 @@ void openStackFile(){
     stack_file = fopen("stack_file.txt", "w");
 
 }
+
+
+void PushValue(expression value){
+    if(strcmp(value.type,"inteiro") == 0){
+        printf("PUSH %d\n",value.iValue);
+    }else if(strcmp(value.type,"real") == 0){
+        printf("PUSH %f\n",value.dValue);
+    }else if(strcmp(value.type,"caracter") == 0){
+        printf("PUSH %c\n",value.cValue);
+    }else if(strcmp(value.type,"inteiro") == 0){
+        printf("PUSH %d\n",value.bValue);
+    }
+}
+
 void getStoreID(char id[500]){
 
     strcpy(stack_storeid[cont].idname,id);
