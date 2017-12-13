@@ -112,7 +112,6 @@ int checkState(FILE *f){
             }else if(actual_char == BAR){
                 STATE = 8;
                 addLetter(actual_char);
-                last_char = actual_char;
             }else if(actual_char == EOF){
                 STATE = 0;
                 return END_OF_FILE;
@@ -208,11 +207,12 @@ int checkState(FILE *f){
                 STATE = 9;
                 addLetter(actual_char);
             }else{
-                next_token.type = SN;
-                strcpy(next_token.signal, signals[isSignal(buffer)]);
-                STATE = 0;
-                justCleanBuffer();
-                return HAS_TOKEN;
+              STATE = 0;
+              addStringFinal();
+              next_token.type = SN;
+              strcpy(next_token.signal, signals[isSignal(buffer)]);
+              cleanBuffer(f, actual_char);
+              return HAS_TOKEN;
             }
             break;
         case 9:
