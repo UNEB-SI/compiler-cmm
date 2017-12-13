@@ -1,52 +1,37 @@
 # depslib dependency file v1.0
-1512931269 source:c:\users\fernando\desktop\compilador\temp\university-compiler\lexical.c
+1513121357 source:c:\users\fernando\desktop\compilador final\university-compiler\lexical.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<ctype.h>
 	"lexical.h"
 	"parser.h"
+	"table.h"
+	"sintatic_erros.h"
 	"stacksemantic.h"
 
-1512694151 c:\users\fernando\desktop\compilador\temp\university-compiler\lexical.h
+1513092349 c:\users\fernando\desktop\compilador final\university-compiler\lexical.h
 	<time.h>
 
-1512957756 c:\users\fernando\desktop\compilador\temp\university-compiler\parser.h
+1513092349 c:\users\fernando\desktop\compilador final\university-compiler\parser.h
 
-1512931240 c:\users\fernando\desktop\compilador\temp\university-compiler\stacksemantic.h
+1513092349 c:\users\fernando\desktop\compilador final\university-compiler\table.h
 
-1513047972 source:c:\users\fernando\desktop\compilador\temp\university-compiler\stacksemantic.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	"stacksemantic.h"
-	"lexical.h"
-	"table.h"
+1513092312 c:\users\fernando\desktop\compilador final\university-compiler\sintatic_erros.h
 
-1513042468 c:\users\fernando\desktop\compilador\temp\university-compiler\table.h
+1513182113 c:\users\fernando\desktop\compilador final\university-compiler\stacksemantic.h
 
-1513042412 source:c:\users\fernando\desktop\compilador\temp\university-compiler\table.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	"stacksemantic.h"
-	"lexical.h"
-	"table.h"
-	"parser.h"
-
-1513081803 source:c:\users\fernando\desktop\compilador\temp\university-compiler\parser.c
+1513184634 source:c:\users\fernando\desktop\compilador final\university-compiler\parser.c
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
 	"lexical.h"
 	"parser.h"
-	"stacksemantic.h"
-	"table.h"
 	"sintatic_erros.h"
+	"stacksemantic.h"
+	"table.h"
 
-1513081864 c:\users\fernando\desktop\compilador\temp\university-compiler\sintatic_erros.h
-
-1513081787 source:c:\users\fernando\desktop\compilador\temp\university-compiler\sintatic_erros.c
+1513092349 source:c:\users\fernando\desktop\compilador final\university-compiler\sintatic_erros.c
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
@@ -54,4 +39,20 @@
 	"parser.h"
 	"table.h"
 	"sintatic_erros.h"
+
+1513128601 source:c:\users\fernando\desktop\compilador final\university-compiler\stacksemantic.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"stacksemantic.h"
+	"lexical.h"
+	"table.h"
+
+1513092349 source:c:\users\fernando\desktop\compilador final\university-compiler\table.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+	"table.h"
 

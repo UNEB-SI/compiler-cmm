@@ -9,6 +9,8 @@ int contLabel = 0;
 int cont = 0;
 int markID = 0;
 FILE *stack_file;
+
+
 //------------------------------------------------------------------------
 
 storeid stack_storeid[1000];
@@ -60,11 +62,7 @@ void getLoadOrPush(Token t){
 
             }else if(t.type == CADEIACON){
                 fprintf(stack_file,"PUSH %s\n",t.word);
-    /*        }
-        markID++;
-    }else{
-        markID = 0;
-    */}
+            }
 }
 
 
@@ -100,15 +98,20 @@ void operator_check(Token t){
                 contLabel = aux_z;
 
             }else if(strcmp(t.signal,"<=") == 0){
+                fprintf(stack_file,"COPY\n");
                 aux_x = getLabel();
-                fprintf(stack_file,"GOTRUE L%d\n",aux_x);
-                fprintf(stack_file,"PUSH 1\n");
+                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
                 aux_y = getLabel();
-                fprintf(stack_file,"GOTO L%d\n",aux_y);
-                fprintf(stack_file,"LABEL L%d\n",aux_x);
+                fprintf(stack_file,"GOTRUE L%d\n",aux_y);
+                fprintf(stack_file,"POP\n");
                 fprintf(stack_file,"PUSH 0\n");
+                aux_z = getLabel();
+                fprintf(stack_file,"GOTO L%d\n",aux_z);
+                fprintf(stack_file,"LABEL L%d\n",aux_x);
                 fprintf(stack_file,"LABEL L%d\n",aux_y);
-                contLabel = aux_y;
+                fprintf(stack_file,"PUSH 1\n");
+                fprintf(stack_file,"LABEL L%d\n",aux_z);
+                contLabel = aux_z;
             }else if(strcmp(t.signal,"<") == 0){
                 fprintf(stack_file,"COPY\n");
                 aux_x = getLabel();
@@ -136,12 +139,102 @@ void operator_check(Token t){
                 contLabel = aux_y;
             }else if(strcmp(t.signal,"!=") == 0){ // precisa revisar
                 aux_x = getLabel();
-                fprintf(stack_file,"GOTRUE L%d\n",aux_x);
+                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
                 fprintf(stack_file,"PUSH 1\n");
                 aux_y = getLabel();
                 fprintf(stack_file,"GOTO L%d\n",aux_y);
                 fprintf(stack_file,"LABEL L%d\n",aux_x);
                 fprintf(stack_file,"PUSH 0\n");
+                fprintf(stack_file,"LABEL L%d\n",aux_y);
+                contLabel = aux_y;
+            }
+}
+
+void operator_check_not_Iqual(Token t){
+    int aux_z = 0,aux_x = 0, aux_y = 0;
+
+    if(strcmp(t.signal,"==") == 0){ //Semantico
+                aux_x = getLabel();
+                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
+                fprintf(stack_file,"PUSH 1\n");
+                aux_y = getLabel();
+                fprintf(stack_file,"GOTO L%d\n",aux_y);
+                fprintf(stack_file,"LABEL L%d\n",aux_x);
+                fprintf(stack_file,"PUSH 0\n");
+                fprintf(stack_file,"LABEL L%d\n",aux_y);
+                contLabel = aux_y;
+
+
+            }else if(strcmp(t.signal,">=") == 0){
+                fprintf(stack_file,"COPY\n");
+                aux_x = getLabel();
+                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
+                aux_y = getLabel();
+                fprintf(stack_file,"GOTRUE L%d\n",aux_y);
+                fprintf(stack_file,"PUSH 1\n");
+                aux_z = getLabel();
+                fprintf(stack_file,"GOTO L%d\n",aux_z);
+                fprintf(stack_file,"LABEL L%d\n",aux_x);
+                fprintf(stack_file,"POP\n");
+                fprintf(stack_file,"LABEL L%d\n",aux_y);
+                fprintf(stack_file,"PUSH 0\n");
+                fprintf(stack_file,"LABEL L%d\n",aux_z);
+                contLabel = aux_z;
+
+
+            }else if(strcmp(t.signal,"<=") == 0){
+                aux_x = getLabel();
+                fprintf(stack_file,"GOTRUE L%d\n",aux_x);
+                fprintf(stack_file,"PUSH 0\n");
+                aux_y = getLabel();
+                fprintf(stack_file,"GOTO L%d\n",aux_y);
+                fprintf(stack_file,"LABEL L%d\n",aux_x);
+                fprintf(stack_file,"PUSH 1\n");
+                fprintf(stack_file,"LABEL L%d\n",aux_y);
+                contLabel = aux_y;
+
+
+            }else if(strcmp(t.signal,"<") == 0){
+                fprintf(stack_file,"COPY\n");
+                aux_x = getLabel();
+                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
+                aux_y = getLabel();
+                fprintf(stack_file,"GOTRUE L%d\n",aux_y);
+                fprintf(stack_file,"PUSH 0\n");
+                aux_z = getLabel();
+                fprintf(stack_file,"GOTO L%d\n",aux_z);
+                fprintf(stack_file,"LABEL L%d\n",aux_x);
+                fprintf(stack_file,"POP\n");
+                fprintf(stack_file,"LABEL L%d\n",aux_y);
+                fprintf(stack_file,"PUSH 1\n");
+                fprintf(stack_file,"LABEL L%d\n",aux_z);
+                contLabel = aux_z;
+
+            }else if(strcmp(t.signal,">") == 0){
+                fprintf(stack_file,"COPY\n");
+                aux_x = getLabel();
+                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
+                aux_y = getLabel();
+                fprintf(stack_file,"GOTRUE L%d\n",aux_y);
+                fprintf(stack_file,"POP\n");
+                fprintf(stack_file,"PUSH 0\n");
+                aux_z = getLabel();
+                fprintf(stack_file,"GOTO L%d\n",aux_z);
+                fprintf(stack_file,"LABEL L%d\n",aux_x);
+                fprintf(stack_file,"LABEL L%d\n",aux_y);
+                fprintf(stack_file,"PUSH 1\n");
+                fprintf(stack_file,"LABEL L%d\n",aux_z);
+                contLabel = aux_z;
+
+
+            }else if(strcmp(t.signal,"!=") == 0){ // precisa revisar
+                aux_x = getLabel();
+                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
+                fprintf(stack_file,"PUSH 0\n");
+                aux_y = getLabel();
+                fprintf(stack_file,"GOTO L%d\n",aux_y);
+                fprintf(stack_file,"LABEL L%d\n",aux_x);
+                fprintf(stack_file,"PUSH 1\n");
                 fprintf(stack_file,"LABEL L%d\n",aux_y);
                 contLabel = aux_y;
             }

@@ -1,6 +1,7 @@
 #ifndef STACKSEMANTIC_H
 #define STACKSEMANTIC_H
 
+
 typedef struct operators{
     char * type;
     int flag;
@@ -28,4 +29,6 @@ int global_aux;
 void openStackFile();
 int getLabel();
 int getGoTO();
+void getStoreID(char id[500]);
+int loadLabelId(char id[]);
 #endif // PARSER

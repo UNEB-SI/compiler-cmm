@@ -1,5 +1,13 @@
-inteiro b, c;
+inteiro principal(semparam) {
 
-semretorno principal(semparam) {
-  retorne;
+real a,b;
+inteiro c,d;
+    d = 8;
+    c =  3/ (2+3);
+      b = 4.0;    
+      a = b * 5.0;
+      enquanto((b > a)&&(b > a)&&(b > a)){
+        a = b;
+      }
+retorne 4;
 }
