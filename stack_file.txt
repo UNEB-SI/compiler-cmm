@@ -1,3 +1,7 @@
-AMEM 2
+AMEM 3
+LOAD (null)
+RET
+PUSH 1
+STOR 0.1
 RET
 HALT

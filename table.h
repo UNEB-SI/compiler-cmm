@@ -49,6 +49,7 @@ void updateVariableValue(symbol sb);
 void validateParams(symbol sb, char params[][50]);
 void hasMainFunction();
 char* get_mem_space(char variable_name[]);
+int myFunctionHasPrototype(symbol s);
 //-------------------
 //erro function;
 #endif // TABLE

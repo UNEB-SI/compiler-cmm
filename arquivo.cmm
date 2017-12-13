@@ -1,5 +1,18 @@
-inteiro b, c;
+/* Comentario */
+
+prototipo semretorno soma(inteiro, real, caracter);
+prototipo inteiro contagem(semparam);
+
+semretorno soma(inteiro b, real a, caracter co) {
+
+}
+
+inteiro contagem(semparam) {
+  retorne 1;
+}
 
 semretorno principal(semparam) {
+  inteiro b;
+  b = contagem();
   retorne;
 }
