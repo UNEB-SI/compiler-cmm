@@ -652,8 +652,7 @@ int cmd(){
   }
   // RETORNE EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"retorne") == 0){
-    //printf("RET\n");
-    //fprintf(stack_file,"RET\n");
+
     Token aux_token;
     getToken();
     aux_token = token;
@@ -682,7 +681,7 @@ int cmd(){
         printf("Retorno '%s' não esperado para a função %s\n", expre.type, last_function.name);
         exit(-1);
       }else{
-        getLoadOrPush(token);
+        //getLoadOrPush(token);
         printf("STOR 1.%d\n",(-1*(3+cont_paramter_var))); // arrumar isso aqui IMPORTANTE
         if(cont_local_var > 0)
             printf("DEMEM %d\n",cont_local_var);
