@@ -1,4 +1,4 @@
-inteiro principal(semparam) {
+inteiro principal(inteiro dex) {
 
 real a,b;
 inteiro c,d;
@@ -6,8 +6,8 @@ inteiro c,d;
     c =  3/ (2+3);
       b = 4.0;    
       a = b * 5.0;
-      enquanto((b > a)&&(b > a)&&(b > a)){
+      para(c = 3; c < 5; c = c + 1){
         a = b;
       }
-retorne 4;
+retorne d;
 }

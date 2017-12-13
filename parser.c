@@ -335,10 +335,12 @@ void prog() {
                 verifyRedeclaration(sb_token);
                 insert_symbol();
                 getToken();
+                amem++;
                 //verify if it is declaration
                 while(token.type == SN && strcmp(token.signal, ",") == 0) {
                   getToken();
                   if(token.type == ID) {
+                    amem++;
                     strcpy(sb_token.name, token.lexem.value);
                     verifyRedeclaration(sb_token);
                     insert_symbol();
@@ -349,8 +351,10 @@ void prog() {
                   }
                 }
                 //if it is ; declaration finish
+                cont_local_var = amem;
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
                   getToken();
+
                 } else {
                   sintatic_erro(MISSING_SEMI_COLON);
                   exit(-1);
@@ -359,10 +363,18 @@ void prog() {
             }
             while(cmd());
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
+              printf("STOR 1.%d\n",(-1*(3+cont_paramter_var))); // arrumar isso aqui IMPORTANTE
+              if(cont_local_var > 0)
+                printf("DEMEM %d\n",cont_local_var);
+                printf("RET 0\n");
+              cont_local_var = 0;
+              cont_paramter_var = 0;
+
               getToken();
               // keep all parameters and delete local variables
               insert_zombie();
               exclude_local_symbol();
+
               prog();
             } else {
                 sintatic_erro(MISSING_CLOSE_KEY);
@@ -423,7 +435,7 @@ void types_param(){
     sb_token.zumbi = 0;// we gonna set the cat later
     if(token.type == ID){
       amem++;
-      cont_paramter_var++;
+
       getToken();
       sb_token.cat = PARAN;
       verifyRedeclaration(sb_token);
@@ -439,7 +451,7 @@ void types_param(){
           strcpy(sb_token.name,token.lexem.value);
           sb_token.zumbi = 0;// we gonna set the cat later
           if(token.type == ID) {
-            cont_paramter_var++;
+
             amem++;
             getToken();
             sb_token.cat = PARAN;
@@ -462,10 +474,11 @@ void types_param(){
     sintatic_erro(SYMBOL_NOT_RECOG);
     exit(-1);
   }
-  if(amem > 0){
-    printf("AMEM %d\n",amem);
-    fprintf(stack_file,"AMEM %d\n",amem);
-  }
+  cont_paramter_var = amem;
+ // if(amem > 0){
+//    printf("AMEM %d\n",amem);
+//    fprintf(stack_file,"AMEM %d\n",amem);
+ // }
 }
 
 int cmd(){
@@ -527,14 +540,19 @@ int cmd(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
-       aux_and = getLabel();
-       aux_or = getLabel();
-       printf("LABEL L%d\n",aux_and);
-       fprintf(stack_file,"LABEL L%d\n",aux_and);
-       expression expre = expr(aux_and, aux_or);//add return
        labely = getLabel();
-       printf("GOFALSE L%d\n",labely);
-       fprintf(stack_file,"GOFALSE L%d\n",labely);
+       aux_or = getLabel();
+       aux_and = getLabel();
+
+       expression expre = expr(aux_and, aux_or);//add return
+
+       printf("LABEL L%d\n",labely);
+       fprintf(stack_file,"LABEL L%d\n",labely);
+
+
+
+       printf("GOFALSE L%d\n",aux_and);
+       fprintf(stack_file,"GOFALSE L%d\n",aux_and);
 
       if (strcmp(expre.type, "booleano") != 0) {
         printf ("Argumento imcopatível em expressão 'se' na linha %d\n", line_number);
@@ -548,10 +566,10 @@ int cmd(){
           sintatic_erro(MISSING_CMD);
           exit(-1);
         }
-        printf("GOTO L%d\n",aux_and);
-        printf("LABEL L%d\n",labely);
-        fprintf(stack_file,"GOTO L%d\n",aux_and); //Aqui termina o while
-        fprintf(stack_file,"LABEL L%d\n",labely);
+        printf("GOTO L%d\n",labely);
+        printf("LABEL L%d\n",aux_and);
+        fprintf(stack_file,"GOTO L%d\n",labely); //Aqui termina o while
+        fprintf(stack_file,"LABEL L%d\n",aux_and);
         return 1;
       }else{
         sintatic_erro(MISSING_CLOSE_PAREN);
@@ -567,17 +585,23 @@ int cmd(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
+
       atrib();
+
       labelw = getLabel();
       printf("LABEL L%d\n",labelw);
       fprintf(stack_file,"LABEL L%d\n",labelw);
+
       if(token.type == SN && strcmp(token.signal,";") == 0){
         getToken();
-        labelx = getLabel();
-        printf("GOFALSE L%d\n",labelx);
-        fprintf(stack_file,"GOFALSE L%d\n",labelx);
+
         aux_or = getLabel();
+        aux_and = getLabel();
         expression expre = expr(aux_and, aux_or);
+
+        printf("GOFALSE L%d\n",aux_and);
+        fprintf(stack_file,"GOFALSE L%d\n",aux_and);
+
         labely = getLabel();
         printf("GOTO L%d\n",labely);
         fprintf(stack_file,"GOTO L%d\n",labely);
@@ -605,9 +629,9 @@ int cmd(){
               exit(-1);
             }
             printf("GOTO L%d\n",labelz);
-            printf("LABEL L%d",labelx);
+            printf("LABEL L%d\n",aux_and);
             fprintf(stack_file,"GOTO L%d\n",labelz);
-            fprintf(stack_file,"LABEL L%d",labelx);
+            fprintf(stack_file,"LABEL end L%d\n",aux_and);
             return 1;
           }else{
             sintatic_erro(MISSING_CLOSE_PAREN);
@@ -628,19 +652,21 @@ int cmd(){
   }
   // RETORNE EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"retorne") == 0){
-    printf("RET\n");
-    fprintf(stack_file,"RET\n");
+    //printf("RET\n");
+    //fprintf(stack_file,"RET\n");
+    Token aux_token;
     getToken();
+    aux_token = token;
     //verify if function has return and if has, have to has a express returning
     if(strcmp(last_function.type, "semretorno") == 0) {
       if(strcmp(token.signal, ";") != 0) {
-          printf("Retorno inesperado para a função '%s' na linha %d\n",
+          printf("Retorno inesperado para a funcao '%s' na linha %d\n",
                  last_function.name, line_number);
           exit(-1);
       }
     } else {
       if(strcmp(token.signal, ";") == 0) {
-          printf("Retorno '%s' esperado para a função '%s' na linha %d\n",
+          printf("Retorno '%s' esperado para a funcaoo '%s' na linha %d\n",
                  last_function.type, last_function.name, line_number);
           exit(-1);
       }
@@ -656,19 +682,14 @@ int cmd(){
         printf("Retorno '%s' não esperado para a função %s\n", expre.type, last_function.name);
         exit(-1);
       }else{
-    //    getLoadOrPush(aux_token);
+        getLoadOrPush(token);
         printf("STOR 1.%d\n",(-1*(3+cont_paramter_var))); // arrumar isso aqui IMPORTANTE
         if(cont_local_var > 0)
             printf("DEMEM %d\n",cont_local_var);
         printf("RET 0\n");
         cont_local_var = 0;
+        cont_paramter_var = 0;
       }
-    }else{
-       // getLoadOrPush(aux_token);
-        printf("STOR 1.%d\n",(-1*(3+cont_paramter_var))); // arrumar isso aqui IMPORTANTE
-        if(cont_local_var > 0)
-            printf("DEMEM %d\n",cont_local_var);
-        cont_local_var = 0;
     }
 
     if(token.type == SN && strcmp(token.signal,";") == 0){
@@ -1252,7 +1273,7 @@ expression termo(int aux_and, int aux_or) {
         printf("GOFALSE L%d\n",aux_and);
         printf("POP\n");
         fprintf(stack_file,"COPY\n");
-        fprintf(stack_file,"GOFALSE L%d\n",aux_and);
+        fprintf(stack_file,"GOFALSE aqui L%d\n",aux_and);
         fprintf(stack_file,"POP\n");
       }
       char signal = '0';
@@ -1468,7 +1489,7 @@ int atrib(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"=") == 0){
       getToken();
-      value = expr(0, 0);
+      value = expr(0,0);
       getLoadOrPush(token);
       printf("STOR %s\n",get_mem_space(aux_atrib.lexem.value));
       fprintf(stack_file,"STOR %s\n",get_mem_space(aux_atrib.lexem.value));
