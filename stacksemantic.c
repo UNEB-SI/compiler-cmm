@@ -1,27 +1,27 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include"stacksemantic.h"
 #include"lexical.h"
-#include"table.h"
+#include"stacksemantic.h"
 #include "parser.h"
+#include"table.h"
 
 int contLabel = 0;
 int cont = 0;
 int markID = 0;
 FILE *stack_file;
 
-
 //------------------------------------------------------------------------
 
 storeid stack_storeid[1000];
 
 void openStackFile(){
-
     stack_file = fopen("stack_file.txt", "w");
-
 }
 
+void closeStackFile(){
+   fclose(stack_file);
+}
 
 void PushValue(expression value){
     if(strcmp(value.type,"inteiro") == 0){
@@ -30,7 +30,7 @@ void PushValue(expression value){
         printf("PUSH %f\n",value.dValue);
     }else if(strcmp(value.type,"caracter") == 0){
         printf("PUSH %c\n",value.cValue);
-    }else if(strcmp(value.type,"inteiro") == 0){
+    }else if(strcmp(value.type,"booleano") == 0){
         printf("PUSH %d\n",value.bValue);
     }
 }
@@ -61,8 +61,6 @@ int getLabel(){
 
 
 void getLoadOrPush(Token t){
-    //printf(" mark %d\n",markID);
-   // if(markID <= 2){
         if(t.type == ID){ //Semantico
                 fprintf(stack_file,"LOAD %s\n",get_mem_space(t.lexem.value));
 
@@ -79,9 +77,6 @@ void getLoadOrPush(Token t){
                 fprintf(stack_file,"PUSH %s\n",t.word);
             }
 }
-
-
-
 
 void operator_check(Token t){
     int aux_z = 0,aux_x = 0, aux_y = 0;
@@ -240,7 +235,6 @@ void operator_check_not_Iqual(Token t){
                 fprintf(stack_file,"PUSH 1\n");
                 fprintf(stack_file,"LABEL L%d\n",aux_z);
                 contLabel = aux_z;
-
 
             }else if(strcmp(t.signal,"!=") == 0){ // precisa revisar
                 aux_x = getLabel();

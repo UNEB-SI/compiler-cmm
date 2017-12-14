@@ -46,8 +46,8 @@ int main(int argc, char **argv){
     if(argc > 1){
          openStackFile();
          printf("INIP\n");
-        fprintf(stack_file,"INIP\n");
-        readFile(argv[1]);
+         fprintf(stack_file,"INIP\n");
+         readFile(argv[1]);
     }else{
         errorMessage(ERROR_PASS_FILE);
     }
@@ -66,6 +66,9 @@ void readFile(char *file_name){
     }else{
         errorMessage(ERROR_NOT_FOUND_FILE);
     }
+
+    fclose(file);
+    //closeStackFile();
 }
 
 Token getToken() {
@@ -386,7 +389,7 @@ int isLetter(char letter){
 
 int isReservedWord(char *word){
     int i;
-    for(i = 0; i < (sizeof(reserved_word)/sizeof(*reserved_word)); i++){
+    for(i = 0; i < (int) (sizeof(reserved_word)/sizeof(*reserved_word)); i++){
         if(strcmp(word, reserved_word[i]) == 0){
             return i;
         }
@@ -397,7 +400,7 @@ int isReservedWord(char *word){
 
 int isSignal(char *word){
     int i;
-    for(i = 0; i < (sizeof(signals)/sizeof(*signals)); i++){
+    for(i = 0; i < (int) (sizeof(signals)/sizeof(*signals)); i++){
         if(strcmp(word, signals[i]) == 0){
             return i;
         }

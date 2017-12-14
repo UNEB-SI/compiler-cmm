@@ -125,7 +125,7 @@ void exclude_local_symbol(){
 
 void refix_array(int index) {
   int i;
-  for(i = index; i < (sizeof(symbol_table)/sizeof(*symbol_table)) - 1; i++){
+  for(i = index; i < (int) (sizeof(symbol_table)/sizeof(*symbol_table)) - 1; i++){
     symbol_table[i] = symbol_table[i+1];
   }
 }

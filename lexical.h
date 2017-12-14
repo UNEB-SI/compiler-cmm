@@ -2,6 +2,7 @@
 #define LEXICAL_H
 
 #include <time.h>
+#include "structures.h"
 
  enum token_types {ID, PR, SN, INTCON, REALCON, CADEIACON, CARACCON, eOF, COMMENT};
  typedef enum token_types TokenType;

@@ -10,7 +10,7 @@
 symbol last_function;
 expression aux_expre;
 
-int flag = 1; //Flag para auxiliar na solução de um problema
+int flag = 1;
 int cont_local_var = 0;
 int cont_paramter_var = 0;
 int cont_not_iqual = 0;
@@ -482,14 +482,13 @@ void types_param(){
 }
 
 int cmd(){
-    int aux_and = 0,aux_or = 0;
+    int aux_and = 0, aux_or = 0;
     char functionValue[500];
-  //SE EXPRESSION
-  //variaveis para auxiliar o for
+    //variaveis para auxiliar o for
     int labelw = 0,labely = 0,labelz = 0,labelx = 0;
   //-----------------------------
+  //SE EXPRESSION
   if(token.type == PR && strcmp(token.pr, "se") == 0){
-   // getLabel();
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
@@ -1283,7 +1282,6 @@ expression termo(int aux_and, int aux_or) {
       }
       getToken();
       expression expr2 = fator(aux_and, aux_or);
-    printf("SINAL t: %s\n",t.signal);
       if(strcmp(t.signal,"*") == 0){
             if(strcmp(expr.type,"inteiro") == 0 && strcmp(expr2.type,"inteiro") == 0){
                 printf("MUL\n");

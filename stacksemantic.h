@@ -1,13 +1,13 @@
 #ifndef STACKSEMANTIC_H
 #define STACKSEMANTIC_H
 
+FILE *stack_file;
 
 typedef struct operators{
     char * type;
     int flag;
 }operators;
 
-FILE *stack_file;
 
 typedef struct storeid{
     char idname[500];
@@ -26,7 +26,10 @@ int aux_store_label;
 int contAuxLabel;
 int global_aux;
 
+void PushValue(expression value);
 void openStackFile();
+void closeStackFile();
+void operator_check_not_Iqual();
 int getLabel();
 int getGoTO();
 void getStoreID(char id[500]);

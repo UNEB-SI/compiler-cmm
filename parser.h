@@ -8,21 +8,8 @@ extern Token token;
 extern int line_number;
 
 // Counter for index on symbol table
-
 //-------------------
 //-------------------
-typedef struct{
-  char type[10];
-  union {
-    char cValue;
-    float dValue;
-    int iValue;
-    int bValue;
-    char signal[2];
-    char word[1000];
-  };
-} expression;
-
 void prog();
 int isType();
 void types_param();
