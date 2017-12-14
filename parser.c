@@ -1,15 +1,20 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "table.h"
 #include "lexical.h"
 #include "parser.h"
 #include "sintatic_erros.h"
 #include "stacksemantic.h"
+#include "table.h"
 
 symbol last_function;
+expression aux_expre;
+
 int flag = 1; //Flag para auxiliar na solução de um problema
-//
+int cont_local_var = 0;
+int cont_paramter_var = 0;
+int cont_not_iqual = 0;
+
 void prog() {
    char auxIdStore[500];
    int amem = 0;
@@ -65,8 +70,9 @@ void prog() {
         insert_symbol();
         last_function = sb_token;
         //getStoreID(auxIdStore); //Store the name of function and its label to use on declarations
-        printf("LOAD %s\n",get_mem_space(auxIdStore));
-        fprintf(stack_file,"LOAD %s\n",get_mem_space(auxIdStore));
+        getStoreID(auxIdStore);
+        printf("INIPR %d\n",loadLabelId(auxIdStore));
+        fprintf(stack_file,"INIPR %d\n",loadLabelId(auxIdStore));
         types_param();
         //verify if all parameters was good
         verifyParams(last_function);
@@ -109,6 +115,7 @@ void prog() {
                            amem++;
                            printf("AMEM %d\n",amem);
                            fprintf(stack_file,"AMEM %d\n",amem); //Goes to the function what have been called
+                           cont_local_var += amem;
 
                   getToken();
                 } else {
@@ -328,10 +335,12 @@ void prog() {
                 verifyRedeclaration(sb_token);
                 insert_symbol();
                 getToken();
+                amem++;
                 //verify if it is declaration
                 while(token.type == SN && strcmp(token.signal, ",") == 0) {
                   getToken();
                   if(token.type == ID) {
+                    amem++;
                     strcpy(sb_token.name, token.lexem.value);
                     verifyRedeclaration(sb_token);
                     insert_symbol();
@@ -342,8 +351,10 @@ void prog() {
                   }
                 }
                 //if it is ; declaration finish
+                cont_local_var = amem;
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
                   getToken();
+
                 } else {
                   sintatic_erro(MISSING_SEMI_COLON);
                   exit(-1);
@@ -352,10 +363,18 @@ void prog() {
             }
             while(cmd());
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
+              printf("STOR 1.%d\n",(-1*(3+cont_paramter_var))); // arrumar isso aqui IMPORTANTE
+              if(cont_local_var > 0)
+                printf("DEMEM %d\n",cont_local_var);
+                printf("RET 0\n");
+              cont_local_var = 0;
+              cont_paramter_var = 0;
+
               getToken();
               // keep all parameters and delete local variables
               insert_zombie();
               exclude_local_symbol();
+
               prog();
             } else {
                 sintatic_erro(MISSING_CLOSE_KEY);
@@ -416,6 +435,7 @@ void types_param(){
     sb_token.zumbi = 0;// we gonna set the cat later
     if(token.type == ID){
       amem++;
+
       getToken();
       sb_token.cat = PARAN;
       verifyRedeclaration(sb_token);
@@ -431,6 +451,7 @@ void types_param(){
           strcpy(sb_token.name,token.lexem.value);
           sb_token.zumbi = 0;// we gonna set the cat later
           if(token.type == ID) {
+
             amem++;
             getToken();
             sb_token.cat = PARAN;
@@ -453,14 +474,15 @@ void types_param(){
     sintatic_erro(SYMBOL_NOT_RECOG);
     exit(-1);
   }
-  if(amem > 0){
-    printf("AMEM %d\n",amem);
-    fprintf(stack_file,"AMEM %d\n",amem);
-  }
+  cont_paramter_var = amem;
+ // if(amem > 0){
+//    printf("AMEM %d\n",amem);
+//    fprintf(stack_file,"AMEM %d\n",amem);
+ // }
 }
 
 int cmd(){
-    int aux_and = 0,aux_or = 0,labelid = 0;
+    int aux_and = 0,aux_or = 0;
     char functionValue[500];
   //SE EXPRESSION
   //variaveis para auxiliar o for
@@ -518,14 +540,19 @@ int cmd(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
-       aux_and = getLabel();
-       aux_or = getLabel();
-       printf("LABEL L%d\n",aux_and);
-       fprintf(stack_file,"LABEL L%d\n",aux_and);
-       expression expre = expr(aux_and, aux_or);//add return
        labely = getLabel();
-       printf("GOFALSE L%d\n",labely);
-       fprintf(stack_file,"GOFALSE L%d\n",labely);
+       aux_or = getLabel();
+       aux_and = getLabel();
+
+       expression expre = expr(aux_and, aux_or);//add return
+
+       printf("LABEL L%d\n",labely);
+       fprintf(stack_file,"LABEL L%d\n",labely);
+
+
+
+       printf("GOFALSE L%d\n",aux_and);
+       fprintf(stack_file,"GOFALSE L%d\n",aux_and);
 
       if (strcmp(expre.type, "booleano") != 0) {
         printf ("Argumento imcopatível em expressão 'se' na linha %d\n", line_number);
@@ -539,10 +566,10 @@ int cmd(){
           sintatic_erro(MISSING_CMD);
           exit(-1);
         }
-        printf("GOTO L%d\n",aux_and);
-        printf("LABEL L%d\n",labely);
-        fprintf(stack_file,"GOTO L%d\n",aux_and); //Aqui termina o while
-        fprintf(stack_file,"LABEL L%d\n",labely);
+        printf("GOTO L%d\n",labely);
+        printf("LABEL L%d\n",aux_and);
+        fprintf(stack_file,"GOTO L%d\n",labely); //Aqui termina o while
+        fprintf(stack_file,"LABEL L%d\n",aux_and);
         return 1;
       }else{
         sintatic_erro(MISSING_CLOSE_PAREN);
@@ -558,17 +585,23 @@ int cmd(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
+
       atrib();
+
       labelw = getLabel();
       printf("LABEL L%d\n",labelw);
       fprintf(stack_file,"LABEL L%d\n",labelw);
+
       if(token.type == SN && strcmp(token.signal,";") == 0){
         getToken();
-        labelx = getLabel();
-        printf("GOFALSE L%d\n",labelx);
-        fprintf(stack_file,"GOFALSE L%d\n",labelx);
+
         aux_or = getLabel();
+        aux_and = getLabel();
         expression expre = expr(aux_and, aux_or);
+
+        printf("GOFALSE L%d\n",aux_and);
+        fprintf(stack_file,"GOFALSE L%d\n",aux_and);
+
         labely = getLabel();
         printf("GOTO L%d\n",labely);
         fprintf(stack_file,"GOTO L%d\n",labely);
@@ -596,9 +629,9 @@ int cmd(){
               exit(-1);
             }
             printf("GOTO L%d\n",labelz);
-            printf("LABEL L%d",labelx);
+            printf("LABEL L%d\n",aux_and);
             fprintf(stack_file,"GOTO L%d\n",labelz);
-            fprintf(stack_file,"LABEL L%d",labelx);
+            fprintf(stack_file,"LABEL end L%d\n",aux_and);
             return 1;
           }else{
             sintatic_erro(MISSING_CLOSE_PAREN);
@@ -619,23 +652,26 @@ int cmd(){
   }
   // RETORNE EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"retorne") == 0){
-    printf("RET\n");
-    fprintf(stack_file,"RET\n");
+
+    Token aux_token;
     getToken();
+    aux_token = token;
     //verify if function has return and if has, have to has a express returning
     if(strcmp(last_function.type, "semretorno") == 0) {
       if(strcmp(token.signal, ";") != 0) {
-          printf("Retorno inesperado para a função '%s' na linha %d\n",
+          printf("Retorno inesperado para a funcao '%s' na linha %d\n",
                  last_function.name, line_number);
           exit(-1);
       }
     } else {
       if(strcmp(token.signal, ";") == 0) {
-          printf("Retorno '%s' esperado para a função '%s' na linha %d\n",
+          printf("Retorno '%s' esperado para a funcaoo '%s' na linha %d\n",
                  last_function.type, last_function.name, line_number);
           exit(-1);
       }
     }
+
+
 
     expression expre = expr(aux_and, aux_or);
 
@@ -644,6 +680,14 @@ int cmd(){
       if ((strcmp(last_function.type, expre.type) != 0) && !(strcmp(last_function.type, "caracter") == 0 && strcmp(expre.type, "inteiro") == 0) && !(strcmp(last_function.type, "inteiro") == 0 && strcmp(expre.type, "caracter") == 0)){
         printf("Retorno '%s' não esperado para a função %s\n", expre.type, last_function.name);
         exit(-1);
+      }else{
+        PushValue(expre);
+        printf("STOR 1.%d\n",(-1*(3+cont_paramter_var))); // arrumar isso aqui IMPORTANTE
+        if(cont_local_var > 0)
+            printf("DEMEM %d\n",cont_local_var);
+        printf("RET 0\n");
+        cont_local_var = 0;
+        cont_paramter_var = 0;
       }
     }
 
@@ -694,8 +738,10 @@ int cmd(){
     if(token.type == SN && strcmp(token.signal, ")") == 0){
         getToken();
         if(token.type == SN && strcmp(token.signal, ";") == 0){
-          printf("CALL %s\n",get_mem_space(functionValue));
-          fprintf(stack_file,"CAll %s\n",get_mem_space(functionValue));
+          printf("AMEM 1\n");
+          fprintf(stack_file,"AMEM 1\n");
+          printf("CALL L%d\n",loadLabelId(functionValue));
+          fprintf(stack_file,"CAll L%d\n",loadLabelId(functionValue));
           getToken();
           return 1;
         } else {
@@ -1059,18 +1105,28 @@ expression expr_simp(int aux_and, int aux_or) {
   if(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0)){
     front_signal = token.signal[0];
     getToken();
-    cont_operator++;
+    cont_operator++; // auxilia na forma exata que a expressão deve ser apresnetada na pilah
   }
 
   expre = termo(aux_and, aux_or);
 
   if(cont_operator != 0){
       if(strcmp(t.signal,"+") == 0 ){
-            printf("ADD\n");
-            fprintf(stack_file,"ADD\n");
+            if(strcmp(expre.type,"inteiro") == 0){
+                printf("ADD\n");
+                fprintf(stack_file,"ADD\n");
+            }else if(strcmp(expre.type,"real") == 0){
+                printf("ADDF\n");
+                fprintf(stack_file,"ADDF\n");
+            }
           }else if(strcmp(t.signal,"-") == 0){
-            printf("SUB\n");
-            fprintf(stack_file,"SUB\n");
+                if(strcmp(expre.type,"inteiro") == 0){
+                printf("SUB\n");
+                fprintf(stack_file,"SUB\n");
+            }else if(strcmp(expre.type,"real") == 0){
+                printf("SUBF\n");
+                fprintf(stack_file,"SUB\n");
+            }
           }
   }
 
@@ -1094,13 +1150,25 @@ expression expr_simp(int aux_and, int aux_or) {
       }
       getToken();
       expression expre2 = termo(aux_and, aux_or);
+//---------------------------------------------------------------------------------
       if(strcmp(t.signal,"+") == 0 ){
-        printf("ADD\n");
-        fprintf(stack_file,"ADD\n");
-      }else if(strcmp(t.signal,"-") == 0){
-        printf("SUB\n");
-        fprintf(stack_file,"SUB\n");
-      }
+            if(strcmp(expre2.type,"inteiro") == 0){
+                printf("ADD\n");
+                fprintf(stack_file,"ADD\n");
+            }else if(strcmp(expre2.type,"real") == 0){
+                printf("ADDF\n");
+                fprintf(stack_file,"ADDF\n");
+            }
+          }else if(strcmp(t.signal,"-") == 0){
+                if(strcmp(expre2.type,"inteiro") == 0){
+                printf("SUB\n");
+                fprintf(stack_file,"SUB\n");
+            }else if(strcmp(expre2.type,"real") == 0){
+                printf("SUBF\n");
+                fprintf(stack_file,"SUB\n");
+            }
+          }
+//--------------------------------------------------------------------------------
       //se há conta faça-a
       if(signal != '0') {
           //it is compatible
@@ -1170,16 +1238,22 @@ expression expr_simp(int aux_and, int aux_or) {
   return expre;
 }
 
-int op_rel(char operator[]){
+int op_rel(char operator2[]){
     Token aux_token;
   if(token.type == SN && (strcmp(token.signal,"==") == 0 || strcmp(token.signal,"!=") == 0 || strcmp(token.signal,"<=") == 0 || strcmp(token.signal,"<") == 0 || strcmp(token.signal,">") == 0 || strcmp(token.signal,">=") == 0)){
     aux_token = token;
-    strcpy(operator, token.signal);
+    strcpy(operator2, token.signal);
     getToken();
     getLoadOrPush(token);
     printf("SUB\n");
     fprintf(stack_file,"SUB\n");
-    operator_check(aux_token);
+
+    if(cont_not_iqual == 0){
+        operator_check(aux_token);
+    }else{
+        operator_check_not_Iqual(aux_token);
+        cont_not_iqual = 0;
+    }
     flag = 0;
     return 1;
   }
@@ -1197,7 +1271,7 @@ expression termo(int aux_and, int aux_or) {
         printf("GOFALSE L%d\n",aux_and);
         printf("POP\n");
         fprintf(stack_file,"COPY\n");
-        fprintf(stack_file,"GOFALSE L%d\n",aux_and);
+        fprintf(stack_file,"GOFALSE aqui L%d\n",aux_and);
         fprintf(stack_file,"POP\n");
       }
       char signal = '0';
@@ -1209,6 +1283,27 @@ expression termo(int aux_and, int aux_or) {
       }
       getToken();
       expression expr2 = fator(aux_and, aux_or);
+    printf("SINAL t: %s\n",t.signal);
+      if(strcmp(t.signal,"*") == 0){
+            if(strcmp(expr.type,"inteiro") == 0 && strcmp(expr2.type,"inteiro") == 0){
+                printf("MUL\n");
+                fprintf(stack_file,"MUL\n");
+            }else if(strcmp(expr.type,"real") == 0){
+                printf("MULF\n");
+                fprintf(stack_file,"MULF\n");
+
+            }
+            t = token;
+          }else if(strcmp(t.signal,"/") == 0){
+                if(strcmp(expr.type,"inteiro") == 0 && strcmp(expr2.type,"inteiro") == 0){
+                printf("DIV\n");
+                fprintf(stack_file,"DIV\n");
+            }else if(strcmp(expr.type,"real") == 0 && strcmp(expr2.type,"real") == 0){
+                printf("DIVF\n");
+                fprintf(stack_file,"DIVF\n");
+            }
+            t = token;
+          }
       //se há conta faça-a
       if(signal != '0') {
           //it is compatible
@@ -1362,6 +1457,7 @@ expression fator(int aux_and, int aux_or) {
   //NEGATION OF A FATOR
   else if(token.type == SN && strcmp(token.signal,"!") == 0){ //Tem que analisar isso aqui depois vei
     getToken();
+    cont_not_iqual++;
     expression expre2 = fator(aux_and, aux_or);
     if(strcmp(expre2.type, "inteiro") == 0){
       if(!expre2.iValue) {
@@ -1394,7 +1490,7 @@ int atrib(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"=") == 0){
       getToken();
-      value = expr(0, 0);
+      value = expr(0,0);
       getLoadOrPush(token);
       printf("STOR %s\n",get_mem_space(aux_atrib.lexem.value));
       fprintf(stack_file,"STOR %s\n",get_mem_space(aux_atrib.lexem.value));

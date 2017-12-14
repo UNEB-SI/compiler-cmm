@@ -45,6 +45,8 @@ FILE *file;
 int main(int argc, char **argv){
     if(argc > 1){
          openStackFile();
+         printf("INIP\n");
+        fprintf(stack_file,"INIP\n");
         readFile(argv[1]);
     }else{
         errorMessage(ERROR_PASS_FILE);
@@ -57,7 +59,7 @@ void readFile(char *file_name){
     if(file != NULL){
         start = clock();
         getToken();
-        prog();
+        prog(0);
         end = clock();
         cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
         printf("Executado em %f segundos.\n", cpu_time_used);
