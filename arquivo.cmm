@@ -1,5 +1,9 @@
-inteiro b, c;
+/* Comentario */
+
+inteiro contagem(semparam) {
+  retorne 3/(2+3);
+}
 
 semretorno principal(semparam) {
-  retorne;
+
 }

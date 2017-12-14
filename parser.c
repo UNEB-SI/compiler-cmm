@@ -404,7 +404,7 @@ int isType() {
 }
 
 void types_param(){
-    int amem = 0;
+  int amem = 0;
   if(token.type == PR && strcmp(token.signal, "semparam") == 0) {
     getToken();
   } else if(isType()) {
@@ -1063,7 +1063,7 @@ expression expr_simp(int aux_and, int aux_or) {
   }
 
   expre = termo(aux_and, aux_or);
-//-------------------------------------------------
+
   if(cont_operator != 0){
       if(strcmp(t.signal,"+") == 0 ){
             printf("ADD\n");
@@ -1073,7 +1073,6 @@ expression expr_simp(int aux_and, int aux_or) {
             fprintf(stack_file,"SUB\n");
           }
   }
-//---------------------------------------------------
 
   while(token.type == SN && (strcmp(token.signal,"+") == 0 || strcmp(token.signal,"-") == 0 || strcmp(token.signal,"||") == 0)){
      //segura o sinal + ou -
@@ -1210,21 +1209,16 @@ expression termo(int aux_and, int aux_or) {
       }
       getToken();
       expression expr2 = fator(aux_and, aux_or);
-
-      if(strcmp(t.signal,"*") == 0 ){
-        printf("MUL\n");
-        fprintf(stack_file,"MUL\n");
-      }else if(strcmp(t.signal,"/") == 0){
-        printf("DIV\n");
-        fprintf(stack_file,"DIV\n");
-      }
       //se há conta faça-a
       if(signal != '0') {
           //it is compatible
           if(strcmp(expr.type, "inteiro") == 0 && strcmp(expr2.type, "inteiro") == 0) {
-              if(signal == '*') expr.iValue = expr.iValue * expr2.iValue;
-              else if (signal == '/') expr.iValue = expr.iValue / expr2.iValue;
-
+              if(signal == '*') {
+                  expr.iValue = expr.iValue * expr2.iValue;
+              }
+              else if (signal == '/') {
+                  expr.iValue = expr.iValue / expr2.iValue;
+              }
           } else if (strcmp(expr.type, "real") == 0 && strcmp(expr2.type, "real") == 0) {
               if(signal == '*') expr.dValue = expr.dValue * expr2.dValue;
               else if(signal == '/') expr.dValue = expr.dValue / expr2.dValue;
@@ -1393,7 +1387,7 @@ expression fator(int aux_and, int aux_or) {
 
 int atrib(){
   expression value;
-    Token aux_atrib;
+  Token aux_atrib;
   if(token.type == ID){
     symbol s = hasBeenDeclared(token.lexem.value);
     aux_atrib = token;
@@ -1425,8 +1419,13 @@ int atrib(){
           s.iValue = (unsigned int) value.cValue;
           updateVariableValue(s);
         } else {
-          printf("Atribuição não compatível entre os tipos %s e %s na linha %d\n", s.type, value.type, line_number);
-          exit(-1);
+          if (strcmp(s.type, "nothing") == 0  || strcmp(value.type, "nothing") == 0) {
+            printf("Atribuição inválida na linha %d\n", line_number);
+            exit(-1);
+          } else {
+            printf("Atribuição não compatível entre os tipos %s e %s na linha %d\n", s.type, value.type, line_number);
+            exit(-1);
+          }
         }
       }
       return 1;
