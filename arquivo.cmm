@@ -1,5 +1,4 @@
 caracter principal(inteiro dex) {
-
   caracter w;
   w = 'a';
   retorne w;

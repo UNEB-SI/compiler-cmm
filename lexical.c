@@ -4,9 +4,9 @@
 #include <ctype.h>
 #include "lexical.h"
 #include "parser.h"
-#include "table.h"
+#include "symbol_table.h"
 #include "errors.h"
-#include "stacksemantic.h"
+#include "stack_machine.h"
 
 //Identifies table: Keep all identifiers
 char identifiers[300][300];

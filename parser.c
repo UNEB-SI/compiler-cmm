@@ -4,8 +4,8 @@
 #include "lexical.h"
 #include "parser.h"
 #include "errors.h"
-#include "stacksemantic.h"
-#include "table.h"
+#include "stack_machine.h"
+#include "symbol_table.h"
 
 //holds the last function symbol passed through
 symbol last_function;
@@ -65,9 +65,9 @@ void prog() {
         verifyRedeclaration(sb_token);
         insert_symbol();
         last_function = sb_token;
-        //getStoreID(auxIdStore); //Store the name of function and its label to use on declarations
-        getStoreID(auxIdStore);
-        fprintf(stack_file,"INIPR %d\n",loadLabelId(auxIdStore));
+        //get_store_id(auxIdStore); //Store the name of function and its label to use on declarations
+        get_store_id(auxIdStore);
+        fprintf(stack_file,"INIPR %d\n",load_label_id(auxIdStore));
         types_param();
         //verify if all parameters was good
         verifyParams(last_function);
@@ -455,8 +455,8 @@ int cmd(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
-      aux_and = getLabel();
-      aux_or = getLabel();
+      aux_and = get_label();
+      aux_or = get_label();
       expression expre = expr(aux_and, aux_or);
 
       fprintf(stack_file,"GOFALSE L%d\n",aux_and);
@@ -467,7 +467,7 @@ int cmd(){
           error_message(MISSING_CMD);
         }
         if(token.type == PR && strcmp(token.pr,"senao") == 0){
-          labelx = getLabel();
+          labelx = get_label();
 
           fprintf(stack_file,"GOTO L%d\n",labelx);
           fprintf(stack_file,"LABEL L%d\n",aux_and);
@@ -495,9 +495,9 @@ int cmd(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
-       labely = getLabel();
-       aux_or = getLabel();
-       aux_and = getLabel();
+       labely = get_label();
+       aux_or = get_label();
+       aux_and = get_label();
 
        fprintf(stack_file,"LABEL L%d\n",labely);
 
@@ -532,20 +532,20 @@ int cmd(){
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
       atrib();
-      labelw = getLabel();
+      labelw = get_label();
       fprintf(stack_file,"LABEL L%d\n",labelw);
       if(token.type == SN && strcmp(token.signal,";") == 0){
         getToken();
 
-        aux_or = getLabel();
-        aux_and = getLabel();
+        aux_or = get_label();
+        aux_and = get_label();
         expression expre = expr(aux_and, aux_or);
 
         fprintf(stack_file,"GOFALSE L%d\n",aux_and);
 
-        labely = getLabel();
+        labely = get_label();
         fprintf(stack_file,"GOTO L%d\n",labely);
-        labelz = getLabel();
+        labelz = get_label();
         fprintf(stack_file,"LABEL L%d\n",labelz);
 
         if (strcmp(expre.type, "booleano") != 0) {
@@ -609,7 +609,7 @@ int cmd(){
           && strcmp(expre.type, "caracter") == 0)) {
           error_return_not_expected(expre.type, last_function.name);
       }else{
-        PushValue(expre);
+        push_value(expre);
         fprintf(stack_file,"STOR 1.%d\n",(-1*(3+cont_paramter_var)));
         if(cont_local_var > 0){
           fprintf(stack_file,"DEMEM %d\n",cont_local_var);
@@ -666,7 +666,7 @@ int cmd(){
         getToken();
         if(token.type == SN && strcmp(token.signal, ";") == 0){
           fprintf(stack_file,"AMEM 1\n");
-          fprintf(stack_file,"CAll L%d\n",loadLabelId(functionValue));
+          fprintf(stack_file,"CAll L%d\n",load_label_id(functionValue));
           getToken();
           return 1;
         } else {
@@ -1168,14 +1168,14 @@ int op_rel(char operator2[]){
     aux_token = token;
     strcpy(operator2, token.signal);
     getToken();
-    getLoadOrPush(token);
+    get_load_or_push(token);
 
     fprintf(stack_file,"SUB\n");
 
     if(cont_not_iqual == 0){
         operator_check(aux_token);
     }else{
-        operator_check_not_Iqual(aux_token);
+        operator_check_not_iqual(aux_token);
         cont_not_iqual = 0;
     }
     flag = 0;
@@ -1326,7 +1326,7 @@ expression fator(int aux_and, int aux_or) {
           || token.type  == CADEIACON || token.type == ID){
 
     if(flag == 1){
-        getLoadOrPush(token);
+        get_load_or_push(token);
     }else{
         flag = 1;
     }
@@ -1418,7 +1418,7 @@ int atrib(){
     if(token.type == SN && strcmp(token.signal,"=") == 0){
       getToken();
       value = expr(0,0);
-      getLoadOrPush(token);
+      get_load_or_push(token);
       fprintf(stack_file,"STOR %s\n",get_mem_space(aux_atrib.lexem.value));
       //verify if the types matches, if yes make attribution
       if(strcmp(s.type, value.type) == 0) {

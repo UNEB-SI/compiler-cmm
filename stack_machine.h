@@ -1,5 +1,10 @@
-#ifndef STACKSEMANTIC_H
-#define STACKSEMANTIC_H
+#ifndef STACK_MACHINE_H
+#define STACK_MACHINE_H
+
+/*
+  * Created by: Fernando Maia
+  * Last Modification: 13/12/2017
+*/
 
 FILE *stack_file;
 
@@ -26,14 +31,14 @@ int aux_store_label;
 int contAuxLabel;
 int global_aux;
 
-void PushValue(expression value);
-void openStackFile();
-void closeStackFile();
-void operator_check_not_Iqual();
-int getLabel();
-int getGoTO();
-void getStoreID(char id[500]);
-int loadLabelId(char id[]);
-void getLoadOrPush(Token t);
+void push_value(expression value);
+void open_stack_file();
+void close_stack_file();
+void operator_check_not_iqual();
+int get_label();
+int get_go_to();
+void get_store_id(char id[500]);
+int load_label_id(char id[]);
+void get_load_or_push(Token t);
 void operator_check(Token t);
-#endif // PARSER
+#endif // STACK_MACHINE

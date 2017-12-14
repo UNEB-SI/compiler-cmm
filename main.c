@@ -1,16 +1,16 @@
 #include <time.h>
 #include "lexical.h"
 #include "parser.h"
-#include "table.h"
+#include "symbol_table.h"
 #include "errors.h"
-#include "stacksemantic.h"
+#include "stack_machine.h"
 
 int main(int argc, char **argv){
     clock_t start_time, end_time;
     double cpu_time_used;
     if(argc > 1){
          start_time = clock();
-         openStackFile();
+         open_stack_file();
          readFile(argv[1]);
          end_time = clock();
          cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
