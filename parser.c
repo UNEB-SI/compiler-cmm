@@ -28,6 +28,7 @@ void prog() {
     if(token.type == ID){
       strcpy(auxIdStore,token.lexem.value);
       getToken();
+      amem++;
       //just for symbol table
       if ((token.type == SN && strcmp(token.signal, ";") == 0) || (token.type == SN && strcmp(token.signal, ",") == 0)) {
         sb_token.cat = VAR;
@@ -51,6 +52,7 @@ void prog() {
         amem++;
         if(amem > 0){
             fprintf(stack_file,"AMEM %d\n",amem);
+            cont_local_var = amem;
         }
 
         getToken();
@@ -342,12 +344,11 @@ void prog() {
             }
             while(cmd());
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
-              fprintf(stack_file,"STOR 1.%d\n",(-1*(3+cont_paramter_var)));
+              fprintf(stack_file,"STOR 0.%d\n",(-1*(3+cont_paramter_var)));
               if(cont_local_var > 0){
                 fprintf(stack_file,"DEMEM %d\n",cont_local_var);
-                fprintf(stack_file,"RET 0\n");
               }
-
+                fprintf(stack_file,"RET 0\n");
               cont_local_var = 0;
               cont_paramter_var = 0;
 
@@ -614,7 +615,7 @@ int cmd(){
           error_return_not_expected(expre.type, last_function.name);
       }else{
 
-        fprintf(stack_file,"STOR 1.%d\n",(-1*(3+cont_paramter_var)));
+        fprintf(stack_file,"STOR 0.%d\n",(-1*(3+cont_paramter_var)));
         if(cont_local_var > 0)
             fprintf(stack_file,"DEMEM %d\n",cont_local_var);
         fprintf(stack_file,"RET %d\n",cont_paramter_var);
@@ -1299,6 +1300,7 @@ expression fator(int aux_and, int aux_or) {
   strcpy(expre.type, "nothing");
   // FUNCTION CALL
   if(token.type == ID && next_token.type == SN && strcmp(next_token.signal,"(") == 0) {
+    fprintf(stack_file,"AMEM 1\n");
     Token aux_token = token;
     symbol s = functionHasBeenDeclared(token.lexem.value);
     functionHasReturn(token.lexem.value);
@@ -1322,7 +1324,7 @@ expression fator(int aux_and, int aux_or) {
     //close function
     if(token.type == SN && strcmp(token.signal,")") == 0){
       if(strcmp(s.type,"semretorno")!=0)
-        fprintf(stack_file,"AMEM 1\n");
+
       fprintf(stack_file,"CALL L%d\n",load_label_id(aux_token.lexem.value));
       getToken();
     }else{
