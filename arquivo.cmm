@@ -1,27 +1,40 @@
-inteiro a,b,c,d,e,f,r,t,y;
+/* Sequencia de Fibonacci em Cmm - Recursivo */
 
-semretorno outra(semparam){
-  retorne;
+prototipo inteiro fibonacci(inteiro);
+prototipo inteiro contador(inteiro);
+
+inteiro fibonacci(inteiro numer) {
+     inteiro x, n, y;
+     x = 1;
+     n = x;
+     numer = 3 * 3;
+		 retorne numer;
 }
 
-real go(real queijo, real dois){
+inteiro contador(inteiro numero){
+	inteiro x, y;
+	para(x = 0; x < numero; x = x+1){
+		y = x;
+	}
+	retorne y;
+}
 
-    real aw;
-    queijo = 4.0;
-    dois = 2.0;
-    se(!(dois > queijo)){
+semretorno principal(semparam){
+	inteiro x,n, y;
 
+  n = 2;
+	n = contador(fibonacci(n));
+
+	n = 5/3+n;
+
+	se(n > 5){
+		para(;;;) {
+    
     }
-     aw = 6.8;
+	}senao{
+		/*imprima("Numero menor que cinco.");*/
+	}
 
-    retorne queijo+dois;
-}
-
-inteiro principal(inteiro dex, real b) {
-
-  caracter w;
-  w = 'q';
-  w = principal(1, 2.5);
-  outra();
-  retorne 4+8;
+	y = x+numero;
+  retorne;
 }
