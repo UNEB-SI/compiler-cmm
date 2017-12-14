@@ -3,8 +3,13 @@ semretorno outra(semparam){
   retorne;
 }
 
-real go(caracter queijo){
-  retorne 1.5;
+real go(real queijo, real dois){
+    
+    real aw;
+    queijo = 4.0;
+    dois = 2.0;
+     aw = 6.8;
+    retorne queijo+dois;
 }
 
 inteiro principal(inteiro dex, real b) {

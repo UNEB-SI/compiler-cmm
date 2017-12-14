@@ -33,26 +33,30 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="arquivo.cmm" />
+		<Unit filename="errors.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="errors.h" />
 		<Unit filename="lexical.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="lexical.h" />
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="parser.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="parser.h" />
-		<Unit filename="sintatic_erros.c">
+		<Unit filename="stack_machine.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="sintatic_erros.h" />
-		<Unit filename="stacksemantic.c">
+		<Unit filename="stack_machine.h" />
+		<Unit filename="structures.h" />
+		<Unit filename="symbol_table.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="stacksemantic.h" />
-		<Unit filename="table.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="table.h" />
+		<Unit filename="symbol_table.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
