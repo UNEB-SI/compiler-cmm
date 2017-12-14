@@ -8,8 +8,7 @@
 #include "sintatic_erros.h"
 #include "stacksemantic.h"
 
-
-//tables
+//Identifies table: Keep all identifiers
 char identifiers[300][300];
 char literals[300][300];
 
@@ -43,28 +42,12 @@ const int INVERTED_BAR = 92;
 const int APOSTROPHE = 39;
 const int QUOTES = 34;
 const int HAS_TOKEN = 2;
-const char* ERROR_PASS_FILE = "Você deve indicar um arquivo para ser analisado. Ex: lexical namefile.cmm";
-const char* ERROR_NOT_FOUND_FILE = "Arquivo não encontrado!";
-const char* ERROR_NUMBER_FLOAT_FORMAT = "Esperado um número após ";
 
 int END_OF_FILE = -1;
 
 FILE *file;
 
-
-int main(int argc, char **argv){
-    if(argc > 1){
-         openStackFile();
-         printf("INIP\n");
-         fprintf(stack_file,"INIP\n");
-         readFile(argv[1]);
-    }else{
-        errorMessage(ERROR_PASS_FILE);
-    }
-}
-
-
-void readFile(char *file_name){
+void readFile(char *file_name) {
     file = fopen(file_name, "r");
     if(file != NULL){
         start = clock();
@@ -74,11 +57,10 @@ void readFile(char *file_name){
         cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
         printf("Executado em %f segundos.\n", cpu_time_used);
     }else{
-        errorMessage(ERROR_NOT_FOUND_FILE);
+      sintatic_erro(ERROR_NOT_FOUND_FILE);
     }
 
     fclose(file);
-    //closeStackFile();
 }
 
 Token getToken() {
@@ -201,7 +183,7 @@ int checkState(FILE *f){
                 STATE = 6;
                 ungetc(actual_char, f);
             }else{
-                errorMessage(ERROR_NUMBER_FLOAT_FORMAT);
+                sintatic_erro(ERROR_NUMBER_FLOAT_FORMAT);
                 exit(-1);
             }
             break;
@@ -417,10 +399,6 @@ int isSignal(char *word){
     }
 
     return -1;
-}
-
-void errorMessage(const char *error){
-    printf("Error: %s\n", error);
 }
 
 void addLetter(char c){

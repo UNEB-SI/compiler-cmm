@@ -5,6 +5,7 @@
   * Last Modification: 13/12/2017
 */
 #include <time.h>
+#include <stdio.h>
 #include "structures.h"
 
 // It represents each type of token possible on CMM
@@ -41,10 +42,19 @@ typedef struct {
 // keeps the value of a token in sequence
 Token token, next_token;
 
-//functions definition
-void readFile(char *file);
-void errorMessage(const char *error);
+/**
+* Receives a path for an file and read it char by char
+*/
+void readFile(char *file_name);
+/**
+* Receives a FILE object and verify for each AFD state, if
+* the next token is valid for CMM.
+*/
 int checkState(FILE *f);
+/**
+* Receives a letter and return 1 if it is a alpha char and 0 otherwise
+*
+*/
 int isLetter(char letter);
 int isReservedWord(char *word);
 int isSignal(char *word);

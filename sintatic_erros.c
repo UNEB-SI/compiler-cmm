@@ -41,5 +41,14 @@ void sintatic_erro(int flag){
         case MISSING_COMMA:
             printf("Erro esperado ',' na linha %d\n", line_number);
         break;
+        case ERROR_PASS_FILE:
+           printf("Você deve indicar um arquivo para ser analisado. Ex: lexical namefile.cmm");
+        break;
+        case ERROR_NOT_FOUND_FILE:
+          printf("Arquivo não encontrado!");
+        break;
+        case ERROR_NUMBER_FLOAT_FORMAT:
+          printf("Esperado um número após ");
+        break;
     }
 }
