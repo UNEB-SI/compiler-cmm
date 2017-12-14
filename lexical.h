@@ -1,20 +1,29 @@
 #ifndef LEXICAL_H
 #define LEXICAL_H
-
+/*
+  * Created by: José Diôgo
+  * Last Modification: 13/12/2017
+*/
 #include <time.h>
 #include "structures.h"
 
- enum token_types {ID, PR, SN, INTCON, REALCON, CADEIACON, CARACCON, eOF, COMMENT};
- typedef enum token_types TokenType;
+// It represents each type of token possible on CMM
+enum token_types {ID, PR, SN, INTCON, REALCON, CADEIACON, CARACCON,
+                  eOF, COMMENT};
+typedef enum token_types token_type;
 
- clock_t start, end;
- double cpu_time_used;
-
+/**
+* This struct holds and identifier token, with it's value and
+* table position
+*/
 typedef struct {
   int table_position;
   char value[300];
-} LEXEM;
+} lexem;
 
+/*
+** Structure of a Token in CMM language
+*/
 typedef struct {
   TokenType type;
   union {

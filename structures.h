@@ -1,12 +1,22 @@
-/*A Pair value to store the type and value of a expression*/
+#ifndef STRUCTURES_H
+#define STRUCTURES_H
+/*
+  * Created by: José Diôgo
+  * Last Modification: 13/12/2017
+*/
+
+/*
+** A Pair value to store the type and value of an expression
+*/
 typedef struct{
-  char type[10];
+  char type[10]; //holds the type (integer, character, real, boolean)
   union {
-    char cValue;
-    float dValue;
-    int iValue;
-    int bValue;
-    char signal[2];
-    char word[1000];
+    char cValue; // caracter values
+    float dValue; // float values
+    int iValue; // integer values
+    int bValue; // boolean values
+    char word[1000]; // literal values
   };
 } expression;
+
+#endif // STRUCTURES

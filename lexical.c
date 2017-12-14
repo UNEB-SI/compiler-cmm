@@ -1,15 +1,17 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "lexical.h"
 #include "parser.h"
 #include "table.h"
 #include "sintatic_erros.h"
 #include "stacksemantic.h"
 
+/*Managers of the values of each letter in the file*/
 char actual_char;
 char last_char;
+
 int STATE = 0;
 char buffer[50];
 int buffer_position = 0;
@@ -18,6 +20,9 @@ int literal_position = 0;
 int line_number = 1;
 
 int first_time = 0;
+
+clock_t start, end;
+double cpu_time_used;
 //reserved word
 char *reserved_word[] = {"inteiro", "real", "caracter", "booleano", "se", "senao", "semretorno", "enquanto", "para", "retorne", "semparam", "verdadeiro", "falso", "prototipo"};
 //accept signals
