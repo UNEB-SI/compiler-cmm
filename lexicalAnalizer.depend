@@ -21,16 +21,6 @@
 
 1513182113 c:\users\fernando\desktop\compilador final\university-compiler\stacksemantic.h
 
-1513184634 source:c:\users\fernando\desktop\compilador final\university-compiler\parser.c
-	<stdlib.h>
-	<stdio.h>
-	<string.h>
-	"lexical.h"
-	"parser.h"
-	"sintatic_erros.h"
-	"stacksemantic.h"
-	"table.h"
-
 1513092349 source:c:\users\fernando\desktop\compilador final\university-compiler\sintatic_erros.c
 	<stdlib.h>
 	<stdio.h>
@@ -40,14 +30,6 @@
 	"table.h"
 	"sintatic_erros.h"
 
-1513128601 source:c:\users\fernando\desktop\compilador final\university-compiler\stacksemantic.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	"stacksemantic.h"
-	"lexical.h"
-	"table.h"
-
 1513092349 source:c:\users\fernando\desktop\compilador final\university-compiler\table.c
 	<stdlib.h>
 	<stdio.h>
@@ -55,4 +37,23 @@
 	"lexical.h"
 	"parser.h"
 	"table.h"
+
+1513215146 source:c:\users\fernando\desktop\compilador final\university-compiler\parser.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+	"sintatic_erros.h"
+	"stacksemantic.h"
+	"table.h"
+
+1513214299 source:c:\users\fernando\desktop\compilador final\university-compiler\stacksemantic.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"stacksemantic.h"
+	"lexical.h"
+	"table.h"
+	"parser.h"
 

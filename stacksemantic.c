@@ -25,13 +25,13 @@ void closeStackFile(){
 
 void PushValue(expression value){
     if(strcmp(value.type,"inteiro") == 0){
-        printf("PUSH %d\n",value.iValue);
+        fprintf(stack_file,"PUSH %d\n",value.iValue);
     }else if(strcmp(value.type,"real") == 0){
-        printf("PUSH %f\n",value.dValue);
+        fprintf(stack_file,"PUSH %f\n",value.dValue);
     }else if(strcmp(value.type,"caracter") == 0){
-        printf("PUSH %c\n",value.cValue);
-    }else if(strcmp(value.type,"booleano") == 0){
-        printf("PUSH %d\n",value.bValue);
+        fprintf(stack_file,"PUSH %c\n",value.cValue);
+    }else if(strcmp(value.type,"inteiro") == 0){
+        fprintf(stack_file,"PUSH %d\n",value.bValue);
     }
 }
 
