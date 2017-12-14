@@ -7,6 +7,7 @@
 */
 
 FILE *stack_file;
+extern int cont_not_iqual;
 
 typedef struct operators{
     char * type;

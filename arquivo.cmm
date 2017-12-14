@@ -8,6 +8,9 @@ real go(real queijo, real dois){
     real aw;
     queijo = 4.0;
     dois = 2.0;
+    se(!(dois > queijo)){
+    
+    }
      aw = 6.8;
     retorne queijo+dois;
 }

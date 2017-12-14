@@ -6,6 +6,7 @@
 //Came from lexical.h
 extern Token token;
 extern int line_number;
+extern int cont_local_var;
 
 void prog(); // manage all kind of global declaration and functions
 int isType(); //verify if actual token is a type like "inteiro, real"

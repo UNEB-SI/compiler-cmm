@@ -18,4 +18,5 @@ int main(int argc, char **argv){
     }else{
        error_message(ERROR_PASS_FILE);
     }
+    return 0;
 }

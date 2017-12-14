@@ -13,8 +13,9 @@ symbol last_function;
 int flag = 1;
 int cont_local_var = 0;
 int cont_paramter_var = 0;
-int cont_not_iqual = 0;
+
 int find_a_return = 0; //just for functions
+
 
 void prog() {
    char auxIdStore[500];
@@ -472,6 +473,7 @@ int cmd(){
       getToken();
       aux_and = get_label();
       aux_or = get_label();
+
       expression expre = expr(aux_and, aux_or);
 
       fprintf(stack_file,"GOFALSE L%d\n",aux_and);
