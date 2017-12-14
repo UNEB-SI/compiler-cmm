@@ -1,10 +1,10 @@
 
 semretorno outra(semparam){
-
+  retorne;
 }
 
 real go(caracter queijo){
-
+  retorne 1.5;
 }
 
 inteiro principal(inteiro dex, real b) {

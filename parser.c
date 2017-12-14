@@ -14,6 +14,7 @@ int flag = 1;
 int cont_local_var = 0;
 int cont_paramter_var = 0;
 int cont_not_iqual = 0;
+int find_a_return = 0; //just for functions
 
 void prog() {
    char auxIdStore[500];
@@ -118,6 +119,12 @@ void prog() {
             //verify if has commands
             while(cmd());
 
+            if (!find_a_return) {
+              error_message(RETURN_EXPECTED);
+            } else {
+              find_a_return = 0;
+            }
+
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
               getToken();
               // keep all parameters and delete local variables
@@ -197,19 +204,15 @@ void prog() {
               prog();
             } else {
               error_message(MISSING_SEMI_COLON);
-              exit(-1);
             }
           } else {
             error_message(MISSING_CLOSE_PAREN);
-            exit(-1);
           }
         } else {
           error_message(MISSING_OPEN_PAREN);
-          exit(-1);
         }
       } else {
         error_message(MISSING_ID);
-        exit(-1);
       }
     }
     //PROTOTYPE WITHOUT TYPE
@@ -341,6 +344,13 @@ void prog() {
               }
             }
             while(cmd());
+
+            if (!find_a_return) {
+              error_message(RETURN_EXPECTED);
+            } else {
+              find_a_return = 0;
+            }
+
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
               fprintf(stack_file,"STOR 1.%d\n",(-1*(3+cont_paramter_var)));
               if(cont_local_var > 0){
@@ -588,6 +598,7 @@ int cmd(){
   }
   // 'RETORNE' EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"retorne") == 0){
+    find_a_return = 1;
     Token aux_token;
     getToken();
     aux_token = token;

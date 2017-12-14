@@ -53,6 +53,9 @@ void error_message(int flag){
         case WRONG_ATRIBUTION:
           printf("Atribuição inválida na linha %d\n", line_number);
         break;
+        case RETURN_EXPECTED:
+          printf("Retorno esperado na linha %d\n", line_number);
+        break;
     }
     exit(-1);
 }
