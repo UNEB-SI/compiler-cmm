@@ -25,28 +25,21 @@ typedef struct {
 ** Structure of a Token in CMM language
 */
 typedef struct {
-  TokenType type;
+  token_type type; //holds the type (integer, character, real)
   union {
-    char cValue;
-    float dValue;
-    int iValue;
-    char pr[15];
-    char signal[2];
-    char word[1000];
-    LEXEM lexem;
+    char cValue; // caracter values
+    float dValue; // float values
+    int iValue; // integer values
+    char pr[15]; // keeps reserved words
+    char signal[2]; // keeps signal values(+, -, *, / e etc)
+    char word[1000]; // literal values
+    lexem lexem; // Identifiers
   };
 } Token;
 
+// One variable store actual token been processed, and next_token
+// keeps the value of a token in sequence
 Token token, next_token;
-
-//tables
-char identifiers[300][300];
-char literals[300][300];
-
-int first_time;
-
-//keep the name of signals
-enum signals_name {MAIOR = 0, MENOR, MENOR_IGUAL, MAIOR_IGUAL, NEG, DIF, PT_VIRG, VIRGULA, E, OU, ADD, SUB, MULTI, DIV} SignalName;
 
 //functions definition
 void readFile(char *file);
@@ -58,7 +51,7 @@ int isSignal(char *word);
 void addLetter(char c);
 void justCleanBuffer();
 void addStringFinal();
-void printToken(TokenType tp, char value);
+void printToken(token_type tp, char value);
 void cleanBuffer(FILE *f, char c);
 int getInteger();
 float getFloat();

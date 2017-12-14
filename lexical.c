@@ -8,6 +8,11 @@
 #include "sintatic_erros.h"
 #include "stacksemantic.h"
 
+
+//tables
+char identifiers[300][300];
+char literals[300][300];
+
 /*Managers of the values of each letter in the file*/
 char actual_char;
 char last_char;
