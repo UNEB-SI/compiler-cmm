@@ -71,7 +71,8 @@ void prog() {
         last_function = sb_token;
         //getStoreID(auxIdStore); //Store the name of function and its label to use on declarations
         getStoreID(auxIdStore);
-        fprintf(stack_file,"INIPR %d\n",loadLabelId(auxIdStore));
+        fprintf(stack_file,"LABEL L%d\n",loadLabelId(auxIdStore));
+        fprintf(stack_file,"INIPR 1\n");
         types_param();
         //verify if all parameters was good
         verifyParams(last_function);
@@ -308,6 +309,7 @@ void prog() {
     strcpy(sb_token.name,token.lexem.value);
     sb_token.zumbi = 0;// we gonna set the cat later
     if(token.type == ID) {
+      Token aux_token = token;
       sb_token.cat = FUNC;
       verifyRedeclaration(sb_token);
       insert_symbol();
@@ -321,6 +323,9 @@ void prog() {
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
           if(token.type == SN && strcmp(token.signal, "{") == 0) {
+            getStoreID(aux_token.lexem.value);
+            fprintf(stack_file,"LABEL L%d\n",loadLabelId(auxIdStore));
+            fprintf(stack_file,"INIPR 1\n");
             getToken();
             while(isType()){
               strcpy(sb_token.type, token.pr);
@@ -364,7 +369,7 @@ void prog() {
               fprintf(stack_file,"STOR 1.%d\n",(-1*(3+cont_paramter_var))); // arrumar isso aqui IMPORTANTE
               if(cont_local_var > 0)
                 fprintf(stack_file,"DEMEM %d\n",cont_local_var);
-                fprintf(stack_file,"RET 0\n");
+                fprintf(stack_file,"RET %d\n",cont_paramter_var);
               cont_local_var = 0;
               cont_paramter_var = 0;
 
@@ -619,7 +624,7 @@ int cmd(){
             }
 
             fprintf(stack_file,"GOTO L%d\n",labelz);
-            fprintf(stack_file,"LABEL end L%d\n",aux_and);
+            fprintf(stack_file,"LABEL L%d\n",aux_and);
             return 1;
           }else{
             sintatic_erro(MISSING_CLOSE_PAREN);
@@ -653,7 +658,7 @@ int cmd(){
       }
     } else {
       if(strcmp(token.signal, ";") == 0) {
-          printf("Retorno '%s' esperado para a funcaoo '%s' na linha %d\n",
+          printf("Retorno '%s' esperado para a funcao '%s' na linha %d\n",
                  last_function.type, last_function.name, line_number);
           exit(-1);
       }
@@ -666,14 +671,14 @@ int cmd(){
     if(strcmp(expre.type, "nothing") != 0) {
       //verify if return type is equal to function type
       if ((strcmp(last_function.type, expre.type) != 0) && !(strcmp(last_function.type, "caracter") == 0 && strcmp(expre.type, "inteiro") == 0) && !(strcmp(last_function.type, "inteiro") == 0 && strcmp(expre.type, "caracter") == 0)){
-        printf("Retorno '%s' não esperado para a função %s\n", expre.type, last_function.name);
+        printf("Retorno '%s' não esperado para a funcao %s\n", expre.type, last_function.name);
         exit(-1);
       }else{
-        PushValue(expre);
+
         fprintf(stack_file,"STOR 1.%d\n",(-1*(3+cont_paramter_var)));
         if(cont_local_var > 0)
             fprintf(stack_file,"DEMEM %d\n",cont_local_var);
-        fprintf(stack_file,"RET 0\n");
+        fprintf(stack_file,"RET %d\n",cont_paramter_var);
         cont_local_var = 0;
         cont_paramter_var = 0;
       }
@@ -706,6 +711,7 @@ int cmd(){
   }
   // FUNCTION CALL
   else if(token.type == ID && strcmp(next_token.signal,"(") == 0){
+    Token aux_token = token;
     symbol s = functionHasBeenDeclared(token.lexem.value);
     functionHasNoReturn(token.lexem.value);
     strcpy(functionValue,token.lexem.value);
@@ -726,8 +732,9 @@ int cmd(){
     if(token.type == SN && strcmp(token.signal, ")") == 0){
         getToken();
         if(token.type == SN && strcmp(token.signal, ";") == 0){
-          fprintf(stack_file,"AMEM 1\n");
-          fprintf(stack_file,"CAll L%d\n",loadLabelId(functionValue));
+          if(strcmp(s.type,"semretorno") != 0)
+            fprintf(stack_file,"AMEM 1\n");
+          fprintf(stack_file,"CAll L%d\n",loadLabelId(aux_token.lexem.value));
           getToken();
           return 1;
         } else {
@@ -1252,7 +1259,7 @@ expression termo(int aux_and, int aux_or) {
       if(strcmp(token.signal,"&&") == 0){
 
         fprintf(stack_file,"COPY\n");
-        fprintf(stack_file,"GOFALSE aqui L%d\n",aux_and);
+        fprintf(stack_file,"GOFALSE L%d\n",aux_and);
         fprintf(stack_file,"POP\n");
       }
       char signal = '0';
@@ -1351,6 +1358,7 @@ expression fator(int aux_and, int aux_or) {
   strcpy(expre.type, "nothing");
   // FUNCTION CALL
   if(token.type == ID && next_token.type == SN && strcmp(next_token.signal,"(") == 0) {
+    Token aux_token = token;
     symbol s = functionHasBeenDeclared(token.lexem.value);
     functionHasReturn(token.lexem.value);
     strcpy(expre.type, s.type);
@@ -1370,6 +1378,9 @@ expression fator(int aux_and, int aux_or) {
     validateParams(s, array_expression);
     //close function
     if(token.type == SN && strcmp(token.signal,")") == 0){
+      if(strcmp(s.type,"semretorno")!=0)
+        fprintf(stack_file,"AMEM 1\n");
+      fprintf(stack_file,"CALL L%d\n",loadLabelId(aux_token.lexem.value));
       getToken();
     }else{
       sintatic_erro(MISSING_CLOSE_PAREN);
