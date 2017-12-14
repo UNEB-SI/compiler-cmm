@@ -1,15 +1,21 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "lexical.h"
 #include "parser.h"
-#include "table.h"
-#include "sintatic_erros.h"
-#include "stacksemantic.h"
+#include "symbol_table.h"
+#include "errors.h"
+#include "stack_machine.h"
 
+//Identifies table: Keep all identifiers
+char identifiers[300][300];
+char literals[300][300];
+
+/*Managers of the values of each letter in the file*/
 char actual_char;
 char last_char;
+
 int STATE = 0;
 char buffer[50];
 int buffer_position = 0;
@@ -18,11 +24,14 @@ int literal_position = 0;
 int line_number = 1;
 
 int first_time = 0;
+
 //reserved word
-char *reserved_word[] = {"inteiro", "real", "caracter", "booleano", "se", "senao", "semretorno", "enquanto", "para", "retorne", "semparam", "verdadeiro", "falso", "prototipo"};
+char *reserved_word[] = {"inteiro", "real", "caracter", "booleano", "se",
+                         "senao", "semretorno", "enquanto", "para", "retorne",
+                         "semparam", "verdadeiro", "falso", "prototipo"};
 //accept signals
-char *signals[] = {">","<","<=", ">=", "!", "!=", ";",",", "&&","||","+","-","*","/", "[", "]", "(", ")", "{", "}", "=", "=="};
-char *signalsName[] = {"MAIOR","MENOR","MENOR_QUE", "MAIOR_QUE", "NEG", "DIF", "PT_VIRG","VIRGULA", "E","OU","ADD","SUB","MULT","DIV", "COL_ABER", "COL_FEC", "PAREN_ABER", "PAREN_FEC", "CHAVE_ABER", "CHAVE_FEC", "ATRIBUICAO", "IGUALDADE"};
+char *signals[] = {">","<","<=", ">=", "!", "!=", ";",",", "&&","||","+","-",
+                   "*","/", "[", "]", "(", ")", "{", "}", "=", "=="};
 //accept constants
 const char TAB = '\t';
 const char ENTER = '\n';
@@ -33,41 +42,21 @@ const int INVERTED_BAR = 92;
 const int APOSTROPHE = 39;
 const int QUOTES = 34;
 const int HAS_TOKEN = 2;
-const char* ERROR_PASS_FILE = "Você deve indicar um arquivo para ser analisado. Ex: lexical namefile.cmm";
-const char* ERROR_NOT_FOUND_FILE = "Arquivo não encontrado!";
-const char* ERROR_NUMBER_FLOAT_FORMAT = "Esperado um número após ";
 
 int END_OF_FILE = -1;
 
 FILE *file;
 
-
-int main(int argc, char **argv){
-    if(argc > 1){
-         openStackFile();
-        fprintf(stack_file,"INIP\n");
-        readFile(argv[1]);
-    }else{
-        errorMessage(ERROR_PASS_FILE);
-    }
-}
-
-
-void readFile(char *file_name){
+void readFile(char *file_name) {
     file = fopen(file_name, "r");
     if(file != NULL){
-        start = clock();
         getToken();
-        prog(0);
-        end = clock();
-        cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-        printf("Executado em %f segundos.\n", cpu_time_used);
+        prog();
     }else{
-        errorMessage(ERROR_NOT_FOUND_FILE);
+      error_message(ERROR_NOT_FOUND_FILE);
     }
 
     fclose(file);
-    //closeStackFile();
 }
 
 Token getToken() {
@@ -190,7 +179,7 @@ int checkState(FILE *f){
                 STATE = 6;
                 ungetc(actual_char, f);
             }else{
-                errorMessage(ERROR_NUMBER_FLOAT_FORMAT);
+                error_message(ERROR_NUMBER_FLOAT_FORMAT);
                 exit(-1);
             }
             break;
@@ -406,10 +395,6 @@ int isSignal(char *word){
     }
 
     return -1;
-}
-
-void errorMessage(const char *error){
-    printf("Error: %s\n", error);
 }
 
 void addLetter(char c){

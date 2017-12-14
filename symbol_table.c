@@ -3,7 +3,7 @@
 #include <string.h>
 #include "lexical.h"
 #include "parser.h"
-#include "table.h"
+#include "symbol_table.h"
 
 symbol last_function;
 

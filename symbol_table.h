@@ -1,5 +1,5 @@
-#ifndef TABLE_H
-#define TABLE_H
+#ifndef SYMBOL_TABLE_H
+#define SYMBOL_TABLE_H
 
 enum token_cat{VAR,PARAN,FUNC};
 typedef enum token_cat token_cat;

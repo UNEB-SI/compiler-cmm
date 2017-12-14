@@ -3,12 +3,12 @@
 #include <string.h>
 #include "lexical.h"
 #include "parser.h"
-#include "sintatic_erros.h"
-#include "stacksemantic.h"
-#include "table.h"
+#include "errors.h"
+#include "stack_machine.h"
+#include "symbol_table.h"
 
+//holds the last function symbol passed through
 symbol last_function;
-expression aux_expre;
 
 int flag = 1;
 int cont_local_var = 0;
@@ -23,10 +23,9 @@ void prog() {
     strcpy(sb_token.type, token.pr);
     getToken();
     sb_token.scope = GLOBAL;
-    strcpy(sb_token.name,token.lexem.value);
+    strcpy(sb_token.name, token.lexem.value);
     sb_token.zumbi = 0;// we gonna set the cat later
     if(token.type == ID){
-
       strcpy(auxIdStore,token.lexem.value);
       getToken();
       //just for symbol table
@@ -35,7 +34,7 @@ void prog() {
         verifyRedeclaration(sb_token);
         insert_symbol();
       }
-      // DEFAULT DECLARATION
+      // DEFAULT VARIABLE DECLARATION
       while(token.type == SN && strcmp(token.signal, ",") == 0) {
         getToken();
         if(token.type == ID) {
@@ -45,15 +44,13 @@ void prog() {
           insert_symbol();
           getToken();
         } else {
-            sintatic_erro(MISSING_ID);
-          exit(-1);
+            error_message(MISSING_ID);
         }
       }
       if(token.type == SN && strcmp(token.signal, ";") == 0) {//final of declaration
         amem++;
         if(amem > 0){
             fprintf(stack_file,"AMEM %d\n",amem);
-
         }
 
         getToken();
@@ -63,14 +60,12 @@ void prog() {
 
       //DEFAULT FUNCTION
       else if(token.type == SN && strcmp(token.signal, "(") == 0) {//if it is a function
-
         getToken();
         sb_token.cat = FUNC;
         verifyRedeclaration(sb_token);
         insert_symbol();
         last_function = sb_token;
-        //getStoreID(auxIdStore); //Store the name of function and its label to use on declarations
-        getStoreID(auxIdStore);
+        get_store_id(auxIdStore);
         fprintf(stack_file,"LABEL L%d\n",loadLabelId(auxIdStore));
         fprintf(stack_file,"INIPR 1\n");
         types_param();
@@ -79,7 +74,6 @@ void prog() {
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
           if(token.type == SN && strcmp(token.signal, "{") == 0) {
-
             getToken();
             while(isType()){
               strcpy(sb_token.type, token.pr);
@@ -96,7 +90,7 @@ void prog() {
                 verifyRedeclaration(sb_token);
                 insert_symbol();
                 //verify if it is declaration
-               amem = 0;
+                amem = 0;
                 while(token.type == SN && strcmp(token.signal, ",") == 0) {
                   getToken();
                   if(token.type == ID) {
@@ -106,20 +100,18 @@ void prog() {
                     amem++;
                     getToken();
                   } else {
-                    sintatic_erro(MISSING_ID);
+                    error_message(MISSING_ID);
                     exit(-1);
                   }
                 }
                 //if it is ; declaration finish
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
-                           amem++;
-                           fprintf(stack_file,"AMEM %d\n",amem); //Goes to the function what have been called
-                           cont_local_var += amem;
-
+                  amem++;
+                  fprintf(stack_file,"AMEM %d\n",amem);
+                  cont_local_var += amem;
                   getToken();
                 } else {
-                  sintatic_erro(MISSING_SEMI_COLON);
-                  exit(-1);
+                  error_message(MISSING_SEMI_COLON);
                 }
               }
             }
@@ -133,25 +125,20 @@ void prog() {
               exclude_local_symbol();
               prog();
             } else {
-              sintatic_erro(MISSING_CLOSE_KEY);
-              exit(-1);
+              error_message(MISSING_CLOSE_KEY);
             }
           } else {
-            sintatic_erro(MISSING_OPEN_KEY);
-            exit(-1);
+            error_message(MISSING_OPEN_KEY);
           }
         } else {
-          sintatic_erro(MISSING_CLOSE_PAREN);
-          exit(-1);
+          error_message(MISSING_CLOSE_PAREN);
         }
 
       } else{
-        sintatic_erro(SYMBOL_NOT_RECOG);
-        exit(-1);
+        error_message(SYMBOL_NOT_RECOG);
       }
     } else {
-      sintatic_erro(MISSING_ID);
-      exit(-1);
+      error_message(MISSING_ID);
     }
   }
   // RECOGNIZE PROTOTYPE
@@ -195,16 +182,13 @@ void prog() {
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
                   } else {
-                    sintatic_erro(MISSING_CLOSE_PAREN);
-                    exit(-1);
+                    error_message(MISSING_CLOSE_PAREN);
                   }
                 } else {
-                  sintatic_erro(MISSING_OPEN_PAREN);
-                  exit(-1);
+                  error_message(MISSING_OPEN_PAREN);
                 }
               } else {
-                sintatic_erro(MISSING_ID);
-                exit(-1);
+                error_message(MISSING_ID);
               }
             }
             //END OF PROTOTYPE WITH TYPE
@@ -212,19 +196,19 @@ void prog() {
               getToken();
               prog();
             } else {
-              sintatic_erro(MISSING_SEMI_COLON);
+              error_message(MISSING_SEMI_COLON);
               exit(-1);
             }
           } else {
-            sintatic_erro(MISSING_CLOSE_PAREN);
+            error_message(MISSING_CLOSE_PAREN);
             exit(-1);
           }
         } else {
-          sintatic_erro(MISSING_OPEN_PAREN);
+          error_message(MISSING_OPEN_PAREN);
           exit(-1);
         }
       } else {
-        sintatic_erro(MISSING_ID);
+        error_message(MISSING_ID);
         exit(-1);
       }
     }
@@ -265,16 +249,13 @@ void prog() {
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
                   } else {
-                    sintatic_erro(MISSING_CLOSE_PAREN);
-                    exit(-1);
+                    error_message(MISSING_CLOSE_PAREN);
                   }
                 } else {
-                  sintatic_erro(MISSING_OPEN_PAREN);
-                  exit(-1);
+                  error_message(MISSING_OPEN_PAREN);
                 }
               } else {
-                sintatic_erro(MISSING_ID);
-                exit(-1);
+                error_message(MISSING_ID);
               }
             }
             //END OF PROTOTYPE WITHOUT TYPE
@@ -282,23 +263,19 @@ void prog() {
               getToken();
               prog();
             } else {
-              sintatic_erro(MISSING_SEMI_COLON);
-              exit(-1);
+              error_message(MISSING_SEMI_COLON);
             }
           } else {
-            sintatic_erro(MISSING_CLOSE_PAREN);
+            error_message(MISSING_CLOSE_PAREN);
           }
         } else {
-          sintatic_erro(MISSING_OPEN_PAREN);
-          exit(-1);
+          error_message(MISSING_OPEN_PAREN);
         }
       } else {
-        sintatic_erro(MISSING_ID);
-        exit(-1);
+        error_message(MISSING_ID);
       }
     }else {
-      sintatic_erro(MISSING_TYPE);
-      exit(-1);
+      error_message(MISSING_TYPE);
     }
   }
   // RECOGNIZE FUNCTION WITHOUT RETURN
@@ -307,7 +284,7 @@ void prog() {
     getToken();
     sb_token.scope = GLOBAL;
     strcpy(sb_token.name,token.lexem.value);
-    sb_token.zumbi = 0;// we gonna set the cat later
+    sb_token.zumbi = 0;// we gonna set the category later
     if(token.type == ID) {
       Token aux_token = token;
       sb_token.cat = FUNC;
@@ -330,7 +307,8 @@ void prog() {
             while(isType()){
               strcpy(sb_token.type, token.pr);
               getToken();
-              if(token.type == ID && (next_token.type == SN && (strcmp(next_token.signal, ",") == 0 || strcmp(next_token.signal, ";") == 0))){
+              if(token.type == ID && (next_token.type == SN && (strcmp(next_token.signal, ",") == 0
+                 || strcmp(next_token.signal, ";") == 0))){
                 sb_token.scope = LOCAL;
                 strcpy(sb_token.name, token.lexem.value);
                 sb_token.zumbi = 0;// we gonna set the cat later
@@ -349,27 +327,27 @@ void prog() {
                     insert_symbol();
                     getToken();
                   } else {
-                    sintatic_erro(MISSING_ID);
-                    exit(-1);
+                    error_message(MISSING_ID);
                   }
                 }
                 //if it is ; declaration finish
                 cont_local_var = amem;
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
                   getToken();
-
                 } else {
-                  sintatic_erro(MISSING_SEMI_COLON);
+                  error_message(MISSING_SEMI_COLON);
                   exit(-1);
                 }
               }
             }
             while(cmd());
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
-              fprintf(stack_file,"STOR 1.%d\n",(-1*(3+cont_paramter_var))); // arrumar isso aqui IMPORTANTE
-              if(cont_local_var > 0)
+              fprintf(stack_file,"STOR 1.%d\n",(-1*(3+cont_paramter_var)));
+              if(cont_local_var > 0){
                 fprintf(stack_file,"DEMEM %d\n",cont_local_var);
-                fprintf(stack_file,"RET %d\n",cont_paramter_var);
+                fprintf(stack_file,"RET 0\n");
+              }
+
               cont_local_var = 0;
               cont_paramter_var = 0;
 
@@ -380,29 +358,23 @@ void prog() {
 
               prog();
             } else {
-                sintatic_erro(MISSING_CLOSE_KEY);
-              exit(-1);
+                error_message(MISSING_CLOSE_KEY);
             }
           } else {
-            sintatic_erro(MISSING_OPEN_PAREN);
-            exit(-1);
+            error_message(MISSING_OPEN_PAREN);
           }
         } else {
-          sintatic_erro(MISSING_CLOSE_PAREN);
-          exit(-1);
+          error_message(MISSING_CLOSE_PAREN);
         }
-
       } else{
-        sintatic_erro(MISSING_OPEN_PAREN);
-        exit(-1);
+        error_message(MISSING_OPEN_PAREN);
       }
     } else {
-      sintatic_erro(MISSING_ID);
-      exit(-1);
+      error_message(MISSING_ID);
     }
   }
   else if(token.type == eOF){
-    //verify if has program on the body
+    //verify if has principal function
     hasMainFunction();
     printf("Compilado com sucesso!\n");
     fprintf(stack_file,"HALT\n");
@@ -410,16 +382,16 @@ void prog() {
     return;
   }
   else {
-    sintatic_erro(SYMBOL_NOT_RECOG);
-    exit(-1);
+    error_message(SYMBOL_NOT_RECOG);
   }
 }
 
 /**
-* Verify the interval between reserved word to know if it is a type definition
+* Verify the interval between reserved word, to know if it is a type definition
 **/
 int isType() {
-  if(token.type == PR && isReservedWord(token.pr) >= 0 && isReservedWord(token.pr) < 4){
+  if(token.type == PR && isReservedWord(token.pr) >= 0 &&
+     isReservedWord(token.pr) < 4){
     return 1;
   }
   return 0;
@@ -461,63 +433,52 @@ void types_param(){
             verifyRedeclaration(sb_token);
             insert_symbol();
           }else {
-            sintatic_erro(MISSING_ID);
-            exit(-1);
+            error_message(MISSING_ID);
           }
         } else {
-            sintatic_erro(MISSING_COMMA);
-          exit(-1);
+            error_message(MISSING_COMMA);
         }
       }
     } else {
-      sintatic_erro(MISSING_ID);
-      exit(-1);
+      error_message(MISSING_ID);
     }
   } else {
-    sintatic_erro(SYMBOL_NOT_RECOG);
-    exit(-1);
+    error_message(SYMBOL_NOT_RECOG);
   }
   cont_paramter_var = amem;
- // if(amem > 0){
- //    printf("AMEM %d\n",amem);
- //    fprintf(stack_file,"AMEM %d\n",amem);
- // }
 }
 
 int cmd(){
     int aux_and = 0, aux_or = 0;
     char functionValue[500];
-    //variaveis para auxiliar o for
+    //to FOR loop
     int labelw = 0,labely = 0,labelz = 0,labelx = 0;
   //-----------------------------
-  //SE EXPRESSION
+  //IF EXPRESSION
   if(token.type == PR && strcmp(token.pr, "se") == 0){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
-      aux_and = getLabel();
-      aux_or = getLabel();
+      aux_and = get_label();
+      aux_or = get_label();
       expression expre = expr(aux_and, aux_or);
 
       fprintf(stack_file,"GOFALSE L%d\n",aux_and);
       if(token.type == SN && strcmp(token.signal,")") == 0){
-  ;
         fprintf(stack_file,"LABEL L%d\n",aux_or);
         getToken();
         if(!cmd()){
-          sintatic_erro(MISSING_CMD);
-          exit(-1);
+          error_message(MISSING_CMD);
         }
         if(token.type == PR && strcmp(token.pr,"senao") == 0){
-          labelx = getLabel();
+          labelx = get_label();
 
           fprintf(stack_file,"GOTO L%d\n",labelx);
           fprintf(stack_file,"LABEL L%d\n",aux_and);
-         // getLabel();
+
           getToken();
           if(!cmd()) {
-            sintatic_erro(MISSING_CMD);
-            exit(-1);
+            error_message(MISSING_CMD);
           }
 
           fprintf(stack_file,"LABEL L%d\n",labelx);
@@ -525,31 +486,26 @@ int cmd(){
 
             fprintf(stack_file,"LABEL L%d\n",aux_and);
         }
-
         return 1;
       }else{
-        sintatic_erro(MISSING_CLOSE_PAREN);
-        exit(-1);
+        error_message(MISSING_CLOSE_PAREN);
       }
     }else{
-      sintatic_erro(MISSING_OPEN_PAREN);
-      exit(-1);
+      error_message(MISSING_OPEN_PAREN);
     }
   }
-  //ENQUANTO EXPRESSION
+  //'ENQUANTO' EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"enquanto") == 0){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
-       labely = getLabel();
-       aux_or = getLabel();
-       aux_and = getLabel();
+       labely = get_label();
+       aux_or = get_label();
+       aux_and = get_label();
 
        fprintf(stack_file,"LABEL L%d\n",labely);
 
        expression expre = expr(aux_and, aux_or);//add return
-
-
        fprintf(stack_file,"GOFALSE L%d\n",aux_and);
 
       if (strcmp(expre.type, "booleano") != 0) {
@@ -561,47 +517,39 @@ int cmd(){
         fprintf(stack_file,"LABEL L%d\n",aux_or); // Se na operação com OU pelo menos uma operadoção  for true ele vem para esse label e executa logo após o bloco de comandos
         getToken();
         if(!cmd()) {
-          sintatic_erro(MISSING_CMD);
-          exit(-1);
+          error_message(MISSING_CMD);
         }
 
         fprintf(stack_file,"GOTO L%d\n",labely); //Aqui termina o while
         fprintf(stack_file,"LABEL L%d\n",aux_and);
         return 1;
       }else{
-        sintatic_erro(MISSING_CLOSE_PAREN);
-        exit(1);
+        error_message(MISSING_CLOSE_PAREN);
       }
     }else{
-      sintatic_erro(MISSING_OPEN_PAREN);
-      exit(1);
+      error_message(MISSING_OPEN_PAREN);
     }
   }
-  // PARA EXPRESSION
+  // 'PARA' EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"para") == 0) {
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
-
       atrib();
-
-      labelw = getLabel();
-
+      labelw = get_label();
       fprintf(stack_file,"LABEL L%d\n",labelw);
-
       if(token.type == SN && strcmp(token.signal,";") == 0){
         getToken();
 
-        aux_or = getLabel();
-        aux_and = getLabel();
+        aux_or = get_label();
+        aux_and = get_label();
         expression expre = expr(aux_and, aux_or);
-
 
         fprintf(stack_file,"GOFALSE L%d\n",aux_and);
 
-        labely = getLabel();
+        labely = get_label();
         fprintf(stack_file,"GOTO L%d\n",labely);
-        labelz = getLabel();
+        labelz = get_label();
         fprintf(stack_file,"LABEL L%d\n",labelz);
 
         if (strcmp(expre.type, "booleano") != 0) {
@@ -620,59 +568,50 @@ int cmd(){
             getToken();
             fprintf(stack_file,"LABEL %d\n",aux_or);
             if(!cmd()){
-              exit(-1);
+              error_message(MISSING_CMD);
             }
-
             fprintf(stack_file,"GOTO L%d\n",labelz);
             fprintf(stack_file,"LABEL L%d\n",aux_and);
             return 1;
           }else{
-            sintatic_erro(MISSING_CLOSE_PAREN);
-            exit(-1);
+            error_message(MISSING_CLOSE_PAREN);
           }
         }else{
-          sintatic_erro(MISSING_SEMI_COLON);
-          exit(-1);
+          error_message(MISSING_SEMI_COLON);
         }
       }else{
-        sintatic_erro(MISSING_SEMI_COLON);
-        exit(-1);
+        error_message(MISSING_SEMI_COLON);
       }
     } else {
-      sintatic_erro(MISSING_OPEN_PAREN);
-      exit(-1);
+      error_message(MISSING_OPEN_PAREN);
     }
   }
-  // RETORNE EXPRESSION
+  // 'RETORNE' EXPRESSION
   else if(token.type == PR && strcmp(token.pr,"retorne") == 0){
-
     Token aux_token;
     getToken();
     aux_token = token;
     //verify if function has return and if has, have to has a express returning
     if(strcmp(last_function.type, "semretorno") == 0) {
       if(strcmp(token.signal, ";") != 0) {
-          printf("Retorno inesperado para a funcao '%s' na linha %d\n",
-                 last_function.name, line_number);
-          exit(-1);
+          error_return_not_expected(" ", last_function.name);
       }
     } else {
       if(strcmp(token.signal, ";") == 0) {
-          printf("Retorno '%s' esperado para a funcao '%s' na linha %d\n",
-                 last_function.type, last_function.name, line_number);
-          exit(-1);
+        error_return_not_expected(last_function.type, last_function.name);
       }
     }
-
-
 
     expression expre = expr(aux_and, aux_or);
 
     if(strcmp(expre.type, "nothing") != 0) {
       //verify if return type is equal to function type
-      if ((strcmp(last_function.type, expre.type) != 0) && !(strcmp(last_function.type, "caracter") == 0 && strcmp(expre.type, "inteiro") == 0) && !(strcmp(last_function.type, "inteiro") == 0 && strcmp(expre.type, "caracter") == 0)){
-        printf("Retorno '%s' não esperado para a funcao %s\n", expre.type, last_function.name);
-        exit(-1);
+      if ((strcmp(last_function.type, expre.type) != 0)
+          && !(strcmp(last_function.type, "caracter") == 0
+          && strcmp(expre.type, "inteiro") == 0)
+          && !(strcmp(last_function.type, "inteiro") == 0
+          && strcmp(expre.type, "caracter") == 0)) {
+          error_return_not_expected(expre.type, last_function.name);
       }else{
 
         fprintf(stack_file,"STOR 1.%d\n",(-1*(3+cont_paramter_var)));
@@ -688,8 +627,7 @@ int cmd(){
       getToken();
       return 1;
     }else{
-      sintatic_erro(MISSING_SEMI_COLON);
-      exit(-1);
+      error_message(MISSING_SEMI_COLON);
     }
   }
   // KEY EXPRESSION
@@ -701,8 +639,7 @@ int cmd(){
       getToken();
       return 1;
     } else {
-      sintatic_erro(MISSING_CLOSE_KEY);
-      exit(-1);
+      error_message(MISSING_CLOSE_KEY);
     }
   }
   // ; EXPRESSION
@@ -738,12 +675,12 @@ int cmd(){
           getToken();
           return 1;
         } else {
-          sintatic_erro(MISSING_SEMI_COLON);
+          error_message(MISSING_SEMI_COLON);
           exit(-1);
         }
     } else {
       // printf("Sou %d %s\n", token.type, token.signal);
-      sintatic_erro(MISSING_OPEN_PAREN);
+      error_message(MISSING_OPEN_PAREN);
       exit(-1);
     }
   }
@@ -751,11 +688,9 @@ int cmd(){
   else if(atrib()){
     if(token.type == SN && strcmp(token.signal, ";") == 0) {
       getToken();
-
       return 1;
     } else {
-      sintatic_erro(MISSING_SEMI_COLON);
-      exit(-1);
+      error_message(MISSING_SEMI_COLON);
     }
   }
   return 0;
@@ -805,16 +740,17 @@ void opc_p_types() {
         //insert into symbol table
         insert_symbol();
       } else {
-        sintatic_erro(MISSING_TYPE);
+        error_message(MISSING_TYPE);
         exit(-1);
       }
     }
   } else {
-    sintatic_erro(SYMBOL_NOT_RECOG);
+    error_message(SYMBOL_NOT_RECOG);
     exit(-1);
   }
-  if(amem > 0)
-    fprintf(stack_file,"AMEM %d\n",amem);
+  if(amem > 0){
+      fprintf(stack_file,"AMEM %d\n",amem);
+  }
 
 }
 
@@ -824,9 +760,12 @@ expression expr(int aux_and, int aux_or) {
   char operator[5];
   if(op_rel(operator)){
       expression expre2 = expr_simp(aux_and, aux_or);
-      if((strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) || (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0)
-          || (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0) || (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0)
+      if((strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0)
+          || (strcmp(expre.type, "real") == 0 && strcmp(expre2.type, "real") == 0)
+          || (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "caracter") == 0)
+          || (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "caracter") == 0)
           || (strcmp(expre.type, "caracter") == 0 && strcmp(expre2.type, "inteiro") == 0)) {
+
             if(strcmp(operator, "==") == 0) {
                if (strcmp(expre.type, "inteiro") == 0 && strcmp(expre2.type, "inteiro") == 0) {
                   if (expre.iValue == expre2.iValue) {
@@ -1081,8 +1020,7 @@ expression expr(int aux_and, int aux_or) {
               }
             }
       } else {
-          printf("Tipo %s não pode ser comparado com tipo %s na linha %d\n", expre.type, expre2.type, line_number);
-          exit(-1);
+          error_comparation(expre.type, expre2.type);
       }
   }
 
@@ -1219,8 +1157,7 @@ expression expr_simp(int aux_and, int aux_or) {
             }
           }
         } else {
-          printf("Comparação não possível entre os tipos %s e %s na linha %d\n", expre.type, expre2.type, line_number);
-          exit(-1);
+          error_comparation(expre.type, expre2.type);
         }
       }
   }
@@ -1230,18 +1167,20 @@ expression expr_simp(int aux_and, int aux_or) {
 
 int op_rel(char operator2[]){
     Token aux_token;
-  if(token.type == SN && (strcmp(token.signal,"==") == 0 || strcmp(token.signal,"!=") == 0 || strcmp(token.signal,"<=") == 0 || strcmp(token.signal,"<") == 0 || strcmp(token.signal,">") == 0 || strcmp(token.signal,">=") == 0)){
+  if(token.type == SN && (strcmp(token.signal,"==") == 0 || strcmp(token.signal,"!=") == 0
+     || strcmp(token.signal,"<=") == 0 || strcmp(token.signal,"<") == 0
+     || strcmp(token.signal,">") == 0  || strcmp(token.signal,">=") == 0)){
     aux_token = token;
     strcpy(operator2, token.signal);
     getToken();
-    getLoadOrPush(token);
+    get_load_or_push(token);
 
     fprintf(stack_file,"SUB\n");
 
     if(cont_not_iqual == 0){
         operator_check(aux_token);
     }else{
-        operator_check_not_Iqual(aux_token);
+        operator_check_not_iqual(aux_token);
         cont_not_iqual = 0;
     }
     flag = 0;
@@ -1255,15 +1194,16 @@ expression termo(int aux_and, int aux_or) {
   Token t;
   expr = fator(aux_and, aux_or);
   t = token;
-  while(token.type == SN && (strcmp(token.signal,"*") == 0 || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
-      if(strcmp(token.signal,"&&") == 0){
+  while(token.type == SN && (strcmp(token.signal,"*") == 0
+        || strcmp(token.signal,"/") == 0 || strcmp(token.signal,"&&") == 0)){
 
+      if(strcmp(token.signal,"&&") == 0){
         fprintf(stack_file,"COPY\n");
         fprintf(stack_file,"GOFALSE L%d\n",aux_and);
         fprintf(stack_file,"POP\n");
       }
       char signal = '0';
-      //guardar sinal de * ou / ou &&
+      //guardar sinal de * ou /
       if(strcmp(token.signal,"*") == 0) {
         signal = '*';
       } else if(strcmp(token.signal,"/") == 0) {
@@ -1273,26 +1213,21 @@ expression termo(int aux_and, int aux_or) {
       expression expr2 = fator(aux_and, aux_or);
 
       if(strcmp(t.signal,"*") == 0){
-            if(strcmp(expr.type,"inteiro") == 0 && strcmp(expr2.type,"inteiro") == 0){
-
-                fprintf(stack_file,"MUL\n");
-            }else if(strcmp(expr.type,"real") == 0){
-
-                fprintf(stack_file,"MULF\n");
-
-            }
-            t = token;
-          }else if(strcmp(t.signal,"/") == 0){
-                if(strcmp(expr.type,"inteiro") == 0 && strcmp(expr2.type,"inteiro") == 0){
-
-                fprintf(stack_file,"DIV\n");
-            }else if(strcmp(expr.type,"real") == 0 && strcmp(expr2.type,"real") == 0){
-
-                fprintf(stack_file,"DIVF\n");
-            }
-            t = token;
+          if(strcmp(expr.type,"inteiro") == 0 && strcmp(expr2.type,"inteiro") == 0){
+              fprintf(stack_file,"MUL\n");
+          }else if(strcmp(expr.type,"real") == 0){
+              fprintf(stack_file,"MULF\n");
           }
-      //se há conta faça-a
+          t = token;
+      }else if(strcmp(t.signal,"/") == 0){
+        if(strcmp(expr.type,"inteiro") == 0 && strcmp(expr2.type,"inteiro") == 0){
+                fprintf(stack_file,"DIV\n");
+        }else if(strcmp(expr.type,"real") == 0 && strcmp(expr2.type,"real") == 0){
+                fprintf(stack_file,"DIVF\n");
+        }
+        t = token;
+      }
+      //If has expression make a resolution
       if(signal != '0') {
           //it is compatible
           if(strcmp(expr.type, "inteiro") == 0 && strcmp(expr2.type, "inteiro") == 0) {
@@ -1306,19 +1241,26 @@ expression termo(int aux_and, int aux_or) {
               if(signal == '*') expr.dValue = expr.dValue * expr2.dValue;
               else if(signal == '/') expr.dValue = expr.dValue / expr2.dValue;
 
-          } else if ((strcmp(expr.type, "caracter") == 0 && strcmp(expr2.type, "caracter") == 0) || (strcmp(expr.type, "caracter") == 0 && strcmp(expr2.type, "inteiro") == 0) || (strcmp(expr.type, "inteiro") == 0 && strcmp(expr2.type, "caracter") == 0)) {
+          } else if ((strcmp(expr.type, "caracter") == 0 && strcmp(expr2.type, "caracter") == 0)
+                      || (strcmp(expr.type, "caracter") == 0 && strcmp(expr2.type, "inteiro") == 0)
+                      || (strcmp(expr.type, "inteiro") == 0 && strcmp(expr2.type, "caracter") == 0)) {
              strcpy(expr.type, "inteiro");
-             if(signal == '*') expr.iValue = expr.cValue * expr2.cValue;
-             else if(signal == '/') expr.iValue = expr.cValue / expr2.cValue;
-
+             if(signal == '*') {
+               expr.iValue = expr.cValue * expr2.cValue;
+             }
+             else if(signal == '/') {
+               expr.iValue = expr.cValue / expr2.cValue;
+             }
           } else {
             printf("Operação inválida entre os tipos %s e %s na linha %d\n", expr.type, expr2.type, line_number);
             exit(-1);
           }
       }
-
+      //AND CONDITION
       if (strcmp(token.signal,"&&") == 0) {
-        if ((strcmp(expr.type, "inteiro") == 0 ||strcmp(expr.type, "booleano") == 0) && (strcmp(expr2.type, "inteiro") == 0 ||strcmp(expr2.type, "booleano") == 0) ) {
+        if ((strcmp(expr.type, "inteiro") == 0 ||strcmp(expr.type, "booleano") == 0)
+             && (strcmp(expr2.type, "inteiro") == 0 ||strcmp(expr2.type, "booleano") == 0)) {
+
           if (strcmp(expr.type, "inteiro") == 0 && strcmp(expr2.type, "inteiro") == 0) {
             if (expr.iValue && expr2.iValue) {
               strcpy(expr.type, "booleano");
@@ -1345,8 +1287,7 @@ expression termo(int aux_and, int aux_or) {
             }
           }
         } else {
-          printf("Comparação não possível entre os tipos %s e %s na linha %d\n", expr.type, expr2.type, line_number);
-          exit(-1);
+          error_comparation(expr.type, expr2.type);
         }
       }
   }
@@ -1364,6 +1305,7 @@ expression fator(int aux_and, int aux_or) {
     strcpy(expre.type, s.type);
     getToken();
     getToken();
+    //VALIDATE PARAMS
     char array_expression[50][50];
     expression express = expr(aux_and, aux_or);
     strcpy(array_expression[0], express.type);
@@ -1376,6 +1318,7 @@ expression fator(int aux_and, int aux_or) {
     }
     //verify if all params matches
     validateParams(s, array_expression);
+
     //close function
     if(token.type == SN && strcmp(token.signal,")") == 0){
       if(strcmp(s.type,"semretorno")!=0)
@@ -1383,15 +1326,16 @@ expression fator(int aux_and, int aux_or) {
       fprintf(stack_file,"CALL L%d\n",loadLabelId(aux_token.lexem.value));
       getToken();
     }else{
-      sintatic_erro(MISSING_CLOSE_PAREN);
+      error_message(MISSING_CLOSE_PAREN);
       exit(-1);
     }
   }
   // CONSTANTS TYPE
-  else if(token.type == INTCON || token.type == REALCON || token.type == CARACCON || token.type  == CADEIACON || token.type == ID){
+  else if(token.type == INTCON || token.type == REALCON || token.type == CARACCON
+          || token.type  == CADEIACON || token.type == ID){
 
     if(flag == 1){
-        getLoadOrPush(token);
+        get_load_or_push(token);
     }else{
         flag = 1;
     }
@@ -1442,7 +1386,7 @@ expression fator(int aux_and, int aux_or) {
     if(token.type == SN && strcmp(token.signal, ")") == 0) {
       getToken();
     } else {
-      sintatic_erro(MISSING_CLOSE_PAREN);
+      error_message(MISSING_CLOSE_PAREN);
       exit(-1);
     }
   }
@@ -1483,7 +1427,7 @@ int atrib(){
     if(token.type == SN && strcmp(token.signal,"=") == 0){
       getToken();
       value = expr(0,0);
-      getLoadOrPush(token);
+      get_load_or_push(token);
       fprintf(stack_file,"STOR %s\n",get_mem_space(aux_atrib.lexem.value));
       //verify if the types matches, if yes make attribution
       if(strcmp(s.type, value.type) == 0) {
@@ -1507,8 +1451,7 @@ int atrib(){
           updateVariableValue(s);
         } else {
           if (strcmp(s.type, "nothing") == 0  || strcmp(value.type, "nothing") == 0) {
-            printf("Atribuição inválida na linha %d\n", line_number);
-            exit(-1);
+            error_message(WRONG_ATRIBUTION);
           } else {
             printf("Atribuição não compatível entre os tipos %s e %s na linha %d\n", s.type, value.type, line_number);
             exit(-1);
@@ -1517,11 +1460,9 @@ int atrib(){
       }
       return 1;
     }else{
-      sintatic_erro(MISSING_EQUAL_SNG);
-      exit(-1);
+      error_message(MISSING_EQUAL_SNG);
     }
   }else {
     return 0;
   }
 }
-//-----------------------------------------------------
