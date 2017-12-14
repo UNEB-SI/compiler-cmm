@@ -1,8 +1,8 @@
 #ifndef PARSER_H
 #define PARSER_H
 //constants  to set and get scope
-#define GLOBAL 1
-#define LOCAL 0
+#define GLOBAL 0
+#define LOCAL 1
 //Came from lexical.h
 extern Token token;
 extern int line_number;

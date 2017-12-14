@@ -26,10 +26,10 @@ semretorno principal(semparam){
 	n = contador(fibonacci(n));
 
 	n = 5/3+n;
-
+  retorne;
 	se(n > 5){
 		para(;;;) {
-    
+
     }
 	}senao{
 		/*imprima("Numero menor que cinco.");*/
