@@ -1,3 +1,4 @@
+inteiro a,b,c,d,e,f,r,t,y;
 
 semretorno outra(semparam){
   retorne;

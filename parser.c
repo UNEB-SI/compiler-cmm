@@ -13,6 +13,8 @@ symbol last_function;
 int flag = 1;
 int cont_local_var = 0;
 int cont_paramter_var = 0;
+int global_jump_function = 0;
+int global_var = 0;
 
 int find_a_return = 0; //just for functions
 
@@ -30,7 +32,7 @@ void prog() {
     if(token.type == ID){
       strcpy(auxIdStore,token.lexem.value);
       getToken();
-      amem++;
+
       //just for symbol table
       if ((token.type == SN && strcmp(token.signal, ";") == 0) || (token.type == SN && strcmp(token.signal, ",") == 0)) {
         sb_token.cat = VAR;
@@ -54,7 +56,7 @@ void prog() {
         amem++;
         if(amem > 0){
             fprintf(stack_file,"AMEM %d\n",amem);
-            cont_local_var = amem;
+            global_var += amem;
         }
 
         getToken();
@@ -69,6 +71,8 @@ void prog() {
         verifyRedeclaration(sb_token);
         insert_symbol();
         last_function = sb_token;
+        global_jump_function = get_label();
+        fprintf(stack_file,"GOTO L%d\n",global_jump_function);
         get_store_id(auxIdStore);
         fprintf(stack_file,"LABEL L%d\n",load_label_id(auxIdStore));
         fprintf(stack_file,"INIPR 1\n");
@@ -94,7 +98,7 @@ void prog() {
                 verifyRedeclaration(sb_token);
                 insert_symbol();
                 //verify if it is declaration
-                amem = 0;
+
                 while(token.type == SN && strcmp(token.signal, ",") == 0) {
                   getToken();
                   if(token.type == ID) {
@@ -110,7 +114,7 @@ void prog() {
                 }
                 //if it is ; declaration finish
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
-                  amem++;
+
                   fprintf(stack_file,"AMEM %d\n",amem);
                   cont_local_var += amem;
                   getToken();
@@ -306,9 +310,12 @@ void prog() {
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
           if(token.type == SN && strcmp(token.signal, "{") == 0) {
+            global_jump_function = get_label();
+            fprintf(stack_file,"GOTO L%d\n",global_jump_function);
             get_store_id(aux_token.lexem.value);
             fprintf(stack_file,"LABEL L%d\n",load_label_id(auxIdStore));
             fprintf(stack_file,"INIPR 1\n");
+
             getToken();
             while(isType()){
               strcpy(sb_token.type, token.pr);
@@ -360,9 +367,10 @@ void prog() {
                 fprintf(stack_file,"DEMEM %d\n",cont_local_var);
               }
                 fprintf(stack_file,"RET 0\n");
+                fprintf(stack_file,"LABEL %d\n",global_jump_function);
               cont_local_var = 0;
               cont_paramter_var = 0;
-
+              global_jump_function = 0;
               getToken();
               // keep all parameters and delete local variables
               insert_zombie();
@@ -389,6 +397,7 @@ void prog() {
     //verify if has principal function
     hasMainFunction();
     printf("Compilado com sucesso!\n");
+    fprintf(stack_file,"DEMEM %d\n",global_var);
     fprintf(stack_file,"HALT\n");
     fclose(stack_file);
     return;
@@ -632,8 +641,13 @@ int cmd(){
         if(cont_local_var > 0)
             fprintf(stack_file,"DEMEM %d\n",cont_local_var);
         fprintf(stack_file,"RET %d\n",cont_paramter_var);
+        fprintf(stack_file,"LABEL %d\n",global_jump_function);
+        if(strcmp(last_function.name,"principal") == 0){
+            fprintf(stack_file,"GOTO L%d\n",load_label_id(last_function.name));
+        }
         cont_local_var = 0;
         cont_paramter_var = 0;
+        global_jump_function = 0;
       }
     }
 
