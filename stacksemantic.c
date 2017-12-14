@@ -17,7 +17,6 @@ storeid stack_storeid[1000];
 
 void openStackFile(){
     stack_file = fopen("stack_file.txt", "w");
-    printf("INIP\n");
     fprintf(stack_file,"INIP\n");
 }
 

@@ -11,4 +11,5 @@ enum code_error { MISSING_SEMI_COLON = 1,MISSING_ID, MISSING_CLOSE_PAREN,
 
 void error_message(int flag);
 void error_comparation(char *first, char *second);
+void error_return_not_expected(char *first, char *second);
 #endif // ERRORS
