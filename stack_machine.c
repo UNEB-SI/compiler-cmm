@@ -9,6 +9,7 @@
 int contLabel = 0;
 int cont = 0;
 int markID = 0;
+int param_stack = -3;
 FILE *stack_file;
 
 //------------------------------------------------------------------------

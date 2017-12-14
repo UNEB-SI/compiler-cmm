@@ -66,7 +66,7 @@ void prog() {
         insert_symbol();
         last_function = sb_token;
         get_store_id(auxIdStore);
-        fprintf(stack_file,"LABEL L%d\n",loadLabelId(auxIdStore));
+        fprintf(stack_file,"LABEL L%d\n",load_label_id(auxIdStore));
         fprintf(stack_file,"INIPR 1\n");
         types_param();
         //verify if all parameters was good
@@ -300,8 +300,8 @@ void prog() {
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
           if(token.type == SN && strcmp(token.signal, "{") == 0) {
-            getStoreID(aux_token.lexem.value);
-            fprintf(stack_file,"LABEL L%d\n",loadLabelId(auxIdStore));
+            get_store_id(aux_token.lexem.value);
+            fprintf(stack_file,"LABEL L%d\n",load_label_id(auxIdStore));
             fprintf(stack_file,"INIPR 1\n");
             getToken();
             while(isType()){
@@ -671,7 +671,7 @@ int cmd(){
         if(token.type == SN && strcmp(token.signal, ";") == 0){
           if(strcmp(s.type,"semretorno") != 0)
             fprintf(stack_file,"AMEM 1\n");
-          fprintf(stack_file,"CAll L%d\n",loadLabelId(aux_token.lexem.value));
+          fprintf(stack_file,"CAll L%d\n",load_label_id(aux_token.lexem.value));
           getToken();
           return 1;
         } else {
@@ -1323,7 +1323,7 @@ expression fator(int aux_and, int aux_or) {
     if(token.type == SN && strcmp(token.signal,")") == 0){
       if(strcmp(s.type,"semretorno")!=0)
         fprintf(stack_file,"AMEM 1\n");
-      fprintf(stack_file,"CALL L%d\n",loadLabelId(aux_token.lexem.value));
+      fprintf(stack_file,"CALL L%d\n",load_label_id(aux_token.lexem.value));
       getToken();
     }else{
       error_message(MISSING_CLOSE_PAREN);

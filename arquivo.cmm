@@ -3,11 +3,15 @@ semretorno outra(semparam){
 
 }
 
-inteiro principal(inteiro dex) {
+real go(caracter queijo){
+
+}
+
+inteiro principal(inteiro dex, real b) {
 
   caracter w;
   w = 'q';
-  w = principal(1);
+  w = principal(1, 2.5);
   outra();
   retorne 4+8;
 }

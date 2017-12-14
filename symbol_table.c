@@ -6,6 +6,7 @@
 #include "symbol_table.h"
 
 symbol last_function;
+int param_mem = -3;
 
 void insert_symbol() {
     //if it is function, verify if has a prototype
@@ -51,34 +52,42 @@ void printf_symbol(){
 void default_insert_table() {
   int i = 0;
   if(sb_token.cat == VAR) {
+    param_mem = -3;
     while(strcmp(symbol_table[i].name, "") != 0) {
       i++;
     }
-    generate_mem_space(i);
+    generate_mem_space(i, sb_token.cat);
     symbol_table[i] = sb_token;
   } else {
     while(strcmp(symbol_table[i].type, "") != 0) {
       i++;
     }
     if(sb_token.cat == PARAN) {
-        generate_mem_space(i);
+        generate_mem_space(i, sb_token.cat);
+    } else {
+      param_mem = -3;
     }
     symbol_table[i] = sb_token;
   }
 }
 
-void generate_mem_space(int position) {
+void generate_mem_space(int position, int type) {
 
   char mem_position[12];
   char positions[12];
 
-  sprintf(positions, "%d", position);
-  sprintf(mem_position, "%d", sb_token.scope);
+  if(type != PARAN) {
+    sprintf(positions, "%d", position);
+  } else {
+      sprintf(positions, "%d", param_mem);
+      param_mem--;
+  }
 
+  sprintf(mem_position, "%d", sb_token.scope);
   strcat(mem_position, ".");
   strcat(mem_position, positions);
-
   strcpy(sb_token.mem_space, mem_position);
+
 }
 
 void insert_param_on_prototype(int position) {
@@ -89,12 +98,11 @@ void insert_param_on_prototype(int position) {
       exit(-1);
     } else if (!symbol_table[i].fullfill && symbol_table[i].cat == PARAN) {
         if(strcmp(symbol_table[i].type, sb_token.type) == 0) {
-           generate_mem_space(i);
+           generate_mem_space(i, sb_token.cat);
            symbol_table[i] = sb_token;
            symbol_table[i].fullfill = 1;
            return;
         } else {
-          printf("S: %s Symbol: %s\n", sb_token.type, symbol_table[i].type);
           printf("Esperado tipo %s, encontrado tipo %s em '%s' na linha %d\n", symbol_table[i].type, sb_token.type, last_function.name,line_number);
           exit(-1);
         }
