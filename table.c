@@ -298,8 +298,6 @@ void validateParams(symbol sb, char params[][50]) {
 
   if (strcmp(params[param_position], "nothing") == 0) {
     if (symbol_table[i].cat == PARAN) {
-      printf("Sou %s e tipo %s\n", symbol_table[i].name, symbol_table[i].type);
-      printf("Sou %s e tipo %s\n", symbol_table[i+2].name, symbol_table[i+2].type);
       printf("Parâmetro esperado como argumento na chamada da função %s, linha %d\n", sb.name, line_number);
       exit(-1);
     }
@@ -311,7 +309,6 @@ void validateParams(symbol sb, char params[][50]) {
         printf("Esperado %s na função %s como %d argumento, linha %d\n", symbol_table[i].type, sb.name, param_position+1, line_number);
         exit(-1);
       } else {
-        printf("Sou eu que dou problema: %s %s\n", symbol_table[i].name, symbol_table[i].type);
         printf("Parâmetro não identificado como argumento da função %s, linha %d\n", sb.name, line_number);
         exit(-1);
       }
