@@ -574,14 +574,16 @@ int cmd(){
         labelz = get_label();
         fprintf(stack_file,"LABEL L%d\n",labelz);
 
-        if (strcmp(expre.type, "booleano") != 0) {
+        if (strcmp(expre.type, "booleano") != 0 && strcmp(expre.type, "nothing") != 0) {
           printf ("Argumento imcopatível em expressão 'se' na linha %d\n", line_number);
           exit(-1);
         }
 
         if(token.type == SN && strcmp(token.signal,";") == 0){
           getToken();
-          atrib();
+          if(!atrib()) {
+            getToken();
+          }
 
           fprintf(stack_file,"GOTO L%d\n",labelw);
           fprintf(stack_file,"LABEL L%d\n",labely);
@@ -1323,11 +1325,15 @@ expression fator(int aux_and, int aux_or) {
   strcpy(expre.type, "nothing");
   // FUNCTION CALL
   if(token.type == ID && next_token.type == SN && strcmp(next_token.signal,"(") == 0) {
-    fprintf(stack_file,"AMEM 1\n");
     Token aux_token = token;
     symbol s = functionHasBeenDeclared(token.lexem.value);
     functionHasReturn(token.lexem.value);
     strcpy(expre.type, s.type);
+
+    if(strcmp(s.type,"semretorno")!=0) {
+        fprintf(stack_file,"AMEM 1\n");
+    }
+
     getToken();
     getToken();
     //VALIDATE PARAMS
@@ -1343,11 +1349,8 @@ expression fator(int aux_and, int aux_or) {
     }
     //verify if all params matches
     validateParams(s, array_expression);
-
     //close function
     if(token.type == SN && strcmp(token.signal,")") == 0){
-      if(strcmp(s.type,"semretorno")!=0)
-
       fprintf(stack_file,"CALL L%d\n",load_label_id(aux_token.lexem.value));
       getToken();
     }else{
@@ -1378,9 +1381,6 @@ expression fator(int aux_and, int aux_or) {
           } else if (strcmp(s.type, "caracter") == 0) {
             expre.cValue = s.cValue;
           }
-        } else {
-          printf("Variável '%s' não inicializada na linha %d\n", s.name, line_number);
-          exit(-1);
         }
       break;
       case INTCON:

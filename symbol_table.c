@@ -21,7 +21,6 @@ void insert_symbol() {
     } else if(sb_token.cat == PARAN) {
         int position = myFunctionHasPrototype(last_function);
         if(position != -1) {
-          printf("tem prototipo\n");
           insert_param_on_prototype(position);
           return;
         } else {
@@ -177,7 +176,7 @@ int hasPrototype(symbol s) {
 int myFunctionHasPrototype(symbol s) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
-    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0 && symbol_table[i].zumbi) {
+    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0) {
       return i;
     } else if(strcmp(symbol_table[i].name, s.name) == 0 && strcmp(symbol_table[i].type, s.type) != 0) {
       printf("Esperado tipo '%s' para a função %s na linha %d\n", symbol_table[i].type, s.name, line_number);
