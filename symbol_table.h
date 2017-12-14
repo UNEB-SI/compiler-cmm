@@ -7,20 +7,20 @@ typedef enum token_cat token_cat;
 typedef struct{
     char name[500];
     int zumbi;
-    token_cat cat;
-    char type[10];
-    int scope;
-    int init;
-    int matchParam;
-    int fullfill;
-    char mem_space[50];
+    token_cat cat; //holds category
+    char type[10]; //holds type
+    int scope; //keeps identifier scope
+    int init; // verify if a function has been loaded
+    int matchParam; //boolean verify if
+    int fullfill; //boolean helper to handle if a parameter was completed
+    char mem_space[50];//keeps mem space
     union {
-      char cValue;
-      float dValue;
-      int iValue;
-      int bValue;
+      char cValue; //caracter values
+      float dValue; //float values
+      int iValue; //integer values
+      int bValue; //boolean values
     };
-}symbol;
+} symbol;
 
 
 symbol sb_token;
