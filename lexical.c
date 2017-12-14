@@ -51,7 +51,7 @@ void readFile(char *file_name) {
     file = fopen(file_name, "r");
     if(file != NULL){
         getToken();
-        prog(0);
+        prog();
     }else{
       error_message(ERROR_NOT_FOUND_FILE);
     }

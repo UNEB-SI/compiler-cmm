@@ -1,7 +1,6 @@
 caracter principal(inteiro dex) {
 
   caracter w;
-  w = 'q';
-  w = principal(1, 2);
+  w = 'a';
   retorne w;
 }

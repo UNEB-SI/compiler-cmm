@@ -50,5 +50,19 @@ void error_message(int flag){
         case ERROR_NUMBER_FLOAT_FORMAT:
           printf("Esperado um número após ");
         break;
+        case WRONG_ATRIBUTION:
+          printf("Atribuição inválida na linha %d\n", line_number);
+        break;
     }
+    exit(-1);
+}
+
+void error_comparation(char *first, char *second) {
+  printf("Comparação não possível entre os tipos %s e %s na linha %d\n", first, second, line_number);
+  exit(-1);
+}
+
+void error_return_not_expected(char *first, char *second) {
+  printf("Retorno '%s' não esperado para a função %s\n",first,second);
+  exit(-1);
 }
