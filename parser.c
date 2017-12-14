@@ -1205,12 +1205,8 @@ int op_rel(char operator2[]){
 
     fprintf(stack_file,"SUB\n");
 
-    if(cont_not_iqual == 0){
         operator_check(aux_token);
-    }else{
-        operator_check_not_iqual(aux_token);
-        cont_not_iqual = 0;
-    }
+
     flag = 0;
     return 1;
   }

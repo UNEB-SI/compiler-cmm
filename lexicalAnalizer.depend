@@ -1,59 +1,70 @@
 # depslib dependency file v1.0
-1513121357 source:c:\users\fernando\desktop\compilador final\university-compiler\lexical.c
+1513237485 source:c:\users\fernando\desktop\compilador final\final version\university-compiler\errors.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+	"symbol_table.h"
+	"errors.h"
+
+1513237485 c:\users\fernando\desktop\compilador final\final version\university-compiler\lexical.h
+	<stdio.h>
+	"structures.h"
+
+1513237485 c:\users\fernando\desktop\compilador final\final version\university-compiler\structures.h
+
+1513253856 c:\users\fernando\desktop\compilador final\final version\university-compiler\parser.h
+
+1513237485 c:\users\fernando\desktop\compilador final\final version\university-compiler\symbol_table.h
+
+1513237485 c:\users\fernando\desktop\compilador final\final version\university-compiler\errors.h
+
+1513237485 source:c:\users\fernando\desktop\compilador final\final version\university-compiler\lexical.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<ctype.h>
 	"lexical.h"
 	"parser.h"
-	"table.h"
-	"sintatic_erros.h"
-	"stacksemantic.h"
+	"symbol_table.h"
+	"errors.h"
+	"stack_machine.h"
 
-1513092349 c:\users\fernando\desktop\compilador final\university-compiler\lexical.h
+1513254046 c:\users\fernando\desktop\compilador final\final version\university-compiler\stack_machine.h
+
+1513253368 source:c:\users\fernando\desktop\compilador final\final version\university-compiler\main.c
 	<time.h>
+	"lexical.h"
+	"parser.h"
+	"symbol_table.h"
+	"errors.h"
+	"stack_machine.h"
 
-1513092349 c:\users\fernando\desktop\compilador final\university-compiler\parser.h
-
-1513092349 c:\users\fernando\desktop\compilador final\university-compiler\table.h
-
-1513092312 c:\users\fernando\desktop\compilador final\university-compiler\sintatic_erros.h
-
-1513182113 c:\users\fernando\desktop\compilador final\university-compiler\stacksemantic.h
-
-1513092349 source:c:\users\fernando\desktop\compilador final\university-compiler\sintatic_erros.c
+1513260573 source:c:\users\fernando\desktop\compilador final\final version\university-compiler\parser.c
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
 	"lexical.h"
 	"parser.h"
-	"table.h"
-	"sintatic_erros.h"
+	"errors.h"
+	"stack_machine.h"
+	"symbol_table.h"
 
-1513092349 source:c:\users\fernando\desktop\compilador final\university-compiler\table.c
+1513237485 source:c:\users\fernando\desktop\compilador final\final version\university-compiler\symbol_table.c
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
 	"lexical.h"
 	"parser.h"
-	"table.h"
+	"symbol_table.h"
 
-1513215146 source:c:\users\fernando\desktop\compilador final\university-compiler\parser.c
-	<stdlib.h>
-	<stdio.h>
-	<string.h>
-	"lexical.h"
-	"parser.h"
-	"sintatic_erros.h"
-	"stacksemantic.h"
-	"table.h"
-
-1513214299 source:c:\users\fernando\desktop\compilador final\university-compiler\stacksemantic.c
+1513260127 source:c:\users\fernando\desktop\compilador final\final version\university-compiler\stack_machine.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
-	"stacksemantic.h"
 	"lexical.h"
-	"table.h"
+	"stack_machine.h"
 	"parser.h"
+	"symbol_table.h"
 

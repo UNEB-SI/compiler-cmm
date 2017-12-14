@@ -81,7 +81,7 @@ void get_load_or_push(Token t){
 
 void operator_check(Token t){
     int aux_z = 0,aux_x = 0, aux_y = 0;
-    if(cont_not_iqual == 0){
+
         if(strcmp(t.signal,"==") == 0){ //Semantico
                     aux_x = get_label();
                     fprintf(stack_file,"GOFALSE L%d\n",aux_x);
@@ -159,88 +159,19 @@ void operator_check(Token t){
                     fprintf(stack_file,"LABEL L%d\n",aux_y);
                     contLabel = aux_y;
                 }
-    }else{
-        cont_not_iqual = 0;
-        operator_check_not_iqual(t);
+
+
+                if(cont_not_iqual != 0){
+
+                    operator_check_not_iqual();
+                }
     }
-}
-
-void operator_check_not_iqual(Token t){
-    int aux_z = 0,aux_x = 0, aux_y = 0;
-
-    if(strcmp(t.signal,"==") == 0){ //Semantico
-                aux_x = get_label();
-                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
-                fprintf(stack_file,"PUSH 1\n");
-                aux_y = get_label();
-                fprintf(stack_file,"GOTO L%d\n",aux_y);
-                fprintf(stack_file,"LABEL L%d\n",aux_x);
-                fprintf(stack_file,"PUSH 0\n");
-                fprintf(stack_file,"LABEL L%d\n",aux_y);
-                contLabel = aux_y;
 
 
-            }else if(strcmp(t.signal,">=") == 0){
-                fprintf(stack_file,"COPY\n");
-                aux_x = get_label();
-                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
-                aux_y = get_label();
-                fprintf(stack_file,"GOTRUE L%d\n",aux_y);
-                fprintf(stack_file,"PUSH 1\n");
-                aux_z = get_label();
-                fprintf(stack_file,"GOTO L%d\n",aux_z);
-                fprintf(stack_file,"LABEL L%d\n",aux_x);
-                fprintf(stack_file,"POP\n");
-                fprintf(stack_file,"LABEL L%d\n",aux_y);
-                fprintf(stack_file,"PUSH 0\n");
-                fprintf(stack_file,"LABEL L%d\n",aux_z);
-                contLabel = aux_z;
+void operator_check_not_iqual(){
+    int aux_x = 0, aux_y = 0;
+    cont_not_iqual = 0;
 
-            }else if(strcmp(t.signal,"<=") == 0){
-                aux_x = get_label();
-                fprintf(stack_file,"GOTRUE L%d\n",aux_x);
-                fprintf(stack_file,"PUSH 0\n");
-                aux_y = get_label();
-                fprintf(stack_file,"GOTO L%d\n",aux_y);
-                fprintf(stack_file,"LABEL L%d\n",aux_x);
-                fprintf(stack_file,"PUSH 1\n");
-                fprintf(stack_file,"LABEL L%d\n",aux_y);
-                contLabel = aux_y;
-
-
-            }else if(strcmp(t.signal,"<") == 0){
-                fprintf(stack_file,"COPY\n");
-                aux_x = get_label();
-                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
-                aux_y = get_label();
-                fprintf(stack_file,"GOTRUE L%d\n",aux_y);
-                fprintf(stack_file,"PUSH 0\n");
-                aux_z = get_label();
-                fprintf(stack_file,"GOTO L%d\n",aux_z);
-                fprintf(stack_file,"LABEL L%d\n",aux_x);
-                fprintf(stack_file,"POP\n");
-                fprintf(stack_file,"LABEL L%d\n",aux_y);
-                fprintf(stack_file,"PUSH 1\n");
-                fprintf(stack_file,"LABEL L%d\n",aux_z);
-                contLabel = aux_z;
-
-            }else if(strcmp(t.signal,">") == 0){
-                fprintf(stack_file,"COPY\n");
-                aux_x = get_label();
-                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
-                aux_y = get_label();
-                fprintf(stack_file,"GOTRUE L%d\n",aux_y);
-                fprintf(stack_file,"POP\n");
-                fprintf(stack_file,"PUSH 0\n");
-                aux_z = get_label();
-                fprintf(stack_file,"GOTO L%d\n",aux_z);
-                fprintf(stack_file,"LABEL L%d\n",aux_x);
-                fprintf(stack_file,"LABEL L%d\n",aux_y);
-                fprintf(stack_file,"PUSH 1\n");
-                fprintf(stack_file,"LABEL L%d\n",aux_z);
-                contLabel = aux_z;
-
-            }else if(strcmp(t.signal,"!=") == 0){ // precisa revisar
                 aux_x = get_label();
                 fprintf(stack_file,"GOFALSE L%d\n",aux_x);
                 fprintf(stack_file,"PUSH 0\n");
@@ -250,5 +181,4 @@ void operator_check_not_iqual(Token t){
                 fprintf(stack_file,"PUSH 1\n");
                 fprintf(stack_file,"LABEL L%d\n",aux_y);
                 contLabel = aux_y;
-            }
 }
