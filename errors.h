@@ -1,5 +1,5 @@
-#ifndef SINTATIC_ERROS_H
-#define SINTATIC_ERROS_H
+#ifndef ERRORS_H
+#define ERROS_H
 
 enum code_error { MISSING_SEMI_COLON = 1,MISSING_ID, MISSING_CLOSE_PAREN,
                   MISSING_OPEN_PAREN, MISSING_OPEN_KEY, MISSING_CLOSE_KEY,
@@ -8,6 +8,5 @@ enum code_error { MISSING_SEMI_COLON = 1,MISSING_ID, MISSING_CLOSE_PAREN,
                   ERROR_NOT_FOUND_FILE, ERROR_NUMBER_FLOAT_FORMAT
                 };
 
-//erro function;
-void sintatic_erro(int flag);
-#endif // SINTATIC_ERRORS
+void error_message(int flag);
+#endif // ERRORS

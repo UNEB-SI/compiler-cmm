@@ -3,7 +3,7 @@
 #include <string.h>
 #include "lexical.h"
 #include "parser.h"
-#include "sintatic_erros.h"
+#include "errors.h"
 #include "stacksemantic.h"
 #include "table.h"
 
@@ -45,7 +45,7 @@ void prog() {
           insert_symbol();
           getToken();
         } else {
-            sintatic_erro(MISSING_ID);
+            error_message(MISSING_ID);
           exit(-1);
         }
       }
@@ -106,7 +106,7 @@ void prog() {
                     amem++;
                     getToken();
                   } else {
-                    sintatic_erro(MISSING_ID);
+                    error_message(MISSING_ID);
                     exit(-1);
                   }
                 }
@@ -119,7 +119,7 @@ void prog() {
 
                   getToken();
                 } else {
-                  sintatic_erro(MISSING_SEMI_COLON);
+                  error_message(MISSING_SEMI_COLON);
                   exit(-1);
                 }
               }
@@ -134,24 +134,24 @@ void prog() {
               exclude_local_symbol();
               prog();
             } else {
-              sintatic_erro(MISSING_CLOSE_KEY);
+              error_message(MISSING_CLOSE_KEY);
               exit(-1);
             }
           } else {
-            sintatic_erro(MISSING_OPEN_KEY);
+            error_message(MISSING_OPEN_KEY);
             exit(-1);
           }
         } else {
-          sintatic_erro(MISSING_CLOSE_PAREN);
+          error_message(MISSING_CLOSE_PAREN);
           exit(-1);
         }
 
       } else{
-        sintatic_erro(SYMBOL_NOT_RECOG);
+        error_message(SYMBOL_NOT_RECOG);
         exit(-1);
       }
     } else {
-      sintatic_erro(MISSING_ID);
+      error_message(MISSING_ID);
       exit(-1);
     }
   }
@@ -196,15 +196,15 @@ void prog() {
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
                   } else {
-                    sintatic_erro(MISSING_CLOSE_PAREN);
+                    error_message(MISSING_CLOSE_PAREN);
                     exit(-1);
                   }
                 } else {
-                  sintatic_erro(MISSING_OPEN_PAREN);
+                  error_message(MISSING_OPEN_PAREN);
                   exit(-1);
                 }
               } else {
-                sintatic_erro(MISSING_ID);
+                error_message(MISSING_ID);
                 exit(-1);
               }
             }
@@ -213,19 +213,19 @@ void prog() {
               getToken();
               prog();
             } else {
-              sintatic_erro(MISSING_SEMI_COLON);
+              error_message(MISSING_SEMI_COLON);
               exit(-1);
             }
           } else {
-            sintatic_erro(MISSING_CLOSE_PAREN);
+            error_message(MISSING_CLOSE_PAREN);
             exit(-1);
           }
         } else {
-          sintatic_erro(MISSING_OPEN_PAREN);
+          error_message(MISSING_OPEN_PAREN);
           exit(-1);
         }
       } else {
-        sintatic_erro(MISSING_ID);
+        error_message(MISSING_ID);
         exit(-1);
       }
     }
@@ -266,15 +266,15 @@ void prog() {
                   if(token.type == SN  && strcmp(token.signal, ")") == 0) {
                     getToken();
                   } else {
-                    sintatic_erro(MISSING_CLOSE_PAREN);
+                    error_message(MISSING_CLOSE_PAREN);
                     exit(-1);
                   }
                 } else {
-                  sintatic_erro(MISSING_OPEN_PAREN);
+                  error_message(MISSING_OPEN_PAREN);
                   exit(-1);
                 }
               } else {
-                sintatic_erro(MISSING_ID);
+                error_message(MISSING_ID);
                 exit(-1);
               }
             }
@@ -283,22 +283,22 @@ void prog() {
               getToken();
               prog();
             } else {
-              sintatic_erro(MISSING_SEMI_COLON);
+              error_message(MISSING_SEMI_COLON);
               exit(-1);
             }
           } else {
-            sintatic_erro(MISSING_CLOSE_PAREN);
+            error_message(MISSING_CLOSE_PAREN);
           }
         } else {
-          sintatic_erro(MISSING_OPEN_PAREN);
+          error_message(MISSING_OPEN_PAREN);
           exit(-1);
         }
       } else {
-        sintatic_erro(MISSING_ID);
+        error_message(MISSING_ID);
         exit(-1);
       }
     }else {
-      sintatic_erro(MISSING_TYPE);
+      error_message(MISSING_TYPE);
       exit(-1);
     }
   }
@@ -346,7 +346,7 @@ void prog() {
                     insert_symbol();
                     getToken();
                   } else {
-                    sintatic_erro(MISSING_ID);
+                    error_message(MISSING_ID);
                     exit(-1);
                   }
                 }
@@ -356,7 +356,7 @@ void prog() {
                   getToken();
 
                 } else {
-                  sintatic_erro(MISSING_SEMI_COLON);
+                  error_message(MISSING_SEMI_COLON);
                   exit(-1);
                 }
               }
@@ -377,24 +377,24 @@ void prog() {
 
               prog();
             } else {
-                sintatic_erro(MISSING_CLOSE_KEY);
+                error_message(MISSING_CLOSE_KEY);
               exit(-1);
             }
           } else {
-            sintatic_erro(MISSING_OPEN_PAREN);
+            error_message(MISSING_OPEN_PAREN);
             exit(-1);
           }
         } else {
-          sintatic_erro(MISSING_CLOSE_PAREN);
+          error_message(MISSING_CLOSE_PAREN);
           exit(-1);
         }
 
       } else{
-        sintatic_erro(MISSING_OPEN_PAREN);
+        error_message(MISSING_OPEN_PAREN);
         exit(-1);
       }
     } else {
-      sintatic_erro(MISSING_ID);
+      error_message(MISSING_ID);
       exit(-1);
     }
   }
@@ -407,7 +407,7 @@ void prog() {
     return;
   }
   else {
-    sintatic_erro(SYMBOL_NOT_RECOG);
+    error_message(SYMBOL_NOT_RECOG);
     exit(-1);
   }
 }
@@ -458,20 +458,20 @@ void types_param(){
             verifyRedeclaration(sb_token);
             insert_symbol();
           }else {
-            sintatic_erro(MISSING_ID);
+            error_message(MISSING_ID);
             exit(-1);
           }
         } else {
-            sintatic_erro(MISSING_COMMA);
+            error_message(MISSING_COMMA);
           exit(-1);
         }
       }
     } else {
-      sintatic_erro(MISSING_ID);
+      error_message(MISSING_ID);
       exit(-1);
     }
   } else {
-    sintatic_erro(SYMBOL_NOT_RECOG);
+    error_message(SYMBOL_NOT_RECOG);
     exit(-1);
   }
   cont_paramter_var = amem;
@@ -502,7 +502,7 @@ int cmd(){
         fprintf(stack_file,"LABEL L%d\n",aux_or);
         getToken();
         if(!cmd()){
-          sintatic_erro(MISSING_CMD);
+          error_message(MISSING_CMD);
           exit(-1);
         }
         if(token.type == PR && strcmp(token.pr,"senao") == 0){
@@ -514,7 +514,7 @@ int cmd(){
          // getLabel();
           getToken();
           if(!cmd()) {
-            sintatic_erro(MISSING_CMD);
+            error_message(MISSING_CMD);
             exit(-1);
           }
           printf("LABEL L%d\n",labelx);
@@ -526,11 +526,11 @@ int cmd(){
 
         return 1;
       }else{
-        sintatic_erro(MISSING_CLOSE_PAREN);
+        error_message(MISSING_CLOSE_PAREN);
         exit(-1);
       }
     }else{
-      sintatic_erro(MISSING_OPEN_PAREN);
+      error_message(MISSING_OPEN_PAREN);
       exit(-1);
     }
   }
@@ -562,7 +562,7 @@ int cmd(){
         fprintf(stack_file,"LABEL L%d\n",aux_or);
         getToken();
         if(!cmd()) {
-          sintatic_erro(MISSING_CMD);
+          error_message(MISSING_CMD);
           exit(-1);
         }
         printf("GOTO L%d\n",labely);
@@ -571,11 +571,11 @@ int cmd(){
         fprintf(stack_file,"LABEL L%d\n",aux_and);
         return 1;
       }else{
-        sintatic_erro(MISSING_CLOSE_PAREN);
+        error_message(MISSING_CLOSE_PAREN);
         exit(1);
       }
     }else{
-      sintatic_erro(MISSING_OPEN_PAREN);
+      error_message(MISSING_OPEN_PAREN);
       exit(1);
     }
   }
@@ -633,19 +633,19 @@ int cmd(){
             fprintf(stack_file,"LABEL end L%d\n",aux_and);
             return 1;
           }else{
-            sintatic_erro(MISSING_CLOSE_PAREN);
+            error_message(MISSING_CLOSE_PAREN);
             exit(-1);
           }
         }else{
-          sintatic_erro(MISSING_SEMI_COLON);
+          error_message(MISSING_SEMI_COLON);
           exit(-1);
         }
       }else{
-        sintatic_erro(MISSING_SEMI_COLON);
+        error_message(MISSING_SEMI_COLON);
         exit(-1);
       }
     } else {
-      sintatic_erro(MISSING_OPEN_PAREN);
+      error_message(MISSING_OPEN_PAREN);
       exit(-1);
     }
   }
@@ -694,7 +694,7 @@ int cmd(){
       getToken();
       return 1;
     }else{
-      sintatic_erro(MISSING_SEMI_COLON);
+      error_message(MISSING_SEMI_COLON);
       exit(-1);
     }
   }
@@ -707,7 +707,7 @@ int cmd(){
       getToken();
       return 1;
     } else {
-      sintatic_erro(MISSING_CLOSE_KEY);
+      error_message(MISSING_CLOSE_KEY);
       exit(-1);
     }
   }
@@ -744,12 +744,12 @@ int cmd(){
           getToken();
           return 1;
         } else {
-          sintatic_erro(MISSING_SEMI_COLON);
+          error_message(MISSING_SEMI_COLON);
           exit(-1);
         }
     } else {
       // printf("Sou %d %s\n", token.type, token.signal);
-      sintatic_erro(MISSING_OPEN_PAREN);
+      error_message(MISSING_OPEN_PAREN);
       exit(-1);
     }
   }
@@ -760,7 +760,7 @@ int cmd(){
 
       return 1;
     } else {
-      sintatic_erro(MISSING_SEMI_COLON);
+      error_message(MISSING_SEMI_COLON);
       exit(-1);
     }
   }
@@ -811,12 +811,12 @@ void opc_p_types() {
         //insert into symbol table
         insert_symbol();
       } else {
-        sintatic_erro(MISSING_TYPE);
+        error_message(MISSING_TYPE);
         exit(-1);
       }
     }
   } else {
-    sintatic_erro(SYMBOL_NOT_RECOG);
+    error_message(SYMBOL_NOT_RECOG);
     exit(-1);
   }
   if(amem > 0){
@@ -1389,7 +1389,7 @@ expression fator(int aux_and, int aux_or) {
     if(token.type == SN && strcmp(token.signal,")") == 0){
       getToken();
     }else{
-      sintatic_erro(MISSING_CLOSE_PAREN);
+      error_message(MISSING_CLOSE_PAREN);
       exit(-1);
     }
   }
@@ -1448,7 +1448,7 @@ expression fator(int aux_and, int aux_or) {
     if(token.type == SN && strcmp(token.signal, ")") == 0) {
       getToken();
     } else {
-      sintatic_erro(MISSING_CLOSE_PAREN);
+      error_message(MISSING_CLOSE_PAREN);
       exit(-1);
     }
   }
@@ -1524,7 +1524,7 @@ int atrib(){
       }
       return 1;
     }else{
-      sintatic_erro(MISSING_EQUAL_SNG);
+      error_message(MISSING_EQUAL_SNG);
       exit(-1);
     }
   }else {

@@ -5,7 +5,7 @@
 #include "lexical.h"
 #include "parser.h"
 #include "table.h"
-#include "sintatic_erros.h"
+#include "errors.h"
 #include "stacksemantic.h"
 
 //Identifies table: Keep all identifiers
@@ -25,13 +25,13 @@ int line_number = 1;
 
 int first_time = 0;
 
-clock_t start, end;
-double cpu_time_used;
 //reserved word
-char *reserved_word[] = {"inteiro", "real", "caracter", "booleano", "se", "senao", "semretorno", "enquanto", "para", "retorne", "semparam", "verdadeiro", "falso", "prototipo"};
+char *reserved_word[] = {"inteiro", "real", "caracter", "booleano", "se",
+                         "senao", "semretorno", "enquanto", "para", "retorne",
+                         "semparam", "verdadeiro", "falso", "prototipo"};
 //accept signals
-char *signals[] = {">","<","<=", ">=", "!", "!=", ";",",", "&&","||","+","-","*","/", "[", "]", "(", ")", "{", "}", "=", "=="};
-char *signalsName[] = {"MAIOR","MENOR","MENOR_QUE", "MAIOR_QUE", "NEG", "DIF", "PT_VIRG","VIRGULA", "E","OU","ADD","SUB","MULT","DIV", "COL_ABER", "COL_FEC", "PAREN_ABER", "PAREN_FEC", "CHAVE_ABER", "CHAVE_FEC", "ATRIBUICAO", "IGUALDADE"};
+char *signals[] = {">","<","<=", ">=", "!", "!=", ";",",", "&&","||","+","-",
+                   "*","/", "[", "]", "(", ")", "{", "}", "=", "=="};
 //accept constants
 const char TAB = '\t';
 const char ENTER = '\n';
@@ -50,14 +50,10 @@ FILE *file;
 void readFile(char *file_name) {
     file = fopen(file_name, "r");
     if(file != NULL){
-        start = clock();
         getToken();
         prog(0);
-        end = clock();
-        cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-        printf("Executado em %f segundos.\n", cpu_time_used);
     }else{
-      sintatic_erro(ERROR_NOT_FOUND_FILE);
+      error_message(ERROR_NOT_FOUND_FILE);
     }
 
     fclose(file);
@@ -183,7 +179,7 @@ int checkState(FILE *f){
                 STATE = 6;
                 ungetc(actual_char, f);
             }else{
-                sintatic_erro(ERROR_NUMBER_FLOAT_FORMAT);
+                error_message(ERROR_NUMBER_FLOAT_FORMAT);
                 exit(-1);
             }
             break;

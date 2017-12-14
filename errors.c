@@ -4,9 +4,9 @@
 #include "lexical.h"
 #include "parser.h"
 #include "table.h"
-#include "sintatic_erros.h"
+#include "errors.h"
 
-void sintatic_erro(int flag){
+void error_message(int flag){
     switch (flag){
         case MISSING_SEMI_COLON:
             printf("';' Esperado na linha %d\n", line_number);

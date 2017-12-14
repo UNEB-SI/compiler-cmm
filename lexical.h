@@ -4,7 +4,6 @@
   * Created by: José Diôgo
   * Last Modification: 13/12/2017
 */
-#include <time.h>
 #include <stdio.h>
 #include "structures.h"
 
@@ -56,17 +55,15 @@ int checkState(FILE *f);
 *
 */
 int isLetter(char letter);
-int isReservedWord(char *word);
-int isSignal(char *word);
-void addLetter(char c);
-void justCleanBuffer();
-void addStringFinal();
-void printToken(token_type tp, char value);
-void cleanBuffer(FILE *f, char c);
-int getInteger();
-float getFloat();
-Token getToken();
-int isFirstTime();
-void getLoadOrPush(Token t);
-void operator_check(Token t);
+int isReservedWord(char *word); //check if a string is a reserved word
+int isSignal(char *word); //check if a string is a signal like +, - , / and etc
+void addLetter(char c); // add actual char to buffer and keeps its value on last char
+void justCleanBuffer(); // Erase buffer and starts and keeps from next token
+void addStringFinal(); //add /0 to buffer array
+void printToken(token_type tp, char value); //print a specific token
+void cleanBuffer(FILE *f, char c); // Erase buffer and unget actual char
+int getInteger(); // Transform a char array into Int
+float getFloat(); // Transform a char array into Float
+Token getToken(); // Retorn actual Token
+int isFirstTime(); // Check if it is first time passing through code
 #endif // LEXICAL

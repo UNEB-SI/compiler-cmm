@@ -34,4 +34,6 @@ int getLabel();
 int getGoTO();
 void getStoreID(char id[500]);
 int loadLabelId(char id[]);
+void getLoadOrPush(Token t);
+void operator_check(Token t);
 #endif // PARSER
