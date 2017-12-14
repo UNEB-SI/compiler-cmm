@@ -45,7 +45,7 @@ FILE *file;
 int main(int argc, char **argv){
     if(argc > 1){
          openStackFile();
-         printf("INIP\n");
+
         fprintf(stack_file,"INIP\n");
         readFile(argv[1]);
     }else{
