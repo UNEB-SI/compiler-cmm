@@ -20,6 +20,7 @@ void insert_symbol() {
     } else if(sb_token.cat == PARAN) {
         int position = myFunctionHasPrototype(last_function);
         if(position != -1) {
+          printf("tem prototipo\n");
           insert_param_on_prototype(position);
           return;
         } else {
@@ -168,7 +169,7 @@ int hasPrototype(symbol s) {
 int myFunctionHasPrototype(symbol s) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
-    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0) {
+    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0 && symbol_table[i].zumbi) {
       return i;
     } else if(strcmp(symbol_table[i].name, s.name) == 0 && strcmp(symbol_table[i].type, s.type) != 0) {
       printf("Esperado tipo '%s' para a função %s na linha %d\n", symbol_table[i].type, s.name, line_number);
@@ -297,8 +298,6 @@ void validateParams(symbol sb, char params[][50]) {
 
   if (strcmp(params[param_position], "nothing") == 0) {
     if (symbol_table[i].cat == PARAN) {
-      printf("Sou %s e tipo %s\n", symbol_table[i].name, symbol_table[i].type);
-      printf("Sou %s e tipo %s\n", symbol_table[i+2].name, symbol_table[i+2].type);
       printf("Parâmetro esperado como argumento na chamada da função %s, linha %d\n", sb.name, line_number);
       exit(-1);
     }
