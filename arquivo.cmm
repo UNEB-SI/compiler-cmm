@@ -1,23 +1,27 @@
-/* Sequencia de Fibonacci em Cmm - Recursivo */
+inteiro a,b,c,d,e,f,r,t,y;
 
-prototipo inteiro fibonacci(inteiro);
-
-semretorno principal(semparam) {
-
-     inteiro i, n;
-
-     imprima("Digite a qtd de termos da sequencia: ");
-     leia(n);
-     imprima("A sequencia de Fibonacci solicitada eh: ");
-     imprima(enter);
-     para (i=0; i<n; i=i+1)
-            imprima(fibonacci(i+1));
-      retorne;
+semretorno outra(semparam){
+  retorne;
 }
 
-inteiro fibonacci(inteiro num) {
+real go(real queijo, real dois){
 
-      se ((num==1) || (num==2)) retorne 1;
-      senao
-        retorne (fibonacci(num-1)+fibonacci(num-2));
+    real aw;
+    queijo = 4.0;
+    dois = 2.0;
+    se(!(dois > queijo)){
+
+    }
+     aw = 6.8;
+
+    retorne queijo+dois;
+}
+
+inteiro principal(inteiro dex, real b) {
+
+  caracter w;
+  w = 'q';
+  w = principal(1, 2.5);
+  outra();
+  retorne 4+8;
 }
