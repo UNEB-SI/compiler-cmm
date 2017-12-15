@@ -7,6 +7,7 @@
 
 symbol last_function;
 int param_mem = -3;
+int var_position = 0;
 
 void insert_symbol() {
     //if it is function, verify if has a prototype
@@ -76,7 +77,8 @@ void generate_mem_space(int position, int type) {
   char positions[12];
 
   if(type != PARAN) {
-    sprintf(positions, "%d", position);
+    sprintf(positions, "%d", var_position);
+    var_position++;
   } else {
       sprintf(positions, "%d", param_mem);
       param_mem--;

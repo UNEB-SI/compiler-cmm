@@ -1,8 +1,9 @@
+prototipo semretorno principal(semparam);
 
 semretorno principal(semparam) {
   inteiro delta, b, a, c;
-  b = 2;
-  a = 5;
+  b = 1;
   c = 2;
-  delta = b*b – 4*a*c;
+  a = 2;
+  delta = b*b - 4*a*c;
 }
