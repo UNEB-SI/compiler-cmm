@@ -171,14 +171,13 @@ void operator_check(Token t){
 void operator_check_not_iqual(){
     int aux_x = 0, aux_y = 0;
     cont_not_iqual = 0;
-
-                aux_x = get_label();
-                fprintf(stack_file,"GOFALSE L%d\n",aux_x);
-                fprintf(stack_file,"PUSH 0\n");
-                aux_y = get_label();
-                fprintf(stack_file,"GOTO L%d\n",aux_y);
-                fprintf(stack_file,"LABEL L%d\n",aux_x);
-                fprintf(stack_file,"PUSH 1\n");
-                fprintf(stack_file,"LABEL L%d\n",aux_y);
-                contLabel = aux_y;
+    aux_x = get_label();
+    fprintf(stack_file,"GOFALSE L%d\n",aux_x);
+    fprintf(stack_file,"PUSH 0\n");
+    aux_y = get_label();
+    fprintf(stack_file,"GOTO L%d\n",aux_y);
+    fprintf(stack_file,"LABEL L%d\n",aux_x);
+    fprintf(stack_file,"PUSH 1\n");
+    fprintf(stack_file,"LABEL L%d\n",aux_y);
+    contLabel = aux_y;
 }

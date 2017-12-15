@@ -1,29 +1,10 @@
+inteiro x;
 
-prototipo inteiro principal(inteiro a, real b);
 prototipo inteiro principal2(inteiro a2, real b2);
 
 
-
-inteiro principal(inteiro a, real b) {
-     inteiro x, n, y;
-     x = principal(n,5.9);
-     se((x == x) && (x == x) && (x == x)){
-        n = x;
-     }
-     	 retorne 2;
+semretorno principal(semparam) {
+  inteiro x, n;
+  x = 2;
+  n = x;
 }
-
-
-inteiro principal2(inteiro a2, real b2) {
-     inteiro x, n, y;
-     retorne 2;
-     se((x == x) && (x == x) && (x == x)){
-        n = x;
-     }
-     	 retorne 2;
-}
-
-
-
-
-
