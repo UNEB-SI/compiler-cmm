@@ -494,9 +494,9 @@ int cmd(){
           error_message(MISSING_CMD);
         }
         if(token.type == PR && strcmp(token.pr,"senao") == 0){
-          labelx = get_label();
+          labely = get_label();
 
-          fprintf(stack_file,"GOTO L%d\n",labelx);
+          fprintf(stack_file,"GOTO L%d\n",labely);
           fprintf(stack_file,"LABEL L%d\n",aux_and);
 
           getToken();
@@ -504,7 +504,7 @@ int cmd(){
             error_message(MISSING_CMD);
           }
 
-          fprintf(stack_file,"LABEL L%d\n",labelx);
+          fprintf(stack_file,"LABEL L%d\n",labely);
         }else{
 
             fprintf(stack_file,"LABEL L%d\n",aux_and);
@@ -636,23 +636,21 @@ int cmd(){
 
     if(strcmp(expre.type, "nothing") != 0) {
       //verify if return type is equal to function type
-      if ((strcmp(last_function.type, expre.type) != 0)
-          && !(strcmp(last_function.type, "caracter") == 0
-          && strcmp(expre.type, "inteiro") == 0)
-          && !(strcmp(last_function.type, "inteiro") == 0
-          && strcmp(expre.type, "caracter") == 0)) {
-          error_return_not_expected(expre.type, last_function.name);
-      }else{
+          if ((strcmp(last_function.type, expre.type) != 0)
+              && !(strcmp(last_function.type, "caracter") == 0
+              && strcmp(expre.type, "inteiro") == 0)
+              && !(strcmp(last_function.type, "inteiro") == 0
+              && strcmp(expre.type, "caracter") == 0)) {
+              error_return_not_expected(expre.type, last_function.name);
+          }else{
 
-        fprintf(stack_file,"STOR 1.%d\n",(-1*(4+cont_paramter_var)));
-        if(cont_local_var > 0)
-            fprintf(stack_file,"DEMEM %d\n",cont_local_var);
-        fprintf(stack_file,"RET %d\n",cont_paramter_var);
+            fprintf(stack_file,"STOR 1.%d\n",(-1*(4+cont_paramter_var)));
+            if(cont_local_var > 0){
+                fprintf(stack_file,"DEMEM %d\n",cont_local_var);
+            }
+            fprintf(stack_file,"RET %d\n",cont_paramter_var);
 
-        if(strcmp(last_function.name,"principal") == 0){
-            fprintf(stack_file,"GOTO L%d\n",load_label_id(last_function.name));
-        }
-      }
+          }
     }
 
     if(token.type == SN && strcmp(token.signal,";") == 0){
