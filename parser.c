@@ -133,6 +133,11 @@ void prog() {
             }
 
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
+
+              fprintf(stack_file,"LABEL %d\n",global_jump_function);
+              cont_local_var = 0;
+              cont_paramter_var = 0;
+              global_jump_function = 0;
               getToken();
               // keep all parameters and delete local variables
               insert_zombie();
@@ -356,11 +361,11 @@ void prog() {
             while(cmd());
 
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
-              fprintf(stack_file,"STOR 0.%d\n",(-1*(3+cont_paramter_var)));
+              fprintf(stack_file,"STOR 1.%d\n",(-1*(4+cont_paramter_var)));
               if(cont_local_var > 0){
                 fprintf(stack_file,"DEMEM %d\n",cont_local_var);
               }
-                fprintf(stack_file,"RET 0\n");
+                fprintf(stack_file,"RET %d\n",cont_paramter_var);
                 fprintf(stack_file,"LABEL %d\n",global_jump_function);
               cont_local_var = 0;
               cont_paramter_var = 0;
@@ -561,6 +566,10 @@ int cmd(){
         aux_and = get_label();
         expression expre = expr(aux_and, aux_or);
 
+        if(strcmp(expre.type,"nothing") == 0){ // arrumado por mim
+            fprintf(stack_file,"PUSH 1\n");
+        }
+
         fprintf(stack_file,"GOFALSE L%d\n",aux_and);
 
         labely = get_label();
@@ -633,17 +642,14 @@ int cmd(){
           error_return_not_expected(expre.type, last_function.name);
       }else{
 
-        fprintf(stack_file,"STOR 0.%d\n",(-1*(3+cont_paramter_var)));
+        fprintf(stack_file,"STOR 1.%d\n",(-1*(4+cont_paramter_var)));
         if(cont_local_var > 0)
             fprintf(stack_file,"DEMEM %d\n",cont_local_var);
         fprintf(stack_file,"RET %d\n",cont_paramter_var);
-        fprintf(stack_file,"LABEL %d\n",global_jump_function);
+
         if(strcmp(last_function.name,"principal") == 0){
             fprintf(stack_file,"GOTO L%d\n",load_label_id(last_function.name));
         }
-        cont_local_var = 0;
-        cont_paramter_var = 0;
-        global_jump_function = 0;
       }
     }
 

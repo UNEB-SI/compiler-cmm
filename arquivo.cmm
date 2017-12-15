@@ -1,39 +1,22 @@
-/* Sequencia de Fibonacci em Cmm - Recursivo */
 
-prototipo inteiro fibonacci(inteiro);
-prototipo inteiro contador(inteiro);
+prototipo inteiro principal(inteiro a, real b);
+prototipo inteiro principal2(inteiro a2, real b2);
 
-inteiro fibonacci(inteiro numer) {
+inteiro principal(inteiro a, real b) {
      inteiro x, n, y;
-     x = 1;
-     n = x;
-     numer = 3 * 3;
-		 retorne numer;
+     retorne 2;
+     se((x == x) && (x == x) && (x == x)){
+        n = x;
+     }
+     	 retorne 2;
 }
 
-inteiro contador(inteiro numero){
-	inteiro x, y;
-	para(x = 0; x < numero; x = x+1){
-		y = x;
-	}
 
-}
-
-semretorno principal(semparam){
-	inteiro x,n, y;
-
-  n = 2;
-	n = contador(fibonacci(n));
-
-	n = 5/3+n;
-  retorne;
-	se(n > 5){
-		para(;;;) {
-
-    }
-	}senao{
-		/*imprima("Numero menor que cinco.");*/
-	}
-
-	y = x+numero;
+inteiro principal2(inteiro a2, real b2) {
+     inteiro x, n, y;
+     retorne 2;
+     se((x == x) && (x == x) && (x == x)){
+        n = x;
+     }
+     	 retorne 2;
 }
