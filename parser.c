@@ -119,6 +119,7 @@ void prog() {
 
                   fprintf(stack_file,"AMEM %d\n",amem);
                   cont_local_var += amem;
+                  amem = 0;
                   getToken();
                 } else {
                   error_message(MISSING_SEMI_COLON);
@@ -358,9 +359,10 @@ void prog() {
                   }
                 }
                 //if it is ; declaration finish
-                cont_local_var = amem;
+                cont_local_var += amem;
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
                   fprintf(stack_file,"AMEM %d\n",amem);
+                  amem = 0;
                   getToken();
                 } else {
                   error_message(MISSING_SEMI_COLON);

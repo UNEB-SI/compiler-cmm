@@ -42,4 +42,5 @@ void get_store_id(char id[500]);
 int load_label_id(char id[]);
 void get_load_or_push(Token t);
 void operator_check(Token t);
+void check_id_label_true(char id[500]);
 #endif // STACK_MACHINE
