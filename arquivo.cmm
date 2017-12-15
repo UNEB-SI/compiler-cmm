@@ -2,9 +2,11 @@
 prototipo inteiro principal(inteiro a, real b);
 prototipo inteiro principal2(inteiro a2, real b2);
 
+
+
 inteiro principal(inteiro a, real b) {
      inteiro x, n, y;
-     retorne 2;
+     x = principal(n,5.9);
      se((x == x) && (x == x) && (x == x)){
         n = x;
      }
@@ -20,3 +22,8 @@ inteiro principal2(inteiro a2, real b2) {
      }
      	 retorne 2;
 }
+
+
+
+
+
