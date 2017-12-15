@@ -493,12 +493,12 @@ int cmd(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
-      aux_and = get_label();
+      labelx = get_label(); //valor do LABEL
       aux_or = get_label();
 
-      expression expre = expr(aux_and, aux_or);
+      expression expre = expr(labelx, aux_or); //Passa label para auxiliar no AND e no OR
 
-      fprintf(stack_file,"GOFALSE L%d\n",aux_and);
+      fprintf(stack_file,"GOFALSE L%d\n",labelx);
       if(token.type == SN && strcmp(token.signal,")") == 0){
         fprintf(stack_file,"LABEL L%d\n",aux_or);
         getToken();
@@ -509,7 +509,7 @@ int cmd(){
           labely = get_label();
 
           fprintf(stack_file,"GOTO L%d\n",labely);
-          fprintf(stack_file,"LABEL L%d\n",aux_and);
+          fprintf(stack_file,"LABEL L%d\n",labelx);
 
           getToken();
           if(!cmd()) {
@@ -519,7 +519,7 @@ int cmd(){
           fprintf(stack_file,"LABEL L%d\n",labely);
         }else{
 
-            fprintf(stack_file,"LABEL L%d\n",aux_and);
+            fprintf(stack_file,"LABEL L%d\n",labelx);
         }
         return 1;
       }else{
@@ -534,14 +534,14 @@ int cmd(){
     getToken();
     if(token.type == SN && strcmp(token.signal,"(") == 0){
       getToken();
-       labely = get_label();
+       labelx = get_label();
        aux_or = get_label();
-       aux_and = get_label();
+       labely = get_label();
 
-       fprintf(stack_file,"LABEL L%d\n",labely);
+       fprintf(stack_file,"LABEL L%d\n",labelx);
 
-       expression expre = expr(aux_and, aux_or);//add return
-       fprintf(stack_file,"GOFALSE L%d\n",aux_and);
+       expression expre = expr(labely, aux_or);//primeiro parâmetro para o AND e o segundo para o OR
+       fprintf(stack_file,"GOFALSE L%d\n",labely);
 
       if (strcmp(expre.type, "booleano") != 0) {
         printf ("Argumento imcopatível em expressão 'se' na linha %d\n", line_number);
@@ -555,8 +555,8 @@ int cmd(){
           error_message(MISSING_CMD);
         }
 
-        fprintf(stack_file,"GOTO L%d\n",labely); //Aqui termina o while
-        fprintf(stack_file,"LABEL L%d\n",aux_and);
+        fprintf(stack_file,"GOTO L%d\n",labelx); //Aqui termina o while,
+        fprintf(stack_file,"LABEL L%d\n",labely); //caso tenha AND e uma das expressoe seja falsa pula para cá
         return 1;
       }else{
         error_message(MISSING_CLOSE_PAREN);
@@ -577,14 +577,18 @@ int cmd(){
         getToken();
 
         aux_or = get_label();
-        aux_and = get_label();
-        expression expre = expr(aux_and, aux_or);
+        labelx = get_label();
+        expression expre = expr(labelx, aux_or);
+
+//        for(;;;){
+
+  //      }
 
         if(strcmp(expre.type,"nothing") == 0){ // arrumado por mim
             fprintf(stack_file,"PUSH 1\n");
         }
 
-        fprintf(stack_file,"GOFALSE L%d\n",aux_and);
+        fprintf(stack_file,"GOFALSE L%d\n",labelx);
 
         labely = get_label();
         fprintf(stack_file,"GOTO L%d\n",labely);
@@ -598,23 +602,25 @@ int cmd(){
 
         if(token.type == SN && strcmp(token.signal,";") == 0){
           getToken();
-          if(!atrib()) {
+
+          if(!atrib() && (token.type != SN && strcmp(token.signal,")") != 0)){
             getToken();
           }
 
           fprintf(stack_file,"GOTO L%d\n",labelw);
           fprintf(stack_file,"LABEL L%d\n",labely);
 
-          if(token.type == SN && strcmp(token.signal,")") == 0){
+          if((token.type == SN && strcmp(token.signal,")") == 0)){
             getToken();
             fprintf(stack_file,"LABEL %d\n",aux_or);
             if(!cmd()){
               error_message(MISSING_CMD);
             }
             fprintf(stack_file,"GOTO L%d\n",labelz);
-            fprintf(stack_file,"LABEL L%d\n",aux_and);
+            fprintf(stack_file,"LABEL L%d\n",labelx);
             return 1;
           }else{
+
             error_message(MISSING_CLOSE_PAREN);
           }
         }else{
@@ -633,6 +639,7 @@ int cmd(){
     Token aux_token;
     getToken();
     aux_token = token;
+
     //verify if function has return and if has, have to has a express returning
     if(strcmp(last_function.type, "semretorno") == 0) {
       if(strcmp(token.signal, ";") != 0) {

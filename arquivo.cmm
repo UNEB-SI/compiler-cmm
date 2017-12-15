@@ -3,17 +3,14 @@ inteiro ws,ew,rt,qw,er;
 
 prototipo real principal2(inteiro a2);
 
-real principal2(){
-retorne 9.0;
-}
 
 real principal(inteiro ax) {
-  real delta, b, a, c;
-  inteiro a3,d2,g6;
-  b = 1.0;
-  c = 2.0;
-  a = 2.0;
+  inteiro b,d2,g6;
   
-  delta = b*b - 4.0*a*c;
+  
+  para(;  ; ){
+    b = 1;
+  }
+  
   retorne 8.0;
 }
