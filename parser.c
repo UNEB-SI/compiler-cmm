@@ -73,7 +73,6 @@ void prog() {
         last_function = sb_token;
         global_jump_function = get_label();
         fprintf(stack_file,"GOTO L%d\n",global_jump_function);
-        get_store_id(auxIdStore);
         fprintf(stack_file,"LABEL L%d\n",load_label_id(auxIdStore));
         fprintf(stack_file,"INIPR 1\n");
         types_param();
@@ -134,7 +133,7 @@ void prog() {
 
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
 
-              fprintf(stack_file,"LABEL %d\n",global_jump_function);
+              fprintf(stack_file,"LABEL L%d\n",global_jump_function);
               cont_local_var = 0;
               cont_paramter_var = 0;
               global_jump_function = 0;
@@ -173,6 +172,7 @@ void prog() {
       strcpy(sb_token.name,token.lexem.value);
       sb_token.zumbi = 1;// we gonna set the cat later
       if(token.type == ID) {
+        get_store_id(token.lexem.value);
         getToken();
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
           getToken();
@@ -190,6 +190,7 @@ void prog() {
               sb_token.zumbi = 1;// we gonna set the cat later
               if(token.type == ID) {
                 //keep function type
+                get_store_id(token.lexem.value);
                 strcpy(sb_token.type, last_function_type);
                 getToken();
                 if(token.type == SN && strcmp(token.signal, "(") == 0) {
@@ -372,7 +373,7 @@ void prog() {
                 fprintf(stack_file,"DEMEM %d\n",cont_local_var);
               }
                 fprintf(stack_file,"RET %d\n",cont_paramter_var);
-                fprintf(stack_file,"LABEL %d\n",global_jump_function);
+                fprintf(stack_file,"LABEL L%d\n",global_jump_function);
               cont_local_var = 0;
               cont_paramter_var = 0;
               global_jump_function = 0;
@@ -402,6 +403,7 @@ void prog() {
     //verify if has principal function
     hasMainFunction();
     printf("Compilado com sucesso!\n");
+    fprintf(stack_file,"CALL L%d\n",load_label_id("principal"));
     fprintf(stack_file,"DEMEM %d\n",global_var);
     fprintf(stack_file,"HALT\n");
     fclose(stack_file);
