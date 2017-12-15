@@ -361,12 +361,6 @@ void prog() {
             }
             while(cmd());
 
-            if (!find_a_return) {
-              error_message(RETURN_EXPECTED);
-            } else {
-              find_a_return = 0;
-            }
-
             if(token.type == SN && strcmp(token.signal, "}") == 0) {
               fprintf(stack_file,"STOR 1.%d\n",(-1*(4+cont_paramter_var)));
               if(cont_local_var > 0){
