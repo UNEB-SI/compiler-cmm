@@ -33,7 +33,7 @@ void error_message(int flag){
             printf("Esperado sinal '=' na linha %d",line_number);
         break;
         case SYMBOL_NOT_RECOG:
-            printf("Simbolo n�o identificado na linha %d\n", line_number);
+            printf("Simbolo nao identificado na linha %d\n", line_number);
         break;
         case MISSING_TYPE:
             printf("Erro esperado tipo na linha %d\n", line_number);
@@ -42,16 +42,16 @@ void error_message(int flag){
             printf("Erro esperado ',' na linha %d\n", line_number);
         break;
         case ERROR_PASS_FILE:
-           printf("Você deve indicar um arquivo para ser analisado. Ex: lexical namefile.cmm");
+           printf("Voce deve indicar um arquivo para ser analisado. Ex: lexical namefile.cmm");
         break;
         case ERROR_NOT_FOUND_FILE:
-          printf("Arquivo não encontrado!");
+          printf("Arquivo nao encontrado!");
         break;
         case ERROR_NUMBER_FLOAT_FORMAT:
           printf("Esperado um número após ");
         break;
         case WRONG_ATRIBUTION:
-          printf("Atribuição inválida na linha %d\n", line_number);
+          printf("Atribuicao invalida na linha %d\n", line_number);
         break;
         case RETURN_EXPECTED:
           printf("Retorno esperado na linha %d\n", line_number);
@@ -61,11 +61,11 @@ void error_message(int flag){
 }
 
 void error_comparation(char *first, char *second) {
-  printf("Comparação não possível entre os tipos %s e %s na linha %d\n", first, second, line_number);
+  printf("Comparacao nao possivel entre os tipos %s e %s na linha %d\n", first, second, line_number);
   exit(-1);
 }
 
 void error_return_not_expected(char *first, char *second) {
-  printf("Retorno '%s' não esperado para a função %s\n",first,second);
+  printf("Retorno '%s' não esperado para a funcao %s\n",first,second);
   exit(-1);
 }

@@ -8,7 +8,7 @@ real principal(inteiro ax) {
   inteiro b,d2,g6;
   
   
-  para(;  ; ){
+  para(;  ;){
     b = 1;
   }
   

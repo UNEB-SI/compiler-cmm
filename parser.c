@@ -544,7 +544,7 @@ int cmd(){
        fprintf(stack_file,"GOFALSE L%d\n",labely);
 
       if (strcmp(expre.type, "booleano") != 0) {
-        printf ("Argumento imcopatível em expressão 'se' na linha %d\n", line_number);
+        printf ("Argumento imcopativel em expressao 'se' na linha %d\n", line_number);
         exit(-1);
       }
       if(token.type == SN && strcmp(token.signal,")") == 0){
@@ -596,7 +596,7 @@ int cmd(){
         fprintf(stack_file,"LABEL L%d\n",labelz);
 
         if (strcmp(expre.type, "booleano") != 0 && strcmp(expre.type, "nothing") != 0) {
-          printf ("Argumento imcopatível em expressão 'se' na linha %d\n", line_number);
+          printf ("Argumento imcopativel em expressao 'se' na linha %d\n", line_number);
           exit(-1);
         }
 
@@ -1169,7 +1169,7 @@ expression expr_simp(int aux_and, int aux_or) {
              else if(signal == '-') expre.iValue = first_value - expre2.cValue;
 
           } else {
-            printf("Operação inválida entre os tipos %s e %s na linha %d\n", expre.type, expre2.type, line_number);
+            printf("Operacao invalida entre os tipos %s e %s na linha %d\n", expre.type, expre2.type, line_number);
             exit(-1);
           }
       }
@@ -1293,7 +1293,7 @@ expression termo(int aux_and, int aux_or) {
                expr.iValue = expr.cValue / expr2.cValue;
              }
           } else {
-            printf("Operação inválida entre os tipos %s e %s na linha %d\n", expr.type, expr2.type, line_number);
+            printf("Operacao invalida entre os tipos %s e %s na linha %d\n", expr.type, expr2.type, line_number);
             exit(-1);
           }
       }
@@ -1493,7 +1493,7 @@ int atrib(){
           if (strcmp(s.type, "nothing") == 0  || strcmp(value.type, "nothing") == 0) {
             error_message(WRONG_ATRIBUTION);
           } else {
-            printf("Atribuição não compatível entre os tipos %s e %s na linha %d\n", s.type, value.type, line_number);
+            printf("Atribuicao nao compativel entre os tipos %s e %s na linha %d\n", s.type, value.type, line_number);
             exit(-1);
           }
         }
