@@ -1,10 +1,8 @@
-inteiro x;
-
-prototipo inteiro principal2(inteiro a2, real b2);
-
 
 semretorno principal(semparam) {
-  inteiro x, n;
-  x = 2;
-  n = x;
+  inteiro delta, b, a, c;
+  b = 2;
+  a = 5;
+  c = 2;
+  delta = b*b – 4*a*c;
 }
