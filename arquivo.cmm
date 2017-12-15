@@ -6,4 +6,5 @@ semretorno principal(semparam) {
   c = 2;
   a = 2;
   delta = b*b - 4*a*c;
+  retorne;
 }
