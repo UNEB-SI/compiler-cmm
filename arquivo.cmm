@@ -16,7 +16,7 @@ inteiro contador(inteiro numero){
 	para(x = 0; x < numero; x = x+1){
 		y = x;
 	}
-	retorne y;
+
 }
 
 semretorno principal(semparam){
@@ -36,5 +36,4 @@ semretorno principal(semparam){
 	}
 
 	y = x+numero;
-  retorne;
 }
