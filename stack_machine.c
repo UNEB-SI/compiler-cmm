@@ -25,6 +25,17 @@ void close_stack_file(){
    fclose(stack_file);
 }
 
+void check_id_label_true(char id[500]){
+
+    int aux_storeid = 0;
+    for(aux_storeid = 0; aux_storeid < cont;aux_storeid++){
+        if(strcmp(stack_storeid[aux_storeid].idname,id) == 0){
+            return;
+        }
+    }
+    get_store_id(id);
+}
+
 void push_value(expression value){
     if(strcmp(value.type,"inteiro") == 0){
         fprintf(stack_file,"PUSH %d\n",value.iValue);

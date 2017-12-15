@@ -68,3 +68,72 @@
 	"parser.h"
 	"symbol_table.h"
 
+1513348609 source:c:\users\fernando\desktop\compilador final\ultimo\university-compiler\lexical.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	"lexical.h"
+	"parser.h"
+	"symbol_table.h"
+	"errors.h"
+	"stack_machine.h"
+
+1513348609 c:\users\fernando\desktop\compilador final\ultimo\university-compiler\lexical.h
+	<stdio.h>
+	"structures.h"
+
+1513348609 c:\users\fernando\desktop\compilador final\ultimo\university-compiler\structures.h
+
+1513348609 c:\users\fernando\desktop\compilador final\ultimo\university-compiler\parser.h
+
+1513348609 c:\users\fernando\desktop\compilador final\ultimo\university-compiler\symbol_table.h
+
+1513348609 c:\users\fernando\desktop\compilador final\ultimo\university-compiler\errors.h
+
+1513348609 c:\users\fernando\desktop\compilador final\ultimo\university-compiler\stack_machine.h
+
+1513354118 source:c:\users\fernando\desktop\compilador final\ultimo\university-compiler\parser.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+	"errors.h"
+	"stack_machine.h"
+	"symbol_table.h"
+
+1513348609 source:c:\users\fernando\desktop\compilador final\ultimo\university-compiler\errors.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+	"symbol_table.h"
+	"errors.h"
+
+1513348609 source:c:\users\fernando\desktop\compilador final\ultimo\university-compiler\main.c
+	<time.h>
+	"lexical.h"
+	"parser.h"
+	"symbol_table.h"
+	"errors.h"
+	"stack_machine.h"
+
+1513349526 source:c:\users\fernando\desktop\compilador final\ultimo\university-compiler\stack_machine.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"lexical.h"
+	"stack_machine.h"
+	"parser.h"
+	"symbol_table.h"
+
+1513348609 source:c:\users\fernando\desktop\compilador final\ultimo\university-compiler\symbol_table.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"lexical.h"
+	"parser.h"
+	"symbol_table.h"
+

@@ -1,10 +1,14 @@
-prototipo semretorno principal(semparam);
 
-semretorno principal(semparam) {
-  inteiro delta, b, a, c;
-  b = 1;
-  c = 2;
-  a = 2;
-  delta = b*b - 4*a*c;
+inteiro ws,ew,rt,qw,er;
+
+
+
+semretorno principal(inteiro ax) {
+  real delta, b, a, c;
+  b = 1.0;
+  c = 2.0;
+  a = 2.0;
+  
+  delta = b*b - 4.0*a*c;
   retorne;
 }

@@ -71,6 +71,8 @@ void prog() {
         verifyRedeclaration(sb_token);
         insert_symbol();
         last_function = sb_token;
+
+        check_id_label_true(auxIdStore);
         global_jump_function = get_label();
         fprintf(stack_file,"GOTO L%d\n",global_jump_function);
         fprintf(stack_file,"LABEL L%d\n",load_label_id(auxIdStore));
@@ -92,6 +94,7 @@ void prog() {
               sb_token.cat = VAR;
 
               if(token.type == ID){
+
                 amem++;
                 getToken();
                 verifyRedeclaration(sb_token);
@@ -172,7 +175,7 @@ void prog() {
       strcpy(sb_token.name,token.lexem.value);
       sb_token.zumbi = 1;// we gonna set the cat later
       if(token.type == ID) {
-        get_store_id(token.lexem.value);
+        check_id_label_true(token.lexem.value);
         getToken();
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
           getToken();
@@ -190,7 +193,7 @@ void prog() {
               sb_token.zumbi = 1;// we gonna set the cat later
               if(token.type == ID) {
                 //keep function type
-                get_store_id(token.lexem.value);
+                check_id_label_true(token.lexem.value);
                 strcpy(sb_token.type, last_function_type);
                 getToken();
                 if(token.type == SN && strcmp(token.signal, "(") == 0) {
@@ -237,6 +240,7 @@ void prog() {
       strcpy(sb_token.name,token.lexem.value);
       sb_token.zumbi = 1;// we gonna set the cat later
       if(token.type == ID){
+        check_id_label_true(token.lexem.value);
         getToken();
         if(token.type == SN && strcmp(token.signal, "(") == 0) {
           getToken();
@@ -302,6 +306,9 @@ void prog() {
     strcpy(sb_token.name,token.lexem.value);
     sb_token.zumbi = 0;// we gonna set the category later
     if(token.type == ID) {
+       strcpy(auxIdStore,token.lexem.value);
+       check_id_label_true(token.lexem.value);
+
       Token aux_token = token;
       sb_token.cat = FUNC;
       verifyRedeclaration(sb_token);
@@ -316,9 +323,10 @@ void prog() {
         if(token.type == SN && strcmp(token.signal, ")") == 0) {
           getToken();
           if(token.type == SN && strcmp(token.signal, "{") == 0) {
-            global_jump_function = get_label();
-            fprintf(stack_file,"GOTO L%d\n",global_jump_function);
             get_store_id(aux_token.lexem.value);
+            global_jump_function = get_label();
+
+            fprintf(stack_file,"GOTO L%d\n",global_jump_function);
             fprintf(stack_file,"LABEL L%d\n",load_label_id(auxIdStore));
             fprintf(stack_file,"INIPR 1\n");
 
@@ -352,6 +360,7 @@ void prog() {
                 //if it is ; declaration finish
                 cont_local_var = amem;
                 if(token.type == SN && strcmp(token.signal, ";") == 0) {
+                  fprintf(stack_file,"AMEM %d\n",amem);
                   getToken();
                 } else {
                   error_message(MISSING_SEMI_COLON);
@@ -397,6 +406,7 @@ void prog() {
     //verify if has principal function
     hasMainFunction();
     printf("Compilado com sucesso!\n");
+
     fprintf(stack_file,"CALL L%d\n",load_label_id("principal"));
     fprintf(stack_file,"DEMEM %d\n",global_var);
     fprintf(stack_file,"HALT\n");
@@ -727,7 +737,7 @@ int cmd(){
 }
 
 void opc_p_types() {
-    int amem = 0;
+
   if(token.type == PR && strcmp(token.signal, "semparam") == 0) {
     getToken();
   } else if(isType()) {
@@ -742,7 +752,7 @@ void opc_p_types() {
       strcpy(sb_token.name, token.lexem.value);
       sb_token.zumbi = 1;
       getToken();
-      amem++;
+
     } else {
         strcpy(sb_token.name, " ");
     }
@@ -760,7 +770,7 @@ void opc_p_types() {
         getToken();
         if(token.type == ID) {
           //keep identify
-          amem++;
+
           strcpy(sb_token.name, token.lexem.value);
           sb_token.zumbi = 1;
           getToken();
@@ -778,10 +788,6 @@ void opc_p_types() {
     error_message(SYMBOL_NOT_RECOG);
     exit(-1);
   }
-  if(amem > 0){
-      fprintf(stack_file,"AMEM %d\n",amem);
-  }
-
 }
 
 expression expr(int aux_and, int aux_or) {
