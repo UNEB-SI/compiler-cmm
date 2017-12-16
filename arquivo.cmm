@@ -1,16 +1,18 @@
-
 inteiro ws,ew,rt,qw,er;
 
-prototipo real principal2(inteiro a2);
+real outro(real ert){
+retorne 5.4;
+}
 
 
 real principal(inteiro ax) {
   inteiro b,d2,g6;
-  
-  
+  real q, cc;
+  cc = outro(q);
+
   para(;  ;){
     b = 1;
   }
-  
+
   retorne 8.0;
 }

@@ -444,7 +444,6 @@ void types_param(){
     sb_token.zumbi = 0;// we gonna set the cat later
     if(token.type == ID){
       amem++;
-
       getToken();
       sb_token.cat = PARAN;
       verifyRedeclaration(sb_token);

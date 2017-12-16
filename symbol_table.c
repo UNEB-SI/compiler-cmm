@@ -178,7 +178,7 @@ int hasPrototype(symbol s) {
 int myFunctionHasPrototype(symbol s) {
   int i = 0;
   while(strcmp(symbol_table[i].name, "") != 0) {
-    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0) {
+    if(strcmp(symbol_table[i].name, s.name) == 0 && symbol_table[i].cat == FUNC && strcmp(symbol_table[i].type, s.type) == 0 && symbol_table[i].zumbi) {
       return i;
     } else if(strcmp(symbol_table[i].name, s.name) == 0 && strcmp(symbol_table[i].type, s.type) != 0) {
       printf("Esperado tipo '%s' para a função %s na linha %d\n", symbol_table[i].type, s.name, line_number);
@@ -313,7 +313,7 @@ void validateParams(symbol sb, char params[][50]) {
   }
 
   while(strcmp(params[param_position], "") != 0 && strcmp(params[param_position], "nothing") != 0) {
-    if ((strcmp(params[param_position], symbol_table[i].type) != 0) || (symbol_table[i].cat != PARAN)) {
+    if ((strcmp(params[param_position], symbol_table[i].type) != 0) || (symbol_table[i].cat != PARAN) ) {
       if(symbol_table[i].cat == PARAN) {
         printf("Esperado %s na função %s como %d argumento, linha %d\n", symbol_table[i].type, sb.name, param_position+1, line_number);
         exit(-1);
